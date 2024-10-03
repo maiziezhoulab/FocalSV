@@ -1,0 +1,122 @@
+##fileformat=VCFv4.2
+##source=cuteSV-1.0.11
+##fileDate=2023-09-15 13:40:34 5-CDT
+##contig=<ID=chr1,length=249250621>
+##contig=<ID=chr2,length=243199373>
+##contig=<ID=chr3,length=198022430>
+##contig=<ID=chr4,length=191154276>
+##contig=<ID=chr5,length=180915260>
+##contig=<ID=chr6,length=171115067>
+##contig=<ID=chr7,length=159138663>
+##contig=<ID=chr8,length=146364022>
+##contig=<ID=chr9,length=141213431>
+##contig=<ID=chr10,length=135534747>
+##contig=<ID=chr11,length=135006516>
+##contig=<ID=chr12,length=133851895>
+##contig=<ID=chr13,length=115169878>
+##contig=<ID=chr14,length=107349540>
+##contig=<ID=chr15,length=102531392>
+##contig=<ID=chr16,length=90354753>
+##contig=<ID=chr17,length=81195210>
+##contig=<ID=chr18,length=78077248>
+##contig=<ID=chr19,length=59128983>
+##contig=<ID=chr20,length=63025520>
+##contig=<ID=chr21,length=48129895>
+##contig=<ID=chr22,length=51304566>
+##contig=<ID=chrX,length=155270560>
+##contig=<ID=chrY,length=59373566>
+##contig=<ID=chrM,length=16571>
+##contig=<ID=chr1_gl000191_random,length=106433>
+##contig=<ID=chr1_gl000192_random,length=547496>
+##contig=<ID=chr4_gl000193_random,length=189789>
+##contig=<ID=chr4_gl000194_random,length=191469>
+##contig=<ID=chr7_gl000195_random,length=182896>
+##contig=<ID=chr8_gl000196_random,length=38914>
+##contig=<ID=chr8_gl000197_random,length=37175>
+##contig=<ID=chr9_gl000198_random,length=90085>
+##contig=<ID=chr9_gl000199_random,length=169874>
+##contig=<ID=chr9_gl000200_random,length=187035>
+##contig=<ID=chr9_gl000201_random,length=36148>
+##contig=<ID=chr11_gl000202_random,length=40103>
+##contig=<ID=chr17_gl000203_random,length=37498>
+##contig=<ID=chr17_gl000204_random,length=81310>
+##contig=<ID=chr17_gl000205_random,length=174588>
+##contig=<ID=chr17_gl000206_random,length=41001>
+##contig=<ID=chr18_gl000207_random,length=4262>
+##contig=<ID=chr19_gl000208_random,length=92689>
+##contig=<ID=chr19_gl000209_random,length=159169>
+##contig=<ID=chr21_gl000210_random,length=27682>
+##contig=<ID=chrUn_gl000211,length=166566>
+##contig=<ID=chrUn_gl000212,length=186858>
+##contig=<ID=chrUn_gl000213,length=164239>
+##contig=<ID=chrUn_gl000214,length=137718>
+##contig=<ID=chrUn_gl000215,length=172545>
+##contig=<ID=chrUn_gl000216,length=172294>
+##contig=<ID=chrUn_gl000217,length=172149>
+##contig=<ID=chrUn_gl000218,length=161147>
+##contig=<ID=chrUn_gl000219,length=179198>
+##contig=<ID=chrUn_gl000220,length=161802>
+##contig=<ID=chrUn_gl000221,length=155397>
+##contig=<ID=chrUn_gl000222,length=186861>
+##contig=<ID=chrUn_gl000223,length=180455>
+##contig=<ID=chrUn_gl000224,length=179693>
+##contig=<ID=chrUn_gl000225,length=211173>
+##contig=<ID=chrUn_gl000226,length=15008>
+##contig=<ID=chrUn_gl000227,length=128374>
+##contig=<ID=chrUn_gl000228,length=129120>
+##contig=<ID=chrUn_gl000229,length=19913>
+##contig=<ID=chrUn_gl000230,length=43691>
+##contig=<ID=chrUn_gl000231,length=27386>
+##contig=<ID=chrUn_gl000232,length=40652>
+##contig=<ID=chrUn_gl000233,length=45941>
+##contig=<ID=chrUn_gl000234,length=40531>
+##contig=<ID=chrUn_gl000235,length=34474>
+##contig=<ID=chrUn_gl000236,length=41934>
+##contig=<ID=chrUn_gl000237,length=45867>
+##contig=<ID=chrUn_gl000238,length=39939>
+##contig=<ID=chrUn_gl000239,length=33824>
+##contig=<ID=chrUn_gl000240,length=41933>
+##contig=<ID=chrUn_gl000241,length=42152>
+##contig=<ID=chrUn_gl000242,length=43523>
+##contig=<ID=chrUn_gl000243,length=43341>
+##contig=<ID=chrUn_gl000244,length=39929>
+##contig=<ID=chrUn_gl000245,length=36651>
+##contig=<ID=chrUn_gl000246,length=38154>
+##contig=<ID=chrUn_gl000247,length=36422>
+##contig=<ID=chrUn_gl000248,length=39786>
+##contig=<ID=chrUn_gl000249,length=38502>
+##contig=<ID=hs37d5,length=35477943>
+##ALT=<ID=INS,Description="Insertion of novel sequence relative to the reference">
+##ALT=<ID=DEL,Description="Deletion relative to the reference">
+##ALT=<ID=DUP,Description="Region of elevated copy number relative to the reference">
+##ALT=<ID=INV,Description="Inversion of reference sequence">
+##ALT=<ID=BND,Description="Breakend of translocation">
+##INFO=<ID=PRECISE,Number=0,Type=Flag,Description="Precise structural variant">
+##INFO=<ID=IMPRECISE,Number=0,Type=Flag,Description="Imprecise structural variant">
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structural variant">
+##INFO=<ID=SVLEN,Number=1,Type=Integer,Description="Difference in length between REF and ALT alleles">
+##INFO=<ID=CHR2,Number=1,Type=String,Description="Chromosome for END coordinate in case of a translocation">
+##INFO=<ID=END,Number=1,Type=Integer,Description="End position of the variant described in this record">
+##INFO=<ID=CIPOS,Number=2,Type=Integer,Description="Confidence interval around POS for imprecise variants">
+##INFO=<ID=CILEN,Number=2,Type=Integer,Description="Confidence interval around inserted/deleted material between breakends">
+##INFO=<ID=RE,Number=1,Type=Integer,Description="Number of read support this record">
+##INFO=<ID=STRAND,Number=A,Type=String,Description="Strand orientation of the adjacency in BEDPE format (DEL:+-, DUP:-+, INV:++/--)">
+##INFO=<ID=RNAMES,Number=.,Type=String,Description="Supporting read names of SVs (comma separated)">
+##FILTER=<ID=q5,Description="Quality below 5">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=DR,Number=1,Type=Integer,Description="# High-quality reference reads">
+##FORMAT=<ID=DV,Number=1,Type=Integer,Description="# High-quality variant reads">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="# Phred-scaled genotype likelihoods rounded to the closest integer">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="# Genotype quality">
+##CommandLine="cuteSV /data/maiziezhou_lab/Jamiezhou/region_based/genome_analysis/NA24385_l1exp/chr21/regions/Out1_43234036/DEL43234036_S43184036_E43284371.bam /data/maiziezhou_lab/Softwares/refdata-hg19-2.1.0/fasta/genome.fa ./test.vcf /data/maiziezhou_lab/Jamiezhou/region_based/genome_analysis/NA24385_l1exp/chr21/regions/Out1_43234036/results/final_vcf/cutesv_signature/ --max_cluster_bias_INS 1000 --diff_ratio_merging_INS 0.9 --max_cluster_bias_DEL 1000 --diff_ratio_merging_DEL 0.5 --retain_work_dir -t 30"
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	NULL
+chr21	43207477	cuteSV.INS.0	g	gAACTCCAGCCTGGGCAAAAAGAGCAAAACTCCATCTTGAAA	.	PASS	PRECISE;SVTYPE=INS;SVLEN=41;END=43207477;CIPOS=-1,1;CILEN=-0,0;RE=27;RNAMES=NULL	GT:DR:DV:PL:GQ	./.:.:27:.,.,.:.
+chr21	43226746	cuteSV.INS.1	a	aCCCGCCACCACCATCACTACCACTTCCATCACCATTACCACCATCACCGCCTCCTCCATCACTATCATTACCATCATCACCACCACGACTGTCACCACCATCAC	.	PASS	PRECISE;SVTYPE=INS;SVLEN=104;END=43226746;CIPOS=-37,37;CILEN=-10,10;RE=29;RNAMES=NULL	GT:DR:DV:PL:GQ	./.:.:29:.,.,.:.
+chr21	43226826	cuteSV.DEL.0	caTNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNCAA	c	.	PASS	PRECISE;SVTYPE=DEL;SVLEN=-505;END=43227331;CIPOS=-0,0;CILEN=-2,2;RE=55;RNAMES=NULL;STRAND=+-	GT:DR:DV:PL:GQ	./.:.:55:.,.,.:.
+chr21	43234530	cuteSV.DEL.1	CGTGTTAGTGATTGCGCAGGGTGCTCTAGTGTTTTATGAGAATGCCTCGTGTTAGTGATTGCGCAGGGTGCCCTAGTGTTTTATGAGAATGCCTCGTGTTACTGATTGCGCAGGGTGCTCTAGTGTTTTATGAGAATGCCTCGTGTTAGTGATTGCGCAGGGTGCTCTAGTGTGTTATGAGAATGCCTCGTGTTAGTGATTGCGCAGGGTGCTCTAGTGTTTTGAGAATGCCTTGTGTTAGTGATTGCACAGGGTGCTCTAGTGTTTTATGAGAACGACTTGTGTTAGTGATTGCGCAGGGTGCTCTAGTGTGTTATGAGAATGCCT	C	.	PASS	PRECISE;SVTYPE=DEL;SVLEN=-326;END=43234856;CIPOS=-14,14;CILEN=-0,0;RE=23;RNAMES=NULL;STRAND=+-	GT:DR:DV:PL:GQ	./.:.:23:.,.,.:.
+chr21	43249341	cuteSV.BND.0	N	N[hs37d5:32030812[	.	PASS	PRECISE;SVTYPE=BND;RE=35;RNAMES=NULL	GT:DR:DV:PL:GQ	./.:.:35:.,.,.:.
+chr21	43250846	cuteSV.BND.1	N	]hs37d5:32032553]N	.	PASS	PRECISE;SVTYPE=BND;RE=37;RNAMES=NULL	GT:DR:DV:PL:GQ	./.:.:37:.,.,.:.
+chr21	43256101	cuteSV.INS.2	a	aGGCCTCGCCCGCTCTCCTCCCTCCCCCACAGGCCTCGCCCGCTCTCCTCCCTCCCCCACA	.	PASS	PRECISE;SVTYPE=INS;SVLEN=60;END=43256101;CIPOS=-29,29;CILEN=-0,0;RE=22;RNAMES=NULL	GT:DR:DV:PL:GQ	./.:.:22:.,.,.:.
+chr21	43264663	cuteSV.DEL.2	acacacacacacacacacaGCCCCTCCCCCCTCACAGGGACACATACAGCCCCTCCCCCTCACAGGGACACACAGCCCCTCCCCCCTCACAGAGACACACATACACAGTCCCTCCCCCCTCACAGGGACACACACAGCCCCTCCTCCATCACAGGGacacacacacacacacacacacacacacacacaGAGTCCCTTCCCCCTCACAGGGACACACACAGTCCCTCCCCCCTCACAGGGACACACACAGTCCCTCCCCCCTCACAGGGACACACACAGCCCCTCCCCCCTCACAGGGACACACAGCCCCTCCCCCTCACAAGGACACACACAGCCCCTCCCCCTCACAGGGACACACACAGCCTCTCCCCCCACACAGGGACACACAGCCCCTCCCCCCTCACAGGGACACACACAGCCCCTCCCCCCTCACAGGGACACACAGCCCCTCCCCCCTCACAGGGACACACACAGCCCCTCCCCCCTCGCAGGGACACACAGCCCCTCCCCCTCACAGGGACACACAGCCCCTCCCCCCTCACAGGGACACACACACACAGCCCCTCCCCC	a	.	PASS	PRECISE;SVTYPE=DEL;SVLEN=-569;END=43265232;CIPOS=-22,22;CILEN=-0,0;RE=21;RNAMES=NULL;STRAND=+-	GT:DR:DV:PL:GQ	./.:.:21:.,.,.:.
+chr21	43276026	cuteSV.DEL.3	tccctccctccctcccttccttcctttccttccctccctccctccctcccttccttcctttccttccctccctccctcccctcccttccttcctttccttccctccctccctcccctcccttccttcctttccttccttccctccctcccctccctcccttccttccctccctcccctccctccctt	t	.	PASS	PRECISE;SVTYPE=DEL;SVLEN=-186;END=43276212;CIPOS=-2,2;CILEN=-4,4;RE=47;RNAMES=NULL;STRAND=+-	GT:DR:DV:PL:GQ	./.:.:47:.,.,.:.
+chr21	43285209	cuteSV.INS.3	c	cAAGCCCTCTCTGCATGCCTGCTCACTCCTCAGTCCCCACTCCCCACTCCCCGGCTCACTCCTCACTCCCCTGCTCACTCCTCATTCCCC	.	PASS	PRECISE;SVTYPE=INS;SVLEN=89;END=43285209;CIPOS=-16,16;CILEN=-0,0;RE=25;RNAMES=NULL	GT:DR:DV:PL:GQ	./.:.:25:.,.,.:.
