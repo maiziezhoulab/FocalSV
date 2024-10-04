@@ -22,12 +22,12 @@ def run_command(cmd, logger, step):
         raise
 
 def remove_redundancy(target_sv, input_regions, results_dir, logger):
-    cmd = f"python3.7 {code_path}/remove_redundancy_region_based.py -t {target_sv} -rg {input_regions} -o {results_dir} -vcf dippav_variant_no_redundancy_corGT.vcf"
+    cmd = f"python3.7 {code_path}/remove_redundancy_region_based.py -t {target_sv} -rg {input_regions} -o {results_dir} -vcf dippav_variant_no_redundancy.vcf"
     run_command(cmd, logger, "Remove Redundancy")
 
 def truvari_eval(chr_num, results_dir, logger):
     eval_dir = os.path.join(results_dir, 'eval/')
-    cmd = f"{code_path}/truvari_eval.sh {chr_num} {results_dir} {eval_dir} AquilaSV_variant_no_redundancy 500 0.5 0.5 30 0.01"
+    cmd = f"{code_path}/truvari_eval.sh {chr_num} {results_dir} {eval_dir} FocalSV_variant_no_redundancy 500 0.5 0.5 30 0.01"
     run_command(cmd, logger, "Truvari Evaluation")
 
 if __name__ == "__main__":
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     chr_num = args.chr_num
 
     # Initialize logger
-    logger = setup_logging("final_eval", args.results_dir)
+    logger = setup_logging("5_final_eval", args.results_dir)
 
     remove_redundancy(target_sv, input_regions, results_dir, logger)
     truvari_eval(chr_num, results_dir, logger)

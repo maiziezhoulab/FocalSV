@@ -4,7 +4,7 @@ from subprocess import check_call, CalledProcessError
 from utils import setup_logging  # Assuming setup_logging is in utils.py
 
 script_path = os.path.dirname(os.path.abspath(__file__))
-code_path = os.path.join(script_path, "/3_assembly/")
+code_path = script_path + "/3_assembly/"
 
 parser = ArgumentParser(description="Assemble sequences and call SVs:")
 # General inputs
@@ -46,13 +46,11 @@ if __name__ == "__main__":
     cpus = args.num_cpus
     data_type = args.data_type
     
-    out_dir_region = os.path.join(out_dir, "regions")
-
     # Initialize logger
-    logger = setup_logging("3_assembly", out_dir)
+    logger = setup_logging("3_ASSEMBLY", out_dir)
 
     # Perform assembly steps
     logger.info("Starting assembly process")
-    assembly(out_dir_region, cpus, threads, data_type, logger)
+    assembly(out_dir, cpus, threads, data_type, logger)
 
     

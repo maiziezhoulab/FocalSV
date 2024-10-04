@@ -41,12 +41,9 @@ def crop_single_region(bam_file, chr_num, region_start, region_end, out_dir, log
         os.system(cmd1)
         os.system(cmd2)
         logger.info(f"*** BAM region cropped and indexed: {region} ***")
+        logger.info(f"{cmd1}\n{cmd2}\n")
     except Exception as e:
         logger.error(f"Error during cropping or indexing: {e}")
-    
-    # Log the commands
-    with open(f"{out_dir}/1_crop_bam_log.txt", "a") as log_file:
-        log_file.write(f"{cmd1}\n{cmd2}\n")
 
 # Function to crop the BAM file for multiple regions from a BED file
 def crop_multiple_regions(bam_file, chr_num, bed_file, out_dir, logger):
@@ -77,12 +74,10 @@ def crop_multiple_regions(bam_file, chr_num, bed_file, out_dir, logger):
                 os.system(cmd1)
                 os.system(cmd2)
                 logger.info(f"*** BAM region cropped and indexed: {region} ***")
+                logger.info(f"{cmd1}\n{cmd2}\n")
             except Exception as e:
                 logger.error(f"Error during cropping or indexing for region {region}: {e}")
-            
-            # Log the commands
-            with open(f"{out_dir}/1_crop_bam_log.txt", "a") as log_file:
-                log_file.write(f"{cmd1}\n{cmd2}\n")
+                
 
 if __name__ == "__main__":
     # Get arguments
@@ -94,7 +89,7 @@ if __name__ == "__main__":
     out_dir = args.out_dir
 
     # Initialize the logger
-    logger = setup_logging("1_crop_bam", out_dir)
+    logger = setup_logging("1_CROP_BAM", out_dir)
     
     # Validate input: Ensure that either start/end or target_bed is provided, but not both
     if (region_start is not None and region_end is not None) and target_bed:

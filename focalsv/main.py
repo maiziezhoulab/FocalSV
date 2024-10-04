@@ -87,11 +87,10 @@ def Assembly(bam_file, chr_num, out_dir, reference, threads, cpus, log_dir, data
     use_cmd = (f"python3 {code_path}3_assembly.py "
                f"--bam_file {bam_file} "
                f"--chr_num {chr_num} "
-               f"--reference {reference} "
+               f"--ref_file {reference} "
                f"-o {out_dir} "
                f"--num_threads {threads} "
                f"--num_cpus {cpus} "
-               f"--log_dir {log_dir} "
                f"--data_type {datatype}")
     
     run_command(use_cmd, logger, "Assembly")
@@ -159,7 +158,7 @@ def main():
         data_type = data_type_map.get(data_type, 0)  # Default to HIFI if not recognized
 
         # Initialize logging
-        logger = setup_logging("region_based", out_dir)
+        logger = setup_logging("MAIN", out_dir)
 
         try:
             # Step 0: Filter SVs (ran with -whole set)
@@ -174,14 +173,14 @@ def main():
                     logger.error("Both --bed_file and --vcf_file are required for whole chromosome analysis.")
                     sys.exit(1)
                 
-                Filter_SVs(vcf_file, chr_num, out_dir, bed_file, SV_THRESH, FLANK, logger)
+                # Filter_SVs(vcf_file, chr_num, out_dir, bed_file, SV_THRESH, FLANK, logger)
             
             # Step 1: Crop target region
             logger.info("Starting BAM cropping step...")
             if eval:
                 # When evaluation mode is on, use the generated BED file for cropping
                 output_bed = os.path.join(out_dir, "target_regions.bed")
-                Crop_Bam(bam_file, chr_num, output_bed, None, None, out_dir, logger)
+                # Crop_Bam(bam_file, chr_num, output_bed, None, None, out_dir, logger)
             elif target_bed:
                 # If the user provided a BED file, use it for cropping
                 Crop_Bam(bam_file, chr_num, target_bed, None, None, out_dir, logger)
@@ -192,15 +191,15 @@ def main():
 
             # Step 2: Phase Bams
             logger.info("Starting BAM phasing step...")
-            Phase_Bam(ref_file, out_dir, logger)
+            # Phase_Bam(ref_file, out_dir, logger)
 
             # Step 3: Assemble
             logger.info("Starting assembly step...")
-            Assembly(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, out_dir, data_type, logger)
+            # Assembly(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, out_dir, data_type, logger)
 
             # Step 4: SV Calling
             logger.info("Starting SV calling step...")
-            SVCalling(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, out_dir, data_type, logger)
+            # SVCalling(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, out_dir, data_type, logger)
 
             # Step 5: Clean up and evaluation
             if evaluation:

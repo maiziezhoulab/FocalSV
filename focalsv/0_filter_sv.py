@@ -1,8 +1,8 @@
 import os
 from argparse import ArgumentParser
 import sys
+from utils import setup_logging
 import allel
-from utils import setup_logging  # Assuming you have a setup_logging function
 
 script_path = os.path.dirname(os.path.abspath(__file__))
 code_path = script_path + "/"
@@ -17,7 +17,7 @@ parser.add_argument('--svlen_threshold', '-sv_thresh', type=int, help="Threshold
 parser.add_argument('--flanking', '-flank', type=int, help="Length of flanking region", default=50000)
 args = parser.parse_args()
 
-def get_chr_length(chr_num, chr_length_file="0_chr_length.txt"):
+def get_chr_length(chr_num, chr_length_file=code_path+"0_chr_length.txt"):
     """
     Function to fetch the length of a chromosome from a file.
     """
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     flank = args.flanking
     
     # Initialize logger
-    logger = setup_logging("target_sv_filter", out_dir)
+    logger = setup_logging("0_FILTER_SV", out_dir)
 
     try:
         filter_target_sv(vcf_file, chr_num, out_dir, bed_file, svlen_threshold, flank, logger)

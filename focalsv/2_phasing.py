@@ -35,9 +35,7 @@ if __name__ == "__main__":
     ref_file = args.ref_file
 
     # Initialize logger
-    logger = setup_logging("2_phasing", out_dir)
-    
-    out_dir_region = os.path.join(out_dir, "regions")
+    logger = setup_logging("2_PHASING", out_dir)
 
-    run_longshot(out_dir_region, ref_file, logger)
-    putback(out_dir_region, logger)
+    run_longshot(out_dir, ref_file, logger)
+    putback(out_dir, logger)

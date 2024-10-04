@@ -79,10 +79,11 @@ def output_fa(fd, out_dir, logger):
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    out_dir = args.out_dir
+    out_dir_general = args.out_dir
+    out_dir = os.path.join(out_dir_general, "regions")
 
     # Initialize logger
-    logger = setup_logging("output_fas", out_dir)
+    logger = setup_logging("2_output_fas", out_dir_general)
 
     # Process each region folder
     fds = [os.path.join(out_dir, fd) for fd in os.listdir(out_dir) if fd.startswith("Region")]

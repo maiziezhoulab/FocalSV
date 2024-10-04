@@ -10,11 +10,12 @@ parser.add_argument('--out_dir', '-o', help="Directory to store assembly results
 args = parser.parse_args()
 
 if __name__ == "__main__":
-    out_dir = args.out_dir
+    out_dir_general = args.out_dir
+    out_dir = os.path.join(out_dir_general, "regions")
     ref_file = args.ref_file
 
     # Initialize logger
-    logger = setup_logging("longshot", out_dir)
+    logger = setup_logging("2_longshot", out_dir_general)
 
     fds = [os.path.join(out_dir, fd) for fd in os.listdir(out_dir) if fd.startswith("Region")]
 

@@ -4,7 +4,7 @@ from subprocess import check_call, CalledProcessError
 from utils import setup_logging  # Assuming setup_logging exists in utils.py
 
 script_path = os.path.dirname(os.path.abspath(__file__))
-code_path = os.path.join(script_path, "/4_sv_calling/")
+code_path = script_path + "/4_sv_calling/"
 
 parser = ArgumentParser(description="Assemble sequences:")
 # General inputs
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     datatype = args.data_type
 
     # Initialize logger
-    logger = setup_logging("4_sv_calling", out_dir)
+    logger = setup_logging("4_SV_CALLING", out_dir)
 
     # Perform SV calling
     logger.info("Starting SV calling process")

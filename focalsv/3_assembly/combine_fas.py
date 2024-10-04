@@ -104,11 +104,12 @@ def combine_fas_ont(out_dir, logger):
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    out_dir = args.out_dir
+    out_dir_general = args.out_dir
+    out_dir = os.path.join(out_dir_general, "regions")
     data_type = args.data_type
 
     # Initialize logger
-    logger = setup_logging("combine_fas", out_dir)
+    logger = setup_logging("3_combine_fas", out_dir_general)
 
     if data_type == 0:
         logger.info("Combining FASTA files for HIFI")

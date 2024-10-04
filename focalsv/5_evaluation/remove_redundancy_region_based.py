@@ -46,8 +46,8 @@ def merge_vcf(target_sv, regions, flanking, outvcf, vcf_prefix, logger):
     except Exception as e:
         logger.error(f"Error processing target_sv: {e}")
         raise
-
-    vcf_list = [os.path.join(regions, folder, 'results/final_vcf', vcf_prefix) for folder in folder_list]
+    
+    vcf_list = [os.path.join(regions, fd,'results/final_vcf', vcf_prefix) for fd in os.listdir(regions) if fd.startswith("Region")]
     
     try:
         header = []
@@ -67,7 +67,7 @@ def merge_vcf(target_sv, regions, flanking, outvcf, vcf_prefix, logger):
                 for line in f:
                     if not line.startswith('#'):
                         data = line.split()
-                        data[2] = f'AquilaSV{cnt}'
+                        data[2] = f'FocalSV{cnt}'
                         cnt += 1
                         data[7] += f';Region_start={rg_list[i][0]};Region_end={rg_list[i][1]}'
                         lines.append('\t'.join(data) + '\n')
@@ -326,14 +326,14 @@ if __name__ == "__main__":
     seq_sim_thresh = args.seq_sim_thresh
 
     # Initialize logger
-    logger = setup_logging("remove_redundancy", output_dir)
+    logger = setup_logging("5_remove_redundancy", output_dir)
 
     # Merge VCFs
     vcf_path = os.path.join(output_dir, 'variants.vcf')
     merge_vcf(target_sv, regions, flanking, vcf_path, vcf_prefix, logger)
 
     # Process VCF to get signatures
-    prefix = 'AquilaSV_variant'
+    prefix = 'FocalSV_variant'
     del_sig, ins_sig, vcf_dc, header = vcf_to_sig(vcf_path)
 
     # Perform matching and redundancy removal

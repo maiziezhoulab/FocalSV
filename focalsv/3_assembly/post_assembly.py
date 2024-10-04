@@ -95,13 +95,14 @@ def fa_index(out_dir, logger):
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    out_dir = args.out_dir
+    out_dir_general = args.out_dir
+    out_dir = os.path.join(out_dir_general, "regions")
     threads = args.num_threads
     cpu = args.num_cpus
     data_type = args.data_type
 
     # Initialize logger
-    logger = setup_logging("assembly_rerun", out_dir)
+    logger = setup_logging("3_post_assembly", out_dir_general)
 
     if data_type == 0:
         logger.info("Starting HIFI FA index")

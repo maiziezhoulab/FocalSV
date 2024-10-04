@@ -4,7 +4,7 @@ from subprocess import check_call, CalledProcessError
 from utils import setup_logging  # Assuming setup_logging exists in utils.py
 
 script_path = os.path.dirname(os.path.abspath(__file__))
-code_path = os.path.join(script_path, "/5_evaluation/")
+code_path = script_path + "/5_evaluation/"
 
 parser = ArgumentParser(description="Evaluate final results:")
 # General inputs
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     datatype = args.data_type
 
     # Initialize logger
-    logger = setup_logging("5_evaluation", out_dir)
+    logger = setup_logging("5_EVALUTAION", out_dir)
 
     logger.info(f"Starting evaluation for chromosome {chr_num} with data type {datatype}")
     

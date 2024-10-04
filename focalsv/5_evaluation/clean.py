@@ -42,9 +42,9 @@ if __name__ == "__main__":
     datatype = args.data_type
 
     # Initialize logger
-    logger = setup_logging("clean", args.out_dir)
+    logger = setup_logging("5_clean", args.out_dir)
 
     logger.info("***START Clean up***")
-    fds = [os.path.join(out_dir_region, fd) for fd in os.listdir(out_dir_region) if fd.startswith("Out")]
+    fds = [os.path.join(out_dir_region, fd) for fd in os.listdir(out_dir_region) if fd.startswith("Region")]
     Parallel(n_jobs=cpu)(delayed(clean)(fds[i], datatype, logger) for i in range(len(fds)))
     logger.info("***FINISHED Clean up***")

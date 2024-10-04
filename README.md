@@ -137,5 +137,3 @@ FocalSV_results/
 ## Troubleshooting:
 
 If you encounter issues, please submit them on the [FocalSV GitHub Issues](https://github.com/maiziezhoulab/FocalSV/issues) page.
-
-This README file has been updated to reflect the three different modes of running FocalSV: processing a single region, processing multiple regions using a BED file, or performing a whole chromosome evaluation.

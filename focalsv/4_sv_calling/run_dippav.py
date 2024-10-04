@@ -4,7 +4,8 @@ from argparse import ArgumentParser
 from joblib import Parallel, delayed
 from utils import setup_logging  # Assuming setup_logging exists in utils.py
 
-sys.path.append('./Dippav')
+script_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(1, script_path + '/Dippav')
 from DipPAV_variant_call import dippav_variant_call
 
 parser = ArgumentParser(description="Run DipPAV variant calling:")
@@ -58,12 +59,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
     chr_num = args.chr_num
     cpu = args.num_cpus
-    out_dir = args.out_dir
-    data_type_map = {0: "HIFI", 1: "CLR", 2: "ONT"}
+    out_dir_general = args.out_dir
+    out_dir = os.path.join(out_dir_general, "regions")
+    data_type_map = {0: "CCS", 1: "CLR", 2: "ONT"}
     data_type = data_type_map.get(args.data_type, "UNKNOWN")
 
     # Initialize logger
-    logger = setup_logging("dippav_variant_call", out_dir)
+    logger = setup_logging("4_run_dippav", out_dir_general)
 
     logger.info(f"Starting DipPAV variant calling for chromosome {chr_num} with data type {data_type}")
     dippav_run(chr_num, out_dir, cpu, data_type, logger)
