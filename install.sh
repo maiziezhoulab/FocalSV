@@ -27,7 +27,6 @@ conda activate FocalSV
 echo "Installing additional dependencies..."
 conda install -c bioconda -c conda-forge -y \
     cigar \
-    cutesv \
     edlib \
     flye \
     hifiasm \
