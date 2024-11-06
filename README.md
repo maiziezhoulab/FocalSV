@@ -64,6 +64,67 @@ python3 FocalSV/main.py \
 --num_threads 8
 ```
 
+### Post-processing
+FocalSV incorporates a post-processing module to filter false positives and correct genotypes further. This step involves collecting reads-based signatures from the read-to-reference BAM file. You can either run it by chromosome or on a whole genome scale. Note that the minimum scale is per chromosome, not per region, because read depth is not so accurate on the edge of each region and we try to minimize the effect of read depth fluctuation. 
+
+The script description is as below:
+```
+Usage:
+    python3 post_processing.py <bamfile> <vcffile> <dtype> <wdir> <t> <reference> <chr_num> <sigdir>
+
+Description:
+    This script filters structural variants (SVs) from a VCF file, calculates signature support,
+    and performs genotype correction based on BAM alignments and signatures.
+
+Arguments:
+    bamfile    : Path to the input BAM file.
+    vcffile    : Path to the input VCF file.
+    dtype      : Data type (e.g., ONT, Hifi, CLR).
+    wdir       : Working directory for signature and corrected VCF outputs.
+    t          : Number of threads to use.
+    reference  : Path to the reference genome file in FASTA format.
+    chr_num    : Chromosome number for targeted processing (use None to enable whole genome scale post processing).
+    sigdir	   : preextracted reads signature (use None to enable auto-extract).
+
+Example:
+    python3 post_processing.py input.bam input.vcf ONT /path/to/workdir 5 reference.fasta 1 None
+
+Notes:
+    - Ensure all required Python dependencies and tools (samtools, bcftools, etc.) are installed.
+    - The script generates a corrected VCF file and combines all processed VCFs into a final version.
+```
+#### Post-processing by chromosome
+To achieve the most computation efficiency, if you have multiple target regions in one chromosome, you should merge the VCF file in those regions and only run the post-processing once. Below is an example command.
+
+```
+python3 ./FocalSV/focalsv/post_processing/post_processing.py \
+<BAMfile>   \
+merged_one_chr_variants.vcf   \
+<dtype> \
+<output_dir> \
+10 \
+<reference_file> \
+22 \
+None
+```
+This command runs for chromosome 22 using 10 threads.
+
+
+#### Post-processing on whole genome scale
+Below is an example command for running post-processing one whole genome scale.
+```
+python3 ./FocalSV/focalsv/post_processing/post_processing.py \
+<BAMfile>   \
+merged_wgs_variants.vcf   \
+<dtype> \
+<output_dir> \
+10 \
+<reference_file> \
+None \
+None
+```
+This command runs for whole genome using 10 threads.
+
 ### Example: Running Whole Chromosome Evaluation
 
 ```
