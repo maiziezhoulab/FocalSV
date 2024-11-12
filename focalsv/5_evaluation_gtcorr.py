@@ -41,8 +41,6 @@ def fullchr_eval_gtCorrected(chr_num, out_dir, logger):
     results_dir = out_dir
 
     use_cmd = (f"python3.7 {code_path}final_eval_newremove_gtCorrected.py "
-               f"-t {target_sv} "
-               f"-i {input_regions} "
                f"-r {results_dir} "
                f"-chr {chr_num}")
     

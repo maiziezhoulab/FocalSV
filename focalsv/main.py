@@ -201,11 +201,6 @@ def main():
             logger.info("Starting SV calling step...")
             # SVCalling(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, out_dir, data_type, logger)
 
-            # Step 5: Clean up and evaluation
-            if evaluation:
-                logger.info("Starting evaluation step...")
-                Evaluation(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, data_type, logger)
-
             logger.info("All steps completed successfully.")
         except Exception as e:
             logger.error(f"An error occurred: {e}")

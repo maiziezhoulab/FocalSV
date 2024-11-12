@@ -23,18 +23,4 @@ fi
 echo "Activating the 'FocalSV' environment..."
 conda activate FocalSV
 
-# Install additional requirements
-echo "Installing additional dependencies..."
-conda install -c bioconda -c conda-forge -y \
-    cigar \
-    edlib \
-    flye \
-    hifiasm \
-    longshot \
-    minimap2 \
-    pysam \
-    svim-asm \
-    truvari \
-    numpy
-
 echo "Installation complete. You can now use the 'FocalSV' environment."
