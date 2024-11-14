@@ -73,9 +73,6 @@ def output_fa(fd, out_dir, logger):
     # Log unphased reads statistics
     phased_rate = (total - unphased) / total if total > 0 else 0
     logger.info(f"Phased Rate: {phased_rate:.2%}, Total: {total}, Unphased: {unphased}")
-    with open(os.path.join(out_dir, "2_phasing.txt"), "a") as log_file:
-        log_file.write(f"Phased Rate: {phased_rate:.2%}\n")
-        log_file.write(f"Total: {total}\nUnphased: {unphased}\n")
 
 if __name__ == "__main__":
     args = parser.parse_args()

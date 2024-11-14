@@ -67,6 +67,10 @@ def main():
             print(f"Created output folder: {out_dir}")
         else:
             print(f"Using existing output folder: {out_dir}")
+            
+        # Convert data_type to integer
+        data_type_map = {"HIFI": 0, "CLR": 1, "ONT": 2}
+        data_type = data_type_map.get(data_type, 0)  # Default to HIFI if not recognized
 
         # Initialize logging
         logger = setup_logging("EVALUATION", out_dir)

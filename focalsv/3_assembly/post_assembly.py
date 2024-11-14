@@ -44,10 +44,10 @@ def run_ont(out_dir, input_file, logger):
     try:
         os.system(f"rm -r {out_dir}")
         os.system(f"mkdir {out_dir}")
-        cmd = f"../software/Shasta/shasta-Linux-0.10.0 --input {input_file} --assemblyDirectory {out_dir} --config Nanopore-UL-Dec2019"
+        cmd = f"./software/Shasta/shasta-Linux-0.10.0 --input {input_file} --assemblyDirectory {out_dir} --config Nanopore-UL-Dec2019"
         logger.info(f"Executing: {cmd}")
         os.system(cmd)
-        cmd_cleanup = f"../software/Shasta/shasta-Linux-0.10.0 --command cleanupBinaryData --assemblyDirectory {out_dir}"
+        cmd_cleanup = f"./software/Shasta/shasta-Linux-0.10.0 --command cleanupBinaryData --assemblyDirectory {out_dir}"
         os.system(cmd_cleanup)
         logger.info(f"ONT assembly completed for {input_file}")
     except Exception as e:

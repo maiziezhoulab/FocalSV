@@ -30,7 +30,5 @@ if __name__ == "__main__":
         try:
             check_call(cmd, shell=True)
             logger.info(f"Longshot successfully run on {bam}")
-            with open(os.path.join(out_dir, "2_phasing.txt"), "a") as log_file:
-                log_file.write(f"{cmd}\n")
         except Exception as e:
             logger.error(f"Error running longshot on {bam}: {e}")
