@@ -64,10 +64,27 @@ python3 FocalSV/main.py \
 --num_threads 8
 ```
 
+### Evaluation
+
+The `evaluation.py` script runs Truvari to assess the accuracy of detected structural variants (SVs) by comparing them to a reference. It calculates precision and recall metrics and performs data cleanup to retain only high-confidence results, streamlining the output for further analysis.
+
+```
+python3.7 ./focalsv/evaluation.py \
+--bam_file ./test/test_hifi_chr21.bam \
+--ref_file ./test/test_chr21.fa \
+--chr_num 21 \
+--out_dir ./FocalSV_results \
+--data_type HIFI \
+--num_cpus 10 \
+--num_threads 8
+```
+
 ### Post-processing
-FocalSV incorporates a post-processing module to filter false positives and correct genotypes further. This step involves collecting reads-based signatures from the read-to-reference BAM file. You can either run it by chromosome or on a whole genome scale. Note that the minimum scale is per chromosome, not per region, because read depth is not so accurate on the edge of each region and we try to minimize the effect of read depth fluctuation. 
+
+FocalSV incorporates a post-processing module to filter false positives and correct genotypes further. This step involves collecting reads-based signatures from the read-to-reference BAM file. You can either run it by chromosome or on a whole genome scale. Note that the minimum scale is per chromosome, not per region, because read depth is not so accurate on the edge of each region and we try to minimize the effect of read depth fluctuation.
 
 The script description is as below:
+
 ```
 Usage:
     python3 post_processing.py <bamfile> <vcffile> <dtype> <wdir> <t> <reference> <chr_num> <sigdir>
@@ -93,7 +110,9 @@ Notes:
     - Ensure all required Python dependencies and tools (samtools, bcftools, etc.) are installed.
     - The script generates a corrected VCF file and combines all processed VCFs into a final version.
 ```
+
 #### Post-processing by chromosome
+
 To achieve the most computation efficiency, if you have multiple target regions in one chromosome, you should merge the VCF file in those regions and only run the post-processing once. Below is an example command.
 
 ```
@@ -107,11 +126,13 @@ merged_one_chr_variants.vcf   \
 22 \
 None
 ```
+
 This command runs for chromosome 22 using 10 threads.
 
-
 #### Post-processing on whole genome scale
+
 Below is an example command for running post-processing one whole genome scale.
+
 ```
 python3 ./FocalSV/focalsv/post_processing/post_processing.py \
 <BAMfile>   \
@@ -123,6 +144,7 @@ merged_wgs_variants.vcf   \
 None \
 None
 ```
+
 This command runs for whole genome using 10 threads.
 
 ### Example: Running Whole Chromosome Evaluation
