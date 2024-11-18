@@ -4,7 +4,7 @@
 
 FocalSV is a tool for region-based structural variant (SV) assembly and refinement using long-read sequencing data. It provides a targeted approach to SV detection, focusing on specific genomic regions using a phased diploid assembly method. This software is optimized for multiple data types, including HiFi, CLR, and ONT sequencing.
 
-## Dependencies:
+## Dependencies: 
 
 The following tools and libraries are required to run FocalSV:
 
@@ -67,8 +67,7 @@ python3 FocalSV/main.py \
 
 ### Post-processing (Filtering & GT correction)
 
-FocalSV incorporates a post-processing module to filter false positives and correct genotypes further. This step involves collecting reads-based signatures from the read-to-reference BAM file. You can either run it by chromosome or on a whole genome scale. Note that the minimum scale is per chromosome, not per region, because read depth is not so accurate on the edge of each region and we try to minimize the effect of read depth fluctuation.
-
+FocalSV incorporates a post-processing module to filter false positives and correct genotypes further. This step involves collecting reads-based signatures from the read-to-reference BAM file. 
 The script description is as below:
 
 ```
@@ -100,6 +99,8 @@ Notes:
 #### Post-processing by chromosome
 
 To achieve the most computation efficiency, if you have multiple target regions in one chromosome, you should merge the VCF file in those regions and only run the post-processing once. Below is an example command.
+*Note that the minimum scale is per chromosome, not per region, because read depth is not so accurate on the edge of each region and we try to minimize the effect of read depth fluctuation. If you only run one region, make sure to put the chromosome number for this target region for post-processing. 
+
 
 ```
 python3 ./FocalSV/focalsv/post_processing/post_processing.py \
