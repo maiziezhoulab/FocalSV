@@ -64,22 +64,8 @@ python3 FocalSV/main.py \
 --num_threads 8
 ```
 
-### Evaluation
 
-The `evaluation.py` script runs Truvari to assess the accuracy of detected structural variants (SVs) by comparing them to a reference. It calculates precision and recall metrics and performs data cleanup to retain only high-confidence results, streamlining the output for further analysis.
-
-```
-python3.7 ./focalsv/evaluation.py \
---bam_file ./test/test_hifi_chr21.bam \
---ref_file ./test/test_chr21.fa \
---chr_num 21 \
---out_dir ./FocalSV_results \
---data_type HIFI \
---num_cpus 10 \
---num_threads 8
-```
-
-### Post-processing
+### Post-processing (Filtering & GT correction)
 
 FocalSV incorporates a post-processing module to filter false positives and correct genotypes further. This step involves collecting reads-based signatures from the read-to-reference BAM file. You can either run it by chromosome or on a whole genome scale. Note that the minimum scale is per chromosome, not per region, because read depth is not so accurate on the edge of each region and we try to minimize the effect of read depth fluctuation.
 
@@ -146,6 +132,22 @@ None
 ```
 
 This command runs for whole genome using 10 threads.
+
+
+### Evaluation
+
+The `evaluation.py` script runs Truvari to assess the accuracy of detected structural variants (SVs) by comparing them to a reference. It calculates precision and recall metrics and performs data cleanup to retain only high-confidence results, streamlining the output for further analysis.
+
+```
+python3.7 ./focalsv/evaluation.py \
+--bam_file ./test/test_hifi_chr21.bam \
+--ref_file ./test/test_chr21.fa \
+--chr_num 21 \
+--out_dir ./FocalSV_results \
+--data_type HIFI \
+--num_cpus 10 \
+--num_threads 8
+```
 
 ### Example: Running Whole Chromosome Evaluation
 
