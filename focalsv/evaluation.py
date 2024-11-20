@@ -1,28 +1,21 @@
-#!/usr/bin/env python3
-from subprocess import check_call, CalledProcessError
-from argparse import ArgumentParser
 import os
-import sys
-from utils import setup_logging  # Assuming setup_logging exists in utils.py
+from argparse import ArgumentParser
+from subprocess import check_call, CalledProcessError
+from utils import setup_logging
 
+# Paths
 script_path = os.path.dirname(os.path.abspath(__file__))
-code_path = script_path + "/"
-__author__ = "Maizie&Jamie&Can@Vandy"
+code_path = os.path.join(script_path, "evaluation")
 
-parser = ArgumentParser(description="Author: maiziezhoulab@gmail.com\n", usage='use "python3 %(prog)s --help" for more information')
-
-# General inputs
-parser.add_argument('--bam_file', '-bam', help="BAM file", required=True)
-parser.add_argument('--ref_file', '-r', help="Reference FASTA file", required=True)
+# Argument Parser
+parser = ArgumentParser(description="Evaluate final results")
 parser.add_argument('--chr_num', '-chr', type=int, help="Chromosome number for target variant or region", required=True)
-
-# Defaulted inputs
-parser.add_argument('--out_dir', '-o', help="Directory to store assembly results, default = ./RegionBased_results", default="./RegionBased_results")
-parser.add_argument('--data_type', '-d', help="HIFI/CLR/ONT", default="HIFI")
-
-# Process information
-parser.add_argument('--num_cpus', '-cpu', type=int, help="Number of CPUs, default = 10", default=10)
-parser.add_argument('--num_threads', '-thread', type=int, help="Number of threads, default = 8 (recommended)", default=8)
+parser.add_argument('--bench_vcf', '-vcf', help="Benchmark VCF file", required=True)
+parser.add_argument('--reference', '-r', help="Reference FASTA file", required=True)
+parser.add_argument('--out_dir', '-o', help="Output directory with results from the previous step", required=True)
+parser.add_argument('--num_threads', '-t_chr', type=int, help="Number of threads (default = 8)", default=8)
+parser.add_argument('--num_cpus', '-t', type=int, help="Number of CPUs (default = 10)", default=10)
+parser.add_argument('--data_type', '-d', type=int, help="Data type: HIFI (0) or CLR (1), default = 0", default=0)
 
 args = parser.parse_args()
 
@@ -35,55 +28,41 @@ def run_command(command, logger, step):
         logger.error(f"Error during {step}: {e}")
         raise
 
-def Evaluation(bam_file, chr_num, out_dir, reference, threads, cpus, datatype, logger):
-    use_cmd = (f"python3 {code_path}5_evaluation_gtcorr.py "
-               f"--bam_file {bam_file} "
-               f"--chr_num {chr_num} "
-               f"--reference {reference} "
-               f"-o {out_dir} "
-               f"--num_threads {threads} "
-               f"--num_cpus {cpus} "
-               f"--data_type {datatype}")
-    
-    run_command(use_cmd, logger, "Evaluation")
+def clean(out_dir, num_cpus, data_type, logger):
+    command = (
+        f"python3.7 {os.path.join(code_path, 'clean.py')} "
+        f"-o {out_dir} "
+        f"-t {num_cpus} "
+        f"-d {data_type}"
+    )
+    run_command(command, logger, "Cleanup")
 
-def main():
-    if len(sys.argv) == 1:
-        print("Displaying help for evaluation.py")
-        check_call("python3 evaluation.py -h", shell=True)
-    else:
-        # Parse command line arguments
-        bam_file = args.bam_file
-        ref_file = args.ref_file
-        chr_num = args.chr_num
-        out_dir = args.out_dir
-        data_type = args.data_type
-        num_threads = args.num_threads
-        num_cpus = args.num_cpus
-        
-        # Create output directory if it doesn't exist
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
-            print(f"Created output folder: {out_dir}")
-        else:
-            print(f"Using existing output folder: {out_dir}")
-            
-        # Convert data_type to integer
-        data_type_map = {"HIFI": 0, "CLR": 1, "ONT": 2}
-        data_type = data_type_map.get(data_type, 0)  # Default to HIFI if not recognized
-
-        # Initialize logging
-        logger = setup_logging("EVALUATION", out_dir)
-
-        try:
-            # Clean up and evaluation
-            logger.info("Starting evaluation step...")
-            Evaluation(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, data_type, logger)
-
-            logger.info("All steps completed successfully.")
-        except Exception as e:
-            logger.error(f"An error occurred: {e}")
-            sys.exit(1)
+def truvari_eval(chr_num, results_dir, vcf, logger):
+    eval_dir = os.path.join(results_dir, 'eval')
+    input_dir = os.path.join(results_dir, 'results')
+    command = (
+        f"{os.path.join(code_path, 'truvari_eval.sh')} "
+        f"{chr_num} {input_dir} {eval_dir} FocalSV_variant_no_redundancy "
+        f"500 0.5 0.5 30 0.01"
+    )
+    run_command(command, logger, "Truvari Evaluation")
 
 if __name__ == "__main__":
-    main()
+    chr_num = args.chr_num
+    bench_vcf = args.bench_vcf
+    reference = args.reference
+    out_dir = args.out_dir
+    num_threads = args.num_threads
+    num_cpus = args.num_cpus
+    data_type = args.data_type
+
+    logger = setup_logging("EVALUATION", out_dir)
+    logger.info(f"Starting evaluation for chromosome {chr_num} with data type {data_type}")
+
+    # Step 1: Truvari evaluation
+    truvari_eval(chr_num, out_dir, bench_vcf, logger)
+
+    # Step 2: Clean up the results
+    clean(out_dir, num_cpus, data_type, logger)
+
+    logger.info("Evaluation and cleanup completed successfully.")

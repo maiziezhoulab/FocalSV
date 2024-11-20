@@ -26,7 +26,7 @@ rm -r $output_dir
 
 mkdir $output_dir
 
-python /data/maiziezhou_lab/CanLuo/long_reads_project/bin/vcf_filter.py -v ${input_dir}/${prefix}.vcf -o_dir $work_dir/  --chrs chr${chr_num}
+python ./vcf_filter.py -v ${input_dir}/${prefix}.vcf -o_dir $work_dir/  --chrs chr${chr_num}
 
 vcf-sort $work_dir/${prefix}_DEL_INS_noXY.vcf > $work_dir/${prefix}_DEL_INS_noXY_sorted.vcf
 bgzip -c $work_dir/${prefix}_DEL_INS_noXY_sorted.vcf > $work_dir/${prefix}_DEL_INS_noXY_sorted.vcf.gz
@@ -55,4 +55,4 @@ truvari bench -b /data/maiziezhou_lab/CanLuo/long_reads_project/Benchmarks/HG002
 #####################################################################################################################
 
 #### parse excel
-python3 /data/maiziezhou_lab/CanLuo/long_reads_project/bin/truvari_result_parser_indel.py -i $output_dir/
+python3 ./truvari_result_parser_indel.py -i $output_dir/
