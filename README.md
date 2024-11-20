@@ -129,12 +129,6 @@ python3 FocalSV/focalsv/main.py \
 ```
 FocalSV_results/
   ├── results/
-  │   ├── eval/
-  │   │   ├── Truvari_xxx/
-  │   │   │   ├── DEL_50_/
-  │   │   │   ├── INS_50_/
-  │   │   │   ├── Truvari_results.xls
-  │   │   └── FocalSV_variant_no_redundancy_xxx.vcf
   │   ├── FocalSV_variant_no_redundancy.vcf
   │   ├── FocalSV_variant_redundancy.vcf
   │   └── variants.vcf
@@ -146,19 +140,18 @@ FocalSV_results/
   │   │   ├── PSxxx_hp1.fa
   │   │   ├── PSxxx_hp2.fa
   │   │   ├── region.bam
-  │   │   └── region_phased.bam
+  │   │   ├── region_phased.bam
+  │   │   └── ...
   │   ├── Region_chr21_Sxxx_Exxx/
   │   └── ...
   ├── target_sv.vcf
   └── logs/
 ```
 
-#### `results_gtCorrected/`
+#### `results/`
 
-- **`eval/FocalSV_variant_no_redundancy.vcf`**  
+- **`results/FocalSV_variant_no_redundancy.vcf`**  
   Final cleaned structural variant (SV) results without redundancy (key output).
-- **`eval/Truvari_xxx/Truvari_results.xls`**  
-  Final Truvari evaluation metrics for insertions (INS) and deletions (DEL), including precision, recall, and F1 score.
 
 #### `regions/`
 
@@ -269,6 +262,30 @@ python3 FocalSV/focalsv/evaluation.py \
 --num_threads 8 \
 --data_type HIFI
 ```
+
+### Output
+
+```
+FocalSV_results/
+  ├── eval/
+  │   ├── Truvari_xxx/
+  │   │   ├── DEL_50_/
+  │   │   ├── INS_50_/
+  │   │   ├── Truvari_results.xls
+  │   ├── FocalSV_variant_no_redundancy_DEL_xxx.vcf
+  │   ├── FocalSV_variant_no_redundancy_INS_xxx.vcf
+  │   ├── FocalSV_variant_no_redundancy_DEL_INS_xxx.vcf
+  │   └── ...
+  ├── results/
+  ├── regions/
+  ├── target_sv.vcf
+  └── logs/
+```
+
+#### `eval/`
+
+- **`eval/Truvari_xxx/Truvari_results.xls`**  
+  Final Truvari evaluation metrics for insertions (INS) and deletions (DEL), including precision, recall, and F1 score.
 
 ## Troubleshooting:
 
