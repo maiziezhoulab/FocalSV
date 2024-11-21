@@ -42,7 +42,7 @@ def truvari_eval(chr_num, results_dir, vcf, logger):
     input_dir = os.path.join(results_dir, 'results')
     command = (
         f"{os.path.join(code_path, 'truvari_eval.sh')} "
-        f"{chr_num} {input_dir} {eval_dir} FocalSV_variant_no_redundancy "
+        f"{chr_num} {input_dir} {eval_dir} FocalSV_Candidate_SV "
         f"500 0.5 0.5 30 0.01"
     )
     run_command(command, logger, "Truvari Evaluation")

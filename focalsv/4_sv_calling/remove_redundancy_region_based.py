@@ -17,13 +17,13 @@ parser.add_argument('--overlap_thresh', '-O', type=float, default=0)
 parser.add_argument('--size_sim_thresh', '-P', type=float, default=0.5)
 parser.add_argument('--size_sim_thresh_del', '-Pd', type=float, default=0.1)
 parser.add_argument('--seq_sim_thresh', '-p', type=float, default=0.5)
-parser.add_argument('--vcf_prefix', '-vcf', default='dippav_variant_no_redundancy.vcf')
+parser.add_argument('--vcf_prefix', '-vcf', default='FocalSV_Candidate_SV.vcf')
 
 args = parser.parse_args()
 
 import os
 
-def merge_vcf(target_sv, regions, flanking, outvcf, vcf_prefix="dippav_variant_no_redundancy.vcf"):
+def merge_vcf(target_sv, regions, flanking, outvcf, vcf_prefix="FocalSV_Candidate_SV.vcf"):
     rg_list =[]
     folder_list = []
     cnt = 0
@@ -312,7 +312,7 @@ def write_vcf(output_dir,prefix,header,retain_index_del,remove_index_del,retain_
     retain_sig = sort_sig(retain_sig )
     remove_sig = sort_sig(remove_sig )
     rd_path = output_dir + "/"+ prefix + '_redundancy.vcf'
-    nrd_path = output_dir + "/"+ prefix + '_no_redundancy.vcf'
+    nrd_path = output_dir + "/"+ prefix + '.vcf'
     write_one_vcf(remove_sig,header,rd_path)
     write_one_vcf(retain_sig,header,nrd_path)
     print("original %d lines"%(len(retain_sig)+len(remove_sig)))
@@ -342,7 +342,7 @@ if __name__ == "__main__":
     merge_vcf(target_sv, regions, flanking, vcf_path, vcf_prefix)
 
     # Process VCF to get signatures
-    prefix = 'FocalSV_variant'
+    prefix = 'FocalSV_Candidate_SV'
     del_sig, ins_sig, vcf_dc, header = vcf_to_sig(vcf_path)
 
     # Perform matching and redundancy removal
