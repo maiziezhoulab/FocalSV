@@ -179,7 +179,7 @@ python3 ./FocalSV/focalsv/post_processing/FocalSV_Filter_GT_Correct.py \
 
 This command runs for chromosome 21 using 8 threads.
 
-#### Post-processing on whole genome scale
+#### 2. Running for Whole Genome
 
 Below is an example command for running post-processing one whole genome scale.
 
