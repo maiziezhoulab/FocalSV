@@ -167,7 +167,7 @@ To achieve the most computation efficiency, if you have multiple target regions 
 \*Note that the minimum scale is per chromosome, not per region, because read depth is not so accurate on the edge of each region and we try to minimize the effect of read depth fluctuation. If you only run one region, make sure to put the chromosome number for this target region for post-processing.
 
 ```
-python3 ./FocalSV/focalsv/post_processing/post_processing.py \
+python3 ./FocalSV/focalsv/post_processing/FocalSV_Filter_GT_Correct.py \
 --bam_file ./test/test_hifi_chr21.bam \
 --ref_file ./test/test_chr21.fa \
 --vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcfmerged_one_chr_variants.vcf   \
@@ -184,7 +184,7 @@ This command runs for chromosome 21 using 8 threads.
 Below is an example command for running post-processing one whole genome scale.
 
 ```
-python3 ./FocalSV/focalsv/post_processing/post_processing.py \
+python3 ./FocalSV/focalsv/post_processing/FocalSV_Filter_GT_Correct.py \
 --bam_file ${wgs_bam} \
 --ref_file ${wgs_reference} \
 --vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcfmerged_one_chr_variants.vcf   \
