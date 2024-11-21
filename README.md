@@ -99,8 +99,8 @@ python3 FocalSV/focalsv/main.py \
 ```
 FocalSV_results/
   ├── results/
-  │   ├── FocalSV_variant_no_redundancy.vcf
-  │   ├── FocalSV_variant_redundancy.vcf
+  │   ├── FocalSV_Candidate_SV.vcf
+  │   ├── FocalSV_Candidate_SV_redundancy.vcf
   │   └── variants.vcf
   ├── regions/
   │   ├── Region_chr21_S100000_E200000/
@@ -119,7 +119,7 @@ FocalSV_results/
 
 #### `results/`
 
-- **`results/FocalSV_variant_no_redundancy.vcf`**  
+- **`results/FocalSV_Candidate_SV.vcf`**  
   Final cleaned structural variant (SV) results without redundancy (key output).
 
 #### `regions/`
@@ -236,9 +236,9 @@ FocalSV_results/
   │   │   ├── DEL_50_/
   │   │   ├── INS_50_/
   │   │   ├── Truvari_results.xls
-  │   ├── FocalSV_variant_no_redundancy_DEL_xxx.vcf
-  │   ├── FocalSV_variant_no_redundancy_INS_xxx.vcf
-  │   ├── FocalSV_variant_no_redundancy_DEL_INS_xxx.vcf
+  │   ├── FocalSV_Candidate_SV_DEL_xxx.vcf
+  │   ├── FocalSV_Candidate_SV_INS_xxx.vcf
+  │   ├── FocalSV_Candidate_SV_DEL_INS_xxx.vcf
   │   └── ...
   ├── results/
   ├── regions/
