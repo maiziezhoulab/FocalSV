@@ -33,8 +33,7 @@ def sv_calling(chr_num, out_dir, cpus, data_type, logger):
 def remove_redundancy(out_dir, logger):
     target_sv = os.path.join(out_dir, "target_sv.vcf")
     input_regions = os.path.join(out_dir, "regions")
-    results_dir = os.path.join(out_dir, "results")
-    run_command(f"python3.7 {code_path}remove_redundancy_region_based.py -t {target_sv} -rg {input_regions} -o {results_dir} -vcf dippav_variant_no_redundancy.vcf", logger)
+    run_command(f"python3.7 {code_path}remove_redundancy_region_based.py -t {target_sv} -rg {input_regions} -o {out_dir} -vcf dippav_variant_no_redundancy.vcf", logger)
 
 if __name__ == "__main__":
     args = parser.parse_args()

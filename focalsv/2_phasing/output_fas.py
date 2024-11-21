@@ -66,14 +66,6 @@ def output_fa(fd, out_dir, logger):
                     fw.write(f">{readname}\n{readseq}\n")
                     dup_reads.add(readname)
 
-        # Log file
-        with open(os.path.join(out_dir, "2_phasing.txt"), "a") as log_file:
-            log_file.write(f"Writing to {output_file} with {len(values)} reads\n")
-
-    # Log unphased reads statistics
-    phased_rate = (total - unphased) / total if total > 0 else 0
-    logger.info(f"Phased Rate: {phased_rate:.2%}, Total: {total}, Unphased: {unphased}")
-
 if __name__ == "__main__":
     args = parser.parse_args()
     out_dir_general = args.out_dir

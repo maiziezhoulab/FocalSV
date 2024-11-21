@@ -15,7 +15,7 @@ parser.add_argument('--reference', '-r', help="Reference FASTA file", required=T
 parser.add_argument('--out_dir', '-o', help="Output directory with results from the previous step", required=True)
 parser.add_argument('--num_threads', '-t_chr', type=int, help="Number of threads (default = 8)", default=8)
 parser.add_argument('--num_cpus', '-t', type=int, help="Number of CPUs (default = 10)", default=10)
-parser.add_argument('--data_type', '-d', type=int, help="Data type: HIFI (0) or CLR (1), default = 0", default=0)
+parser.add_argument('--data_type', '-d', help="HIFI/CLR/ONT", default="HIFI")
 
 args = parser.parse_args()
 
@@ -55,6 +55,9 @@ if __name__ == "__main__":
     num_threads = args.num_threads
     num_cpus = args.num_cpus
     data_type = args.data_type
+    
+    data_type_map = {"HIFI": 0, "CLR": 1, "ONT": 2}
+    data_type = data_type_map.get(data_type, 0)
 
     logger = setup_logging("EVALUATION", out_dir)
     logger.info(f"Starting evaluation for chromosome {chr_num} with data type {data_type}")

@@ -17,57 +17,61 @@ parser.add_argument('--overlap_thresh', '-O', type=float, default=0)
 parser.add_argument('--size_sim_thresh', '-P', type=float, default=0.5)
 parser.add_argument('--size_sim_thresh_del', '-Pd', type=float, default=0.1)
 parser.add_argument('--seq_sim_thresh', '-p', type=float, default=0.5)
-parser.add_argument('--vcf_prefix', '-vcf', default='FocalSV_Candidate_SV.vcf')
+parser.add_argument('--vcf_prefix', '-vcf', default='dippav_variant_no_redundancy.vcf')
 
 args = parser.parse_args()
 
-import os
-
-def merge_vcf(target_sv, regions, flanking, outvcf, vcf_prefix="FocalSV_Candidate_SV.vcf"):
-    rg_list =[]
+def merge_vcf(target_sv, regions, flanking, outvcf, vcf_prefix="dippav_variant_no_redundancy.vcf"):
+    rg_list = []
     folder_list = []
     cnt = 0
-    with open(target_sv,'r') as f:
-        for line in f:
-            if line[0]!='#':
-                data = line.split()
-                pos = int(data[1])
-                rg_start = pos - flanking
-                rg_end = pos + flanking 
-                if 'SVTYPE=DEL' in data[7]:
-                    svlen = abs(len(data[3])-len(data[4]))
-                    rg_end += svlen 
-                rg_list.append((rg_start,rg_end))
-                folder = 'Out%d_%d'%(cnt+1,pos)
-                folder_list.append(folder)
-                cnt+=1
+
+    folder_list = [fd for fd in os.listdir(regions) if fd.startswith("Region")]
+    for folder in folder_list:
+        try:
+            parts = folder.split('_')
+            chr_region = parts[1]  
+            start_pos = int(parts[2][1:])  
+            end_pos = int(parts[3][1:])  
+            rg_list.append((start_pos, end_pos))
+        except (IndexError, ValueError):
+            print(f"Skipping invalid folder format: {folder}")
+
     vcf_list = [os.path.join(regions, fd,'results/final_vcf', vcf_prefix) for fd in os.listdir(regions) if fd.startswith("Region")]
+
     header = []
-    with open(vcf_list[0],'r') as f:
+    with open(vcf_list[0], 'r') as f:
         for line in f:
-            if line[0]=='#':
+            if line.startswith('#'):
                 header.append(line)
             else:
                 break
-    add_line1 = "##INFO=<ID=Region_start,Number=1,Type=Integer,Description=\"Region starting postion\">\n"
-    add_line2 = "##INFO=<ID=Region_end,Number=1,Type=Integer,Description=\"Region ending postion\">\n"
-    header = header[:-2]+[add_line1,add_line2]+header[-2:]
+
+    add_line1 = "##INFO=<ID=Region_start,Number=1,Type=Integer,Description=\"Region starting position\">\n"
+    add_line2 = "##INFO=<ID=Region_end,Number=1,Type=Integer,Description=\"Region ending position\">\n"
+    header = header[:-2] + [add_line1, add_line2] + header[-2:]
+
     lines = []
-    cnt = 0 
-    for i in range(len(vcf_list)):
-        with open(vcf_list[i],'r') as f:
+    cnt = 0
+    for i, vcf_path in enumerate(vcf_list):
+        if not os.path.exists(vcf_path):
+            print(f"VCF file not found: {vcf_path}")
+            continue
+
+        with open(vcf_path, 'r') as f:
             for line in f:
-                if line[0]!='#':
+                if not line.startswith('#'):
                     data = line.split()
-                    data[2] = 'FocalSV%d'%cnt
-                    cnt+=1
-                    data[7] = data[7]+';Region_start=%d;Region_end=%d'%(rg_list[i][0],rg_list[i][1])
-                    line = '\t'.join(data)+'\n'
-                    lines.append(line)
-    with open(outvcf,'w') as f:
+                    data[2] = f'FocalSV{cnt}'  
+                    cnt += 1
+                    data[7] = f"{data[7]};Region_start={rg_list[i][0]};Region_end={rg_list[i][1]}"
+                    lines.append('\t'.join(data) + '\n')
+
+    with open(outvcf, 'w') as f:
         f.writelines(header + lines)
 
-    return 
+    print(f"VCF merge completed. Output written to {outvcf}")
+    return
 
 def sort_sig(sig_list):
     sorted_sig = []
@@ -325,7 +329,7 @@ if __name__ == "__main__":
     target_sv = args.target_sv
     regions = args.regions
     flanking = args.flanking
-    output_dir = args.output_dir
+    output_dir_general = args.output_dir
     vcf_prefix = args.vcf_prefix
     dist_thresh = args.dist_thresh
     dist_thresh_del = args.dist_thresh_del
@@ -333,9 +337,12 @@ if __name__ == "__main__":
     size_sim_thresh = args.size_sim_thresh
     size_sim_thresh_del = args.size_sim_thresh_del
     seq_sim_thresh = args.seq_sim_thresh
-
+    
     # Initialize logger
-    logger = setup_logging("4_remove_redundancy", output_dir)
+    logger = setup_logging("4_remove_redundancy", output_dir_general)
+
+    output_dir = os.path.join(output_dir_general, "results")
+    os.makedirs(output_dir, exist_ok=True)
 
     # Merge VCFs
     vcf_path = os.path.join(output_dir, 'variants.vcf')
