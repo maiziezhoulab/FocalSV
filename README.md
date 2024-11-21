@@ -170,7 +170,7 @@ To achieve the most computation efficiency, if you have multiple target regions 
 python3 ./FocalSV/focalsv/post_processing/FocalSV_Filter_GT_Correct.py \
 --bam_file ./test/test_hifi_chr21.bam \
 --ref_file ./test/test_chr21.fa \
---vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcfmerged_one_chr_variants.vcf   \
+--vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcf  \
 --chr_num 21 \
 --out_dir ./FocalSV_Final_VCF \
 --data_type HIFI \
@@ -187,7 +187,7 @@ Below is an example command for running post-processing one whole genome scale.
 python3 ./FocalSV/focalsv/post_processing/FocalSV_Filter_GT_Correct.py \
 --bam_file ${wgs_bam} \
 --ref_file ${wgs_reference} \
---vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcfmerged_one_chr_variants.vcf   \
+--vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcf  \
 --chr_num wgs \
 --out_dir ./FocalSV_Final_VCF \
 --data_type HIFI \
