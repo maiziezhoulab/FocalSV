@@ -120,7 +120,7 @@ FocalSV_results/
 #### `results/`
 
 - **`results/FocalSV_Candidate_SV.vcf`**  
-  Final cleaned structural variant (SV) results without redundancy (key output).
+  Candidate structural variant (SV) results without redundancy (key output).
 
 #### `regions/`
 
@@ -196,6 +196,17 @@ python3 ./FocalSV/focalsv/post_processing/post_processing.py \
 
 This command runs for whole genome using 10 threads.
 
+### Output:
+
+```
+FocalSV_Final_SV/FocalSV_Final_SV.vcf
+```
+
+#### result
+
+- **`FocalSV_Final_SV/FocalSV_Final_SV.vcf`**  
+  Final structural variant (SV) results.
+  
 ## Step Three (Optional): Evaluation
 
 The `evaluation.py` script runs Truvari to assess the accuracy of detected structural variants (SVs) by comparing them to a benchmark vcf file. It calculates precision and recall metrics and performs data cleanup to retain only high-confidence results, streamlining the output for further analysis.
