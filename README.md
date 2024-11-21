@@ -44,6 +44,7 @@ To execute the code, either add `FocalSV/bin` to your `.bashrc` file or use the 
 - **--bam_file/-bam**: The input BAM file.
 - **--ref_file/-r**: Reference FASTA file.
 - **--chr_num/-chr**: Chromosome number for the target region or whole chromosome analysis.
+- **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
 
 #### Options for Region Selection:
 
@@ -59,7 +60,6 @@ To execute the code, either add `FocalSV/bin` to your `.bashrc` file or use the 
 #### Optional Parameters:
 
 - **--out_dir/-o**: Output directory to store results (default: `./RegionBased_results`).
-- **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT) (default: `HIFI`).
 - **--num_cpus/-cpu**: Number of CPUs to use (default: 10).
 - **--num_threads/-thread**: Number of threads (default: 8).
 
@@ -143,7 +143,7 @@ FocalSV_results/
 ## Step 2: Filtering and genotype correction
 
 
-FocalSV incorporates a post-processing module to filter false positives and correct genotypes further. This step involves collecting reads-based signatures from the read-to-reference BAM file. You can either run it by chromosome or on a whole genome scale. Note that the minimum scale is per chromosome, not per region, because read depth is not so accurate on the edge of each region and we try to minimize the effect of read depth fluctuation.
+FocalSV incorporates a post-processing module to filter false positives and correct genotypes further. This step involves collecting reads-based signatures from the read-to-reference BAM file. You can either run it by chromosome or on a whole genome scale. 
 
 ### Parameters
 
@@ -172,7 +172,7 @@ python3 ./FocalSV/focalsv/post_processing/FocalSV_Filter_GT_Correct.py \
 --ref_file ./test/test_chr21.fa \
 --vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcf  \
 --chr_num 21 \
---out_dir ./FocalSV_Final_VCF \
+--out_dir ./FocalSV_results/Final_VCF \
 --data_type HIFI \
 --num_threads 8
 ```
@@ -189,7 +189,7 @@ python3 ./FocalSV/focalsv/post_processing/FocalSV_Filter_GT_Correct.py \
 --ref_file ${wgs_reference} \
 --vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcf  \
 --chr_num wgs \
---out_dir ./FocalSV_Final_VCF \
+--out_dir ./FocalSV_results/Final_VCF \
 --data_type HIFI \
 --num_threads 8
 ```
@@ -199,51 +199,35 @@ This command runs for whole genome using 10 threads.
 ### Output:
 
 ```
-FocalSV_Final_SV/FocalSV_Final_SV.vcf
-```
-
-#### result
-
-- **`FocalSV_Final_SV/FocalSV_Final_SV.vcf`**  
-  Final structural variant (SV) results.
-  
-## Step Three (Optional): Evaluation
-
-The `evaluation.py` script runs Truvari to assess the accuracy of detected structural variants (SVs) by comparing them to a benchmark vcf file. It calculates precision and recall metrics and performs data cleanup to retain only high-confidence results, streamlining the output for further analysis.
-
-```
-python3 FocalSV/focalsv/evaluation.py \
---chr_num 21 \
---bench_vcf ./test/test_targetSV_chr21.vcf \
---reference ./test/test_chr21.fa \
---out_dir ./FocalSV_results \
---num_cpus 10 \
---num_threads 8 \
---data_type HIFI
-```
-
-### Output
-
-```
 FocalSV_results/
-  ├── eval/
-  │   ├── Truvari_xxx/
-  │   │   ├── DEL_50_/
-  │   │   ├── INS_50_/
-  │   │   ├── Truvari_results.xls
-  │   ├── FocalSV_Candidate_SV_DEL_xxx.vcf
-  │   ├── FocalSV_Candidate_SV_INS_xxx.vcf
-  │   ├── FocalSV_Candidate_SV_DEL_INS_xxx.vcf
-  │   └── ...
+  |—— Final_SV/FocalSV_Final_SV.vcf
   ├── results/
+  │   ├── FocalSV_Candidate_SV.vcf
+  │   ├── FocalSV_Candidate_SV_redundancy.vcf
+  │   └── variants.vcf
   ├── regions/
+  │   ├── Region_chr21_S100000_E200000/
+  │   │   ├── results/
+  │   │   ├── HP1.fa
+  │   │   ├── HP2.fa
+  │   │   ├── PSxxx_hp1.fa
+  │   │   ├── PSxxx_hp2.fa
+  │   │   ├── region.bam
+  │   │   ├── region_phased.bam
+  │   │   └── ...
+  │   ├── Region_chr21_Sxxx_Exxx/
+  │   └── ...
   └── logs/
 ```
 
-#### `eval/`
+#### Result
 
-- **`eval/Truvari_xxx/Truvari_results.xls`**  
-  Final Truvari evaluation metrics for insertions (INS) and deletions (DEL), including precision, recall, and F1 score.
+- **`FocalSV_results/Final_SV/FocalSV_Final_SV.vcf`**  
+  Final structural variant (SV) results.
+  
+
+
+
 
 ## Troubleshooting:
 
