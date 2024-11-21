@@ -47,12 +47,12 @@ To execute the code, either add `FocalSV/bin` to your `.bashrc` file or use the 
 
 #### Options for Region Selection:
 
-##### Regional
+##### Single Region (Start/End Positions)
 
 - **--region_start/-S**: Start index of the target region (integer) (Required for single region mode).
 - **--region_end/-E**: End index of the target region (integer) (Required for single region mode).
 
-#### BED file
+##### Mutli Region (BED file)
 
 - **--target_bed/-target_bed**: BED file with multiple target regions (Optional for multiple region mode).
 
