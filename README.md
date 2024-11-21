@@ -194,7 +194,7 @@ python3 ./FocalSV/focalsv/post_processing/FocalSV_Filter_GT_Correct.py \
 --num_threads 8
 ```
 
-This command runs for whole genome using 10 threads.
+This command runs for whole genome using 8 threads.
 
 ### Output:
 
