@@ -49,6 +49,8 @@ if not os.path.isfile(args.ref_file):
 bamfile = os.path.realpath(args.bam_file)
 vcffile = os.path.realpath(args.vcf_file)
 dtype = args.data_type
+if dtype == 'HIFI':
+    dtype = "Hifi"
 wdir = os.path.realpath(args.out_dir)
 t = args.num_threads
 reference = os.path.realpath(args.ref_file)
