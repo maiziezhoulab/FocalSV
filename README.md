@@ -1,4 +1,4 @@
-# FocalSV Assembly
+# FocalSV
 
 ## Overview:
 
