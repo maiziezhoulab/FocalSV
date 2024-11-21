@@ -56,19 +56,6 @@ To execute the code, either add `FocalSV/bin` to your `.bashrc` file or use the 
 
 - **--target_bed/-target_bed**: BED file with multiple target regions (Optional for multiple region mode).
 
-##### Whole Chromosome Analysis
-
-###### Required
-
-- **--eval/-e**: Flag to perform whole chromosome evaluation (optional).
-- **--vcf_file/-v**: VCF file called by FreeBayes (required for whole chromosome mode).
-- **--bed_file/-bed**: Bed file for whole chromosome evaluation.
-
-###### Optional
-
-- **--svlen_threshold/-sv_thresh**: SV length threshold for filtering variants in whole chromosome mode (default: 50).
-- **--flanking/-flank**: Length of the flanking region around the target region (default: 50000).
-
 #### Optional Parameters:
 
 - **--out_dir/-o**: Output directory to store results (default: `./RegionBased_results`).
@@ -107,23 +94,6 @@ python3 FocalSV/focalsv/main.py \
 --num_threads 8
 ```
 
-#### 3. Running on Whole Chromosome
-
-```
-python3 FocalSV/focalsv/main.py \
---bam_file ./test/test_hifi_chr21.bam \
---ref_file ./test/test_chr21.fa \
---chr_num 21 \
---eval \
---bed_file ./test/test_bed_chr21.bed \
---vcf_file ./test/test_targetSV_chr21.vcf \
---svlen_threshold 50 \
---out_dir ./FocalSV_results \
---data_type HIFI \
---num_cpus 10 \
---num_threads 8
-```
-
 ### Output:
 
 ```
@@ -144,7 +114,6 @@ FocalSV_results/
   │   │   └── ...
   │   ├── Region_chr21_Sxxx_Exxx/
   │   └── ...
-  ├── target_sv.vcf
   └── logs/
 ```
 
@@ -164,13 +133,8 @@ FocalSV_results/
 
 **Note**:
 
-- For **whole chromosome analysis**, the number of regions equals the number of SVs in the input VCF file.
 - For **one region analysis** (given a start and end region), there will be **one region** under the `regions/` folder. For example, if specified with `--region_start 0 --region_end 200000 --chr_num 21`, the region will be named `Region_chr21_S0_E200000`.
 - For **analysis using a BED file**, the number of regions equals the number of lines in the BED file, with each region named based on the start (S) and end (E) positions specified in each line.
-
-#### `target_sv.vcf`
-
-- Input SVs used as reference for comparison (unchanged).
 
 #### `logs/`
 
@@ -278,7 +242,6 @@ FocalSV_results/
   │   └── ...
   ├── results/
   ├── regions/
-  ├── target_sv.vcf
   └── logs/
 ```
 

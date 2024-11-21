@@ -31,13 +31,6 @@ parser.add_argument('--data_type', '-d', help="HIFI/CLR/ONT", default="HIFI")
 parser.add_argument('--num_cpus', '-cpu', type=int, help="Number of CPUs, default = 10", default=10)
 parser.add_argument('--num_threads', '-thread', type=int, help="Number of threads, default = 8 (recommended)", default=8)
 
-# Whole Chromosome Evaluation
-parser.add_argument('--eval', '-e', action='store_true', help="Whole Chromsome evaluation")
-parser.add_argument('--bed_file', '-bed', help="Bed file, used to filter SVs (-whole)")
-parser.add_argument('--svlen_threshold', '-sv_thresh', type=int, help="Threshold number for initially filtering SVs (-whole)", default=50)
-parser.add_argument('--vcf_file', '-v', help="VCF file, called by FreeBayes (-whole)", required=False)
-parser.add_argument('--flanking', '-flank', type=int, help="Length of flanking region", default=50000)
-
 args = parser.parse_args()
 
 def run_command(command, logger, step):
@@ -48,16 +41,6 @@ def run_command(command, logger, step):
     except CalledProcessError as e:
         logger.error(f"Error during {step}: {e}")
         raise
-
-def Filter_SVs(vcf_file, chr_num, out_dir, bed_file, SV_THRESH, FLANK, logger):
-    use_cmd = (f"python3 {code_path}0_filter_sv.py "
-               f"--vcf_file {vcf_file} "
-               f"--bed_file {bed_file} "
-               f"--svlen_threshold {SV_THRESH} "
-               f"--flanking {FLANK} "
-               f"--chr_num {chr_num} "
-               f"--out_dir {out_dir}")
-    run_command(use_cmd, logger, "Filter SVs")
 
 def Crop_Bam(bam_file, chr_num, target_bed, region_start, region_end, out_dir, logger):
     if target_bed:
@@ -135,16 +118,12 @@ def main():
         data_type = args.data_type
         num_threads = args.num_threads
         num_cpus = args.num_cpus
-        evaluation = args.eval
         target_bed = args.target_bed
         
-        if evaluation:
-            if target_bed or region_start is not None or region_end is not None:
-                parser.error("For whole chromosome analysis (--eval), do not provide --target_bed or --region_start/--region_end.")
-        elif target_bed and (region_start is not None or region_end is not None):
+        if target_bed and (region_start is not None or region_end is not None):
             parser.error("Specify either --target_bed or --region_start/--region_end, but not both.")
         elif not target_bed and (region_start is None or region_end is None):
-            parser.error("You must specify both --region_start and --region_end if --target_bed is not provided, unless using --eval for whole chromosome analysis.")
+            parser.error("You must specify both --region_start and --region_end if --target_bed is not provided.")
 
         # Create output directory if it doesn't exist
         if not os.path.exists(out_dir):
@@ -161,27 +140,9 @@ def main():
         logger = setup_logging("MAIN", out_dir)
 
         try:
-            # Step 0: Filter SVs (ran with -whole set)
-            if evaluation:
-                logger.info("Starting Filter SV step...")
-                bed_file = args.bed_file
-                SV_THRESH = args.svlen_threshold
-                FLANK = args.flanking
-                vcf_file = args.vcf_file
-                
-                if not bed_file or not vcf_file:
-                    logger.error("Both --bed_file and --vcf_file are required for whole chromosome analysis.")
-                    sys.exit(1)
-                
-                Filter_SVs(vcf_file, chr_num, out_dir, bed_file, SV_THRESH, FLANK, logger)
-            
             # Step 1: Crop target region
             logger.info("Starting BAM cropping step...")
-            if eval:
-                # When evaluation mode is on, use the generated BED file for cropping
-                output_bed = os.path.join(out_dir, "target_regions.bed")
-                Crop_Bam(bam_file, chr_num, output_bed, None, None, out_dir, logger)
-            elif target_bed:
+            if target_bed:
                 # If the user provided a BED file, use it for cropping
                 Crop_Bam(bam_file, chr_num, target_bed, None, None, out_dir, logger)
             else:
