@@ -25,7 +25,7 @@ parser.add_argument('--target_bed', '-target_bed', help="BED file with multiple 
 
 # Defaulted inputs
 parser.add_argument('--out_dir', '-o', help="Directory to store assembly results, default = ./RegionBased_results", default="./RegionBased_results")
-parser.add_argument('--data_type', '-d', help="HIFI/CLR/ONT", default="HIFI")
+parser.add_argument('--data_type', '-d', help="HIFI/CLR/ONT")
 
 # Process information
 parser.add_argument('--num_cpus', '-cpu', type=int, help="Number of CPUs, default = 10", default=10)
