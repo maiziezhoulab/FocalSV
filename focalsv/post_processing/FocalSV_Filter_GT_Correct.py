@@ -2,65 +2,83 @@ import os
 import subprocess
 import sys
 from subprocess import Popen
+import argparse
+from argparse import ArgumentParser
 
-def print_help():
-    # Get the current script's file name
-	script_name = os.path.basename(__file__)
-	# print(f"The script name is: {script_name}")
+# Argument parser
+parser = ArgumentParser(description="Filters structural variants (SVs) from a VCF file, calculates signature support, and performs genotype correction.",
+	usage='use "python3 %(prog)s --help" for more information',
+formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-	"""Prints help message for the script usage."""
-	help_message = f"""
-Usage:
-    python3 {script_name} <bamfile> <vcffile> <dtype> <wdir> <t> <reference> <chr_num> <sigdir>
+# Adding arguments
+#-------required
+parser.add_argument("--bam_file", '-bam', type=str, help="Path to the input whole genome reads BAM file.")
+parser.add_argument("--vcf_file", '-vcf',type=str, help="Path to the input FocalSV Candidate SV VCF file.")
+parser.add_argument("--data_type", '-d',type=str, choices=["ONT", "Hifi", "CLR"], help="Data type (e.g., ONT, Hifi, CLR).")
+parser.add_argument("--ref_file", '-r',type=str, help="Path to the reference genome file in FASTA format.")
+parser.add_argument(
+    "--chr_num",'-chr',
+    type=str,
+    choices = [str(i) for i in range(1,23)]+['wgs'],
+    help="Chromosome number for targeted processing (use 'wgs' to enable whole genome scale post-processing).",
+)
+#------optional
+parser.add_argument("--out_dir",'-o', type=str, help="Working directory for signature and corrected VCF outputs.", default= "./FocalSV_Final_VCF")
+parser.add_argument("--num_threads",'-thread', type=int, help="Number of threads to use.", default = 10)
+# parser.add_argument(
+#     "sigdir",
+#     type=str,
+#     help="Pre-extracted reads signature (use 'None' to enable auto-extraction).",
+# )
 
-Description:
-    This script filters structural variants (SVs) from a VCF file, calculates signature support,
-    and performs genotype correction based on BAM alignments and signatures.
+# Parse arguments
+args = parser.parse_args()
 
-Arguments:
-    bamfile    : Path to the input BAM file.
-    vcffile    : Path to the input VCF file.
-    dtype      : Data type (e.g., ONT, Hifi, CLR).
-    wdir       : Working directory for signature and corrected VCF outputs.
-    t          : Number of threads to use.
-    reference  : Path to the reference genome file in FASTA format.
-    chr_num    : Chromosome number for targeted processing (use None to enable whole genome scale post processing).
-    sigdir	   : preextracted reads signature (use None to enable auto-extract).
-
-Example:
-    python3 {script_name} input.bam input.vcf ONT /path/to/workdir 5 reference.fasta 1 None
-
-Notes:
-    - Ensure all required Python dependencies and tools (samtools, bcftools, etc.) are installed.
-    - The script generates a corrected VCF file and combines all processed VCFs into a final version.
-    """
-	print(help_message)
-
-# Check if the user requested help
-if len(sys.argv) < 9 or sys.argv[1] in ["-h", "--help"]:
-    print_help()
+# Validate inputs
+if not os.path.isfile(args.bam_file):
+    print(f"Error: BAM file '{args.bam_file}' does not exist.")
     sys.exit(1)
-    
-# Input arguments
-bamfile = os.path.realpath(sys.argv[1])
-vcffile = os.path.realpath(sys.argv[2])
-dtype = sys.argv[3]  # ONT HiFi CLR
-# sigdir = os.path.realpath(sys.argv[4])
-wdir = os.path.realpath(sys.argv[4])
-t = sys.argv[5]
-reference = os.path.realpath(sys.argv[6])
-chr_num = sys.argv[7]
-sigdir = sys.argv[8]
+if not os.path.isfile(args.vcf_file):
+    print(f"Error: VCF file '{args.vcf_file}' does not exist.")
+    sys.exit(1)
+if not os.path.isfile(args.ref_file):
+    print(f"Error: Reference genome file '{args.ref_file}' does not exist.")
+    sys.exit(1)
 
+# Process arguments
+bamfile = os.path.realpath(args.bam_file)
+vcffile = os.path.realpath(args.vcf_file)
+dtype = args.data_type
+wdir = os.path.realpath(args.out_dir)
+t = args.num_threads
+reference = os.path.realpath(args.ref_file)
+chr_num = args.chr_num
+# sigdir = args.sigdir
+sigdir = None # aoto-extract enabled
+#---------------test only-----------
+# sigdir = "/data/maiziezhou_lab/CanLuo/FocalSV/LargeINDEL/HiFi_l2exp_test/out/reads_sig/"
+# Print argument values for debugging or verification
+print(f"BAM file: {bamfile}")
+print(f"VCF file: {vcffile}")
+print(f"Data type: {dtype}")
+print(f"Working directory: {wdir}")
+print(f"Threads: {t}")
+print(f"Reference genome: {reference}")
+print(f"Chromosome number: {chr_num}")
+print(f"Signature directory: {sigdir}")
+
+
+
+if chr_num!='wgs':
+    chr_num = int(chr_num)
 ft_vtype = "DEL"
+
 
 # Derived variables
 filtered_vcf = f"{wdir}/{os.path.basename(vcffile).replace('.vcf', '')}_filter_{ft_vtype}.vcf"
 dtype_lc = dtype.lower()
 gtdir = f"{wdir}/GT_Correction"
-
-
-final_vcf = f"{wdir}/FocalSV_final_variants.vcf"
+final_vcf = f"{wdir}/FocalSV_Final_SV.vcf"
 workdir = wdir
 # Ensure necessary directories exist
 os.makedirs(wdir, exist_ok=True)
@@ -73,7 +91,7 @@ code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 # call reads signature
 
 def call_sig(dtype,bamfile, sigdir, reference, chr_num):
-    if chr_num == 'None':
+    if chr_num == 'wgs':
         bed_para = " "
     else:
         # get chromosome length
