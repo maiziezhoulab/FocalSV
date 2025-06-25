@@ -64,7 +64,7 @@ optional arguments:
 - **--out_dir/-o**:  Output directory to store results.
 - **--lib/-l**: library name.
 
-
+The output file is `SV_Regions_<data_type>_<lib>.bed`.
 #### Optional Parameters:
 
 - **--num_threads/-thread**: Number of threads (default: 8).
