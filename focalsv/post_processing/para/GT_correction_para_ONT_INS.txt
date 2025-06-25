@@ -1,4 +1,0 @@
-t_large_11:nan
-t_small_11:nan
-t_large_01:0.67
-t_small_01:0.72

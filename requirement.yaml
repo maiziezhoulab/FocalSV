@@ -1,0 +1,31 @@
+name: FocalSV
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bcftools=1.17=h3cc50cf_1
+  - cigar=0.1.3=pyh864c0ab_1
+  - edlib=1.3.9=py38h43d8883_2
+  - flye=2.9.1=py38hf4f3596_0
+  - longshot=0.4.1=hc4ca7c3_2
+  - minimap2=2.24=h7132678_1
+  - perl-vcftools-vcf=0.1.16=pl5321hdfd78af_4
+  - pysam=0.21.0=py38h1c8baaf_0
+  - samtools=1.13=h8c37831_0
+  - biopython=1.78=py38h497a2fe_2
+  - jellyfish=0.9.0=py38h0a891b7_2
+  - joblib=1.1.0=pyhd8ed1ab_0
+  - matplotlib=3.5.3=py38h578d9bd_2
+  - networkx=2.8.6=pyhd8ed1ab_0
+  - numpy=1.21.5=py38h1d589f8_1
+  - pandas=1.4.4=py38h47df419_0
+  - pip
+  - pip:
+    - scikit_learn
+    - paralleltask
+  - python=3.8.3
+  - pyvcf=0.6.8=py38h32f6830_1002
+  - scipy=1.9.1=py38hea3f02b_0
+  - setuptools=65.3.0=pyhd8ed1ab_1
+  - tqdm=4.64.1=pyhd8ed1ab_0

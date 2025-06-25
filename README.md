@@ -1,39 +1,88 @@
 # FocalSV
 
-## Overview:
 
 FocalSV is a tool for region-based structural variant (SV) assembly and refinement using long-read sequencing data. It provides a targeted approach to SV detection, focusing on specific genomic regions using a phased diploid assembly method. This software is optimized for multiple data types, including HiFi, CLR, and ONT sequencing.
 
-## Dependencies:
+## Table of Content 
+- [Installation](#install-through-github)
+- [Large INDEL detection](#Large-INDEL-detection)
+    - [Step 0: Define target regions](#Step-0:-Define-target-regions)
+    - [Step 1: Generating Candidate SVs](#Step-1:-Generating-Candidate-SVs)
+    - [Step 2: filtering and genotype correction](#Step-2:-filtering-and-genotype-correction)
+- [TRA INV DUP detection](#TRA-INV-DUP-detection)
+  -  [FocalSV-target mode](#FocalSV-target-mode)
+  -  [FocalSV-auto mode](#FocalSV-auto-mode)
+- [Troubleshooting](#Troubleshooting)
 
-The following tools and libraries are required to run FocalSV:
 
-- Python 3.x
-  - numpy
-  - pysam
-- SAMtools
-- Longshot
-- Flye
-- Hifiasm
-- Shasta
-- Minimap2
-
-To install the necessary dependencies, you can either ensure the executables are in your PATH environment variable or use the provided installation script.
-
-## Installation:
-
-You can install FocalSV by cloning the repository from GitHub and running the installation script to check for dependencies.
+# Install through Github:
 
 ```
-git clone https://github.com/maiziezhoulab/FocalSV.git
-cd FocalSV
-chmod +x install.sh
-./install.sh
+git clone  https://github.com/maiziezhoulab/FocalSV.git
 ```
+
+## Dependencies for Github installation:
+FocalSV utilizes **Python3.8.3**. To set up the environment, you need to have conda installed. Then, simply run
+```
+conda env create -f FocalSV/requirement.yaml
+```
+
+Then you will have a virtual environment called **`FocalSV`** created. **Before running any FocalSV commands, please activate this environment first**.
+```
+conda activate FocalSV
+```
+
 
 ## Running the Code:
 
-To execute the code, either add `FocalSV/bin` to your `.bashrc` file or use the full path to `main.py`.
+To execute the code, either add `FocalSV/bin` to your `.bashrc` file or use the full path.
+
+
+# Large INDEL detection
+## Step 0: Define target regions
+
+If you already have interested target regions, you can skip this step and go to step1, otherwise you need to run this step to detect potential SV regions automatically.
+
+```
+usage: use "python3 0_define_region.py --help" for more information
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+
+  --n_thread N_THREAD, -t N_THREAD
+```
+
+### Parameters
+
+#### Required Parameters:
+
+- **--bam_file/-bam**: The input BAM file.
+- **--ref_file/-r**: Reference FASTA file.
+- **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
+- **--prior_file/-p**: population SV VCF file.
+- **--out_dir/-o**:  Output directory to store results.
+- **--lib/-l**: library name.
+
+
+#### Optional Parameters:
+
+- **--num_threads/-thread**: Number of threads (default: 8).
+
+### Examples
+
+```
+python3 FocalSV/focalsv/0_define_region.py \
+--bam_file ./test/test_hifi_chr21.bam \
+--ref_file ./test/test_chr21.fa \
+--prior_file <popuplation SV file> \
+--out_dir ./FocalSV_results/Defind_Region \
+--data_type HIFI \
+--num_threads 8
+```
+
+
+
 
 ## Step 1: Generating Candidate SVs
 
@@ -140,7 +189,7 @@ FocalSV_results/
 
 - Contains log files for debugging and tracking pipeline steps.
 
-## Step 2: Filtering and genotype correction
+## Step 2: filtering and genotype correction
 
 
 FocalSV incorporates a post-processing module to filter false positives and correct genotypes further. This step involves collecting reads-based signatures from the read-to-reference BAM file. You can either run it by chromosome or on a whole genome scale. 
@@ -167,7 +216,7 @@ To achieve the most computation efficiency, if you have multiple target regions 
 \*Note that the minimum scale is per chromosome, not per region, because read depth is not so accurate on the edge of each region and we try to minimize the effect of read depth fluctuation. If you only run one region, make sure to put the chromosome number for this target region for post-processing.
 
 ```
-python3 ./FocalSV/focalsv/post_processing/FocalSV_Filter_GT_Correct.py \
+python3 ./FocalSV/focalsv/5_post_processing/FocalSV_Filter_GT_Correct.py \
 --bam_file ./test/test_hifi_chr21.bam \
 --ref_file ./test/test_chr21.fa \
 --vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcf  \
@@ -226,7 +275,66 @@ FocalSV_results/
   Final structural variant (SV) results.
   
 
+# TRA INV DUP detection
 
+## FocalSV-target mode
+
+
+
+### Parameters
+
+#### Required Parameters:
+- **--input_dir/-i**: FocalSV-target large indel call output folder
+- **--bam_file/-bam**: The input BAM file.
+- **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
+- **--ref_file/-r**: Reference FASTA file.
+- **--out_dir/-o**: Output directory to store results.
+
+#### Optional Parameters:
+- **--num_threads/-thread**: Number of threads (default: 8).
+
+
+### Examples
+
+Here is an example of how to run FocalSV-target to get TRA INV and DUP on HCC1395.
+```
+python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
+--input_dir HCC1395_FocalSV-target_largeindel_output \
+--bam_file HCC1395_Pacbio_hg38.bam \
+--data_type CLR \
+--ref_file <hg38_reference> \
+--out_dir HCC1395_FocalSV-target_tra_inv_dup_output
+```
+The output is `HCC1395_FocalSV-target_tra_inv_dup_output/FocalSV_TRA_INV_DUP.vcf`.
+
+## FocalSV-auto mode
+
+### Parameters
+
+#### Required Parameters:
+
+- **--bam_file/-bam**: The input BAM file.
+- **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
+- **--out_dir/-o**: Output directory to store results.
+- **--patient/-p**: patient name.
+- **--state/-s**: Tumor / Normal
+
+#### Optional Parameters:
+- **--num_threads/-thread**: Number of threads (default: 8).
+
+
+### Examples
+
+Here is an example of how to run FocalSV-auto to get TRA INV and DUP on HCC1395.
+```
+python3 focalsv/TRA_INV_DUP_call/Auto/FocalSV-auto_TRA_INV_DUP_call.py \
+--bam_file HCC1395_Pacbio_hg38.bam \
+--data_type CLR \
+--out_dir HCC1395_FocalSV-auto_tra_inv_dup_output 
+--patient HCC1395 \
+--state Tumor 
+```
+The output is `HCC1395_FocalSV-auto_tra_inv_dup_output/FocalSV_TRA_INV_DUP.vcf`.
 
 
 ## Troubleshooting:
