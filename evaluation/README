@@ -1,3 +1,4 @@
 This is the source code for FocalSV.
 Under each folder, there is a README file to guide you.
-Our zenodo: 
+Our zenodo: https://zenodo.org/records/15734068.
+You need to download the zenodo data repo to reproduce our paper result.
