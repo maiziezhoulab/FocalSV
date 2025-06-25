@@ -41,17 +41,8 @@ To execute the code, either add `FocalSV/bin` to your `.bashrc` file or use the 
 # Large INDEL detection
 ## Step 0: Define target regions
 
-If you already have interested target regions, you can skip this step and go to step1, otherwise you need to run this step to detect potential SV regions automatically.
+If you already have interested target regions, you can skip this step and go to step 1, otherwise, you need to run this step to detect potential SV regions.
 
-```
-usage: use "python3 0_define_region.py --help" for more information
-
-optional arguments:
-  -h, --help            show this help message and exit
-
-
-  --n_thread N_THREAD, -t N_THREAD
-```
 
 ### Parameters
 
