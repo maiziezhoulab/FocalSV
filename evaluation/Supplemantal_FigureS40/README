@@ -1,0 +1,11 @@
+To get the phased reads percentage distribution of FocalSV, you need to first run FocalSV on HG002 Hifi_L1, CLR_L1, and ONT_L1 (check our paper for data availability) using target and auto mode. For target mode, set flanking size to 50kb. Follow the instruction on our github (https://github.com/maiziezhoulab/FocalSV) to get the corresponding results.
+
+Before running, create two folders for auto and target mode. Then under each folder, set the output to hifi_l1, clr_l1, and ont_l1 respectively.
+
+Then run the command below.
+
+```
+plot_phased_results_combined_both.py \
+--auto_dir <auto_dir> \
+--target_dir <target_dir>
+```

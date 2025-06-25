@@ -1,0 +1,25 @@
+Prerequisite: survivor 1.0.7
+
+## Step 1: Call somatic SV
+You may use command below to call somatic SVs.
+
+The `Normal_vcf_list` and `Tumor_vcf_list` include the VCF files for HCC1395 normal and tumor data. They can be found at "HCC1395_TRA_INV_DUP_VCFs". You may edit the VCF path in `Normal_vcf_list` and `Tumor_vcf_list` before you run the command.
+
+```
+python3 run_suvivor.py \
+--normalvcf Normal_vcf_list \
+--cancervcf Tumor_vcf_list \
+--output_dir survivor_output \
+--survivor_dir <survivor_install_path> \
+--pass_only
+```
+
+## Step 2: Evaluation
+
+```
+python3 eval_real_data_mt.py \
+-i survivor_output
+```
+The evaluation result will be under `survivor_output`.
+
+

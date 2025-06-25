@@ -1,0 +1,58 @@
+2023-09-27 11:36:38,068 [INFO] Truvari v4.0.0
+2023-09-27 11:36:38,068 [INFO] Command /data/maiziezhou_lab/CanLuo/Software/anaconda3/envs/DipPAV/bin/truvari bench -b /data/maiziezhou_lab/Yichen/Projects/MARS_long_reads/Benchmarks/HG002_SVs_Tier1_v0.6_chr_ins_noXY.vcf.gz -c ./eval_corGT/new_corGT_INS_noXY_sorted.vcf.gz -f /data/maiziezhou_lab/Softwares/refdata-hg19-2.1.0/fasta/genome.fa -o ./eval_corGT/Truvari_NGMLR_aligned_results_p0.5_P0.5_dist500_S30_O0.01/INS_50_ --includebed /data/maiziezhou_lab/Yichen/Projects/MARS_long_reads/Benchmarks/HG002_SVs_Tier1_v0.6_chr_noXY.bed -p 0.5 -P 0.5 -r 500 --passonly --sizemin 50 -S 30 -O 0.01
+2023-09-27 11:36:38,068 [INFO] Params:
+{
+    "base": "/data/maiziezhou_lab/Yichen/Projects/MARS_long_reads/Benchmarks/HG002_SVs_Tier1_v0.6_chr_ins_noXY.vcf.gz",
+    "comp": "/gpfs52/data/maiziezhou_lab/CanLuo/Long_Reads_Region_Based/Dev/CLR_l1exp/eval_corGT/new_corGT_INS_noXY_sorted.vcf.gz",
+    "output": "./eval_corGT/Truvari_NGMLR_aligned_results_p0.5_P0.5_dist500_S30_O0.01/INS_50_",
+    "includebed": "/data/maiziezhou_lab/Yichen/Projects/MARS_long_reads/Benchmarks/HG002_SVs_Tier1_v0.6_chr_noXY.bed",
+    "extend": 0,
+    "debug": false,
+    "reference": "/data/maiziezhou_lab/Softwares/refdata-hg19-2.1.0/fasta/genome.fa",
+    "refdist": 500,
+    "pctseq": 0.5,
+    "minhaplen": 50,
+    "pctsize": 0.5,
+    "pctovl": 0.01,
+    "typeignore": false,
+    "chunksize": 1000,
+    "bSample": "HG002",
+    "cSample": "HG002",
+    "dup_to_ins": false,
+    "sizemin": 50,
+    "sizefilt": 30,
+    "sizemax": 50000,
+    "passonly": true,
+    "no_ref": false,
+    "pick": "single"
+}
+2023-09-27 11:36:38,926 [INFO] Including 33548 bed regions
+2023-09-27 11:40:23,299 [INFO] Zipped 15362 variants Counter({'base': 9513, 'comp': 5849})
+2023-09-27 11:40:23,305 [INFO] 5684 chunks of 15362 variants Counter({'comp': 5849, 'base': 5281, '__filtered': 4232})
+2023-09-27 11:40:28,729 [INFO] Stats: {
+    "TP-base": 4903,
+    "TP-comp": 4903,
+    "FP": 597,
+    "FN": 378,
+    "precision": 0.8914545454545455,
+    "recall": 0.9284226472259042,
+    "f1": 0.9095631203042389,
+    "base cnt": 5281,
+    "comp cnt": 5500,
+    "TP-comp_TP-gt": 4753,
+    "TP-comp_FP-gt": 150,
+    "TP-base_TP-gt": 4753,
+    "TP-base_FP-gt": 150,
+    "gt_concordance": 0.9694064858250051,
+    "gt_matrix": {
+        "(1, 1)": {
+            "(1, 1)": 2404,
+            "(0, 1)": 63
+        },
+        "(0, 1)": {
+            "(0, 1)": 2349,
+            "(1, 1)": 87
+        }
+    }
+}
+2023-09-27 11:40:28,730 [INFO] Finished bench

@@ -1,0 +1,11 @@
+```
+python3 Sequence_similarity_distribution.py \
+-trd Truvari_results/HiFi_L*  Truvari_results/CLR_L* Truvari_results/ONT_L* \
+-libs  Hifi_L1  Hifi_L2  Hifi_L3 CLR_L1 CLR_L2 CLR_L3 ONT_L1 ONT_L2 ONT_L3 \
+-o out
+
+
+python3 Breakpoint_shift.py \
+-trd Truvari_results/HiFi_L*  Truvari_results/CLR_L* Truvari_results/ONT_L* \
+-libs  Hifi_L1  Hifi_L2  Hifi_L3 CLR_L1 CLR_L2 CLR_L3 ONT_L1 ONT_L2 ONT_L3 -o out
+```

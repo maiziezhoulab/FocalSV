@@ -1,0 +1,7 @@
+You need to edit below command before use.
+<vcf_dir> is `HG005_LargeINDEL_VCFs` on zenodo.
+``
+sample=HG005
+python3 bin/make_bench_GT_bed.py -i <vcf_dir> -o ${sample}_bed_pass -s ${sample} -mode GT
+python3 bin/plot_result.py -w ${sample}_bed_pass/ 
+```

@@ -1,0 +1,44 @@
+
+prerequisite:BWA/0.7.17 minimap2 samtools
+
+You may download reference hg19 v2.1.0 from here. 
+```wget https://cf.10xgenomics.com/supp/genome/refdata-hg19-2.1.0.tar.gz
+tar -xzvf refdata-hg19-2.1.0.tar.gz
+```
+
+HG002-T2T.v1.1.fasta
+```
+wget https://s3-us-west-2.amazonaws.com/human-pangenomics/T2T/HG002/assemblies/hg002v1.1.fasta.gz
+```
+
+strand seq data
+```
+${aws} s3 cp s3://human-pangenomics/NHGRI_UCSC_panel/HG002/hpp_HG002_NA24385_son_v1/Strand_seq/ ./ --recursive --no-sign-request
+```
+
+Then run command below.
+```
+strandseq_download_dir=<strand seq>
+ASM_HG002_T2T=<ASM_HG002_T2T>
+reference_hg19=<ref_hg19>
+ASM_DIR_HG002_FocalSV=zenodo/HG002_ASM_FocalSV/Hifi_L1_FocalSV-auto
+
+cd 1-strand-seq_reads
+sh 1-strand-seq_reads.sh ${strandseq_download_dir}
+cd ..
+
+cd 2-align_to_T2T-HG002
+sh 2-align_to_T2T-HG002.sh ${ASM_HG002_T2T}
+cd ..
+
+
+cd 3-align_T2T-HG002_to_ref
+sh 3-align_T2T-HG002_to_ref.sh ${reference_hg19} ${ASM_HG002_T2T}
+cd ..
+
+
+cd 4-align_to_PhaseBlock
+sh 4-align_to_PhaseBlock.sh ${ASM_DIR_HG002_FocalSV} ${reference_hg19} ${ASM_HG002_T2T}
+cd ..
+```
+

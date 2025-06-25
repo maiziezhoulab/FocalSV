@@ -1,0 +1,7 @@
+
+```
+# extract SV count by region
+python3 Extract_SV_count_per_region.py -i zenodo/HG002_LargeINDEL_VCFs/
+# plot
+python3 1k_combined_plot.py
+```

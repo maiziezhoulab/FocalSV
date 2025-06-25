@@ -1,0 +1,52 @@
+## Step 1: format truvari folder
+You need to first perform truvari evaluation on all libs for all tools(FocalSV(auto),FocalSV(target),PAV,SVIM-asm,Dipcall,sawfish,cuteSV,SVIM,PBSV,Sniffles2,SKSV). The scripts for truvari evaluation is provided in ../Table2-4.
+After evaluation, you need to format a truvari results folder for each lib.
+Under each lib's folder, each subfolder should be each tool name. Under each tool's folder, there is INS_50_ and DEL_50_ folders containing the truvari result.
+These truvari folders will serve as input for step2.
+
+## Step2: extract stats
+```
+for dtype in Hifi CLR ONT
+do
+for i in {1..3}
+do
+lib=${dtype}_${i}
+python3 line_bar_plot_multiple_tools.py -i ./01_truvari_results/${lib} -o ./02_gen_stats/stats_${lib}
+done
+done
+```
+
+## Step2: plot
+```
+# plot FocalSV-auto with other tools
+python3 plot_f1_grid.py -i \
+./02_gen_stats/stats_Hifi_L1/  \
+./02_gen_stats/stats_Hifi_L2/  \
+./02_gen_stats/stats_Hifi_L3/  \
+./02_gen_stats/stats_CLR_L1/  \
+./02_gen_stats/stats_CLR_L2/  \
+./02_gen_stats/stats_CLR_L3/  \
+./02_gen_stats/stats_ONT_L1/  \
+./02_gen_stats/stats_ONT_L2/  \
+./02_gen_stats/stats_ONT_L3/  \
+-od  "FocalSV(auto),PAV,SVIM-asm,Dipcall,sawfish,cuteSV,SVIM,PBSV,Sniffles2,SKSV"  -cl color_dict.json  -tg "FocalSV(auto)" \
+-libs \
+Hifi_L1 Hifi_L2 Hifi_L3 CLR_L1 CLR_L2 CLR_L3 ONT_L1 ONT_L2 ONT_L3 \
+-o 03_figure/FocalSV-auto
+
+# plot FocalSV-target with other tools
+python3 plot_f1_grid.py -i \
+./02_gen_stats/stats_Hifi_L1/  \
+./02_gen_stats/stats_Hifi_L2/  \
+./02_gen_stats/stats_Hifi_L3/  \
+./02_gen_stats/stats_CLR_L1/  \
+./02_gen_stats/stats_CLR_L2/  \
+./02_gen_stats/stats_CLR_L3/  \
+./02_gen_stats/stats_ONT_L1/  \
+./02_gen_stats/stats_ONT_L2/  \
+./02_gen_stats/stats_ONT_L3/  \
+-od  "FocalSV(target),PAV,SVIM-asm,Dipcall,sawfish,cuteSV,SVIM,PBSV,Sniffles2,SKSV"  -cl color_dict.json  -tg "FocalSV(target)" \
+-libs \
+Hifi_L1 Hifi_L2 Hifi_L3 CLR_L1 CLR_L2 CLR_L3 ONT_L1 ONT_L2 ONT_L3 \
+-o 03_figure/FocalSV-target
+```

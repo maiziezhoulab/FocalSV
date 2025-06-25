@@ -1,0 +1,16 @@
+To evaluate the phasing accuracy of FocalSV-target, you need to first run FocalSV target mode using this `all_target_regions_merged.bed` on HG002 Hifi_L1, CLR_L1, and ONT_L1 (check our paper for data availability), with flanking size set to 50kb. Follow the instruction on our github (https://github.com/maiziezhoulab/FocalSV) to get the corresponding results.
+
+When running, set the output folder as hifi_l1, clr_l1, and ont_l1 respectively.
+
+Then run the command below.
+```
+# evaluate phasing by region
+python3 phasing_eval.py \
+-i <work_dir> \
+-b <bench_dir>
+
+# plot phasing accuracy
+plot_gold_standard_eval.py \
+-i <work_dir>
+```
+<work_dir> is the parent directory of hifi_l1, clr_l1, and ont_l1. <bench_dir> is `HG002_Giab_Benchmark` on zenodo.
