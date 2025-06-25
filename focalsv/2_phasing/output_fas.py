@@ -3,15 +3,21 @@ import os
 from collections import defaultdict
 import pysam
 from utils import setup_logging  # Import the logging function
+from subprocess import Popen
+from joblib import Parallel, delayed
 
 parser = ArgumentParser(description="Output FASTA files according to phase blocks.")
 parser.add_argument('--out_dir', '-o', required=True)
+parser.add_argument('--n_threads', '-t', help="number of threads",type = int, default=10, required=False)
 
 def output_fa(fd, out_dir, logger):
     logger.info(f"Processing phased BAM: {fd}")
     total, unphased = 0, 0
 
     phased_bam = os.path.join(fd, "region_phased.bam")
+    if not os.path.exists(phased_bam):
+        phased_bam = os.path.join(fd, "region.bam")
+
     phase_blocks = defaultdict(list)
     unphased_block = []
 
@@ -65,16 +71,37 @@ def output_fa(fd, out_dir, logger):
                 if readname not in dup_reads:
                     fw.write(f">{readname}\n{readseq}\n")
                     dup_reads.add(readname)
+    
+    if len(phase_blocks) == 0:
+        output_file = f"unphased.fa"
+        output_path = os.path.join(fd, output_file)
+
+
+        with open(output_path, "w") as fw:
+            dup_reads = set()
+            for readname, readseq, reads, reade in unphased_block:
+                if readname not in dup_reads:
+                    fw.write(f">{readname}\n{readseq}\n")
+                    dup_reads.add(readname)
+
+
+
+
+
 
 if __name__ == "__main__":
     args = parser.parse_args()
     out_dir_general = args.out_dir
     out_dir = os.path.join(out_dir_general, "regions")
-
+    n_threads = args.n_threads
     # Initialize logger
     logger = setup_logging("2_output_fas", out_dir_general)
 
     # Process each region folder
     fds = [os.path.join(out_dir, fd) for fd in os.listdir(out_dir) if fd.startswith("Region")]
-    for fd in fds:
-        output_fa(fd, out_dir, logger)
+
+    if n_threads == 1:
+        for fd in fds:
+            output_fa(fd, out_dir, logger)
+    else:
+        Parallel(n_jobs=n_threads)(delayed(output_fa)(fd, out_dir, logger) for fd in fds)

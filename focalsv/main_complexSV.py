@@ -14,7 +14,7 @@ parser = ArgumentParser(description="Author: maiziezhoulab@gmail.com\n", usage='
 # General inputs
 parser.add_argument('--bam_file', '-bam', help="BAM file", required=True)
 parser.add_argument('--ref_file', '-r', help="Reference FASTA file", required=True)
-parser.add_argument('--chr_num', '-chr', type=int, help="Chromosome number for target variant or region", required=True)
+parser.add_argument('--chr_num', '-chr', type=int, help="Chromosome number for target variant or region; use 0 to enable wgs processing", required=True)
 
 # For single region
 parser.add_argument('--region_start', '-S', type=int, help="Target region starting index", required=False)
@@ -51,6 +51,7 @@ def Crop_Bam(bam_file, chr_num, target_bed, region_start, region_end, out_dir, l
                    f"--target_bed {target_bed} "
                    f"--out_dir {out_dir} "
                    f"--n_threads {n_jobs}")
+        print(use_cmd)
     else:
         use_cmd = (f"python3 {code_path}1_crop_bam.py "
                    f"--bam_file {bam_file} "
@@ -162,9 +163,9 @@ def main():
             logger.info("Starting assembly step...")
             Assembly(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, out_dir, data_type, logger)
 
-            # Step 4: SV Calling
-            logger.info("Starting SV calling step...")
-            SVCalling(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, out_dir, data_type, logger)
+            # # Step 4: SV Calling
+            # logger.info("Starting SV calling step...")
+            # SVCalling(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, out_dir, data_type, logger)
 
             logger.info("All steps completed successfully.")
         except Exception as e:

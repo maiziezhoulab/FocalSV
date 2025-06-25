@@ -41,13 +41,14 @@ def rerun_clr(out_dir, threads, cpu, logger):
     Parallel(n_jobs=cpu)(delayed(run_clr)(outputs[i], threads, inputs[i], logger) for i in range(n))
 
 def run_ont(out_dir, input_file, logger):
+    code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
     try:
-        os.system(f"rm -r {out_dir}")
-        os.system(f"mkdir {out_dir}")
-        cmd = f"./software/Shasta/shasta-Linux-0.10.0 --input {input_file} --assemblyDirectory {out_dir} --config Nanopore-UL-Dec2019"
+        # os.system(f"rm -r {out_dir}")
+        # os.system(f"mkdir {out_dir}")
+        cmd = f"{code_dir}/../../software/Shasta/shasta-Linux-0.10.0 --input {input_file} --assemblyDirectory {out_dir} --config Nanopore-UL-Dec2019"
         logger.info(f"Executing: {cmd}")
         os.system(cmd)
-        cmd_cleanup = f"./software/Shasta/shasta-Linux-0.10.0 --command cleanupBinaryData --assemblyDirectory {out_dir}"
+        cmd_cleanup = f"{code_dir}/../../software/Shasta/shasta-Linux-0.10.0 --command cleanupBinaryData --assemblyDirectory {out_dir}"
         os.system(cmd_cleanup)
         logger.info(f"ONT assembly completed for {input_file}")
     except Exception as e:
@@ -68,7 +69,7 @@ def rerun_ont(out_dir, threads, cpu, logger):
     outputs = []
     for pbhp in unvalid:
         inputs.append(pbhp.replace("_flye/assembly.fasta", ".fa"))
-        outputs.append(pbhp.replace("/assembly.fasta", ""))
+        outputs.append(pbhp.replace("_flye/assembly.fasta", "_shasta"))
     
     n = len(inputs)
     logger.info(f"Re-running ONT assembly for {n} invalid regions")
@@ -81,7 +82,7 @@ def fa_index(out_dir, logger):
     file_count = 0
 
     for fd in fds:
-        fas = [os.path.join(fd, f) for f in os.listdir(fd) if f.endswith("asm.p_ctg.gfa")]
+        fas = [os.path.join(fd, f) for f in os.listdir(fd) if f.endswith(".p_ctg.gfa")]
         file_count += 1
 
         # call on each fa

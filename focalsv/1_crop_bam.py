@@ -2,6 +2,8 @@ import os
 import sys
 from argparse import ArgumentParser
 from utils import setup_logging  # Import the setup_logging function
+from joblib import Parallel, delayed
+from tqdm import tqdm
 
 script_path = os.path.dirname(os.path.abspath(__file__))
 code_path = script_path + "/"
@@ -17,6 +19,8 @@ parser.add_argument('--region_end', '-E', type=int, help="End index of target re
 parser.add_argument('--target_bed', '-target_bed', help="BED file with multiple target regions", required=False)
 
 parser.add_argument('--out_dir', '-o', help="Output directory", required=True)
+
+parser.add_argument('--n_threads', '-t', help="number of threads",type = int, default=10, required=False)
 
 args = parser.parse_args()
 
@@ -46,7 +50,7 @@ def crop_single_region(bam_file, chr_num, region_start, region_end, out_dir, log
         logger.error(f"Error during cropping or indexing: {e}")
 
 # Function to crop the BAM file for multiple regions from a BED file
-def crop_multiple_regions(bam_file, chr_num, bed_file, out_dir, logger):
+def crop_multiple_regions_old(bam_file, chr_num, bed_file, out_dir, logger):
     out_dir_region = os.path.join(out_dir, "regions")
     os.makedirs(out_dir_region, exist_ok=True)
 
@@ -79,6 +83,42 @@ def crop_multiple_regions(bam_file, chr_num, bed_file, out_dir, logger):
                 logger.error(f"Error during cropping or indexing for region {region}: {e}")
                 
 
+def process_region(bam_file, region, output_dir, logger):
+    os.makedirs(output_dir, exist_ok=True)
+    cropped_file = f"{output_dir}/region.bam"
+    
+    cmd1 = f"samtools view {bam_file} {region} -Sb > {cropped_file}"
+    cmd2 = f"samtools index {cropped_file}"
+    
+    try:
+        os.system(cmd1)
+        os.system(cmd2)
+        logger.info(f"*** BAM region cropped and indexed: {region} ***")
+        logger.info(f"{cmd1}\n{cmd2}\n")
+    except Exception as e:
+        logger.error(f"Error during cropping or indexing for region {region}: {e}")
+
+def crop_multiple_regions(bam_file, chr_num, bed_file, out_dir, logger, n_jobs=4):
+    out_dir_region = os.path.join(out_dir, "regions")
+    os.makedirs(out_dir_region, exist_ok=True)
+    
+    logger.info(f"Starting to crop BAM file for multiple regions from {bed_file}")
+    tasks = []
+    with open(bed_file, "r") as bed:
+        for line in bed:
+            cols = line.strip().split()
+            bed_chr, start, end = cols[0], int(cols[1]), int(cols[2])
+            if chr_num: # use 0 to enable wgs cropping
+                if bed_chr != f"chr{chr_num}":
+                    continue
+            
+            region = f"{bed_chr}:{start}-{end}"
+            output_dir = f"{out_dir_region}/Region_{bed_chr}_S{start}_E{end}"
+            tasks.append((bam_file, region, output_dir, logger))
+    
+    Parallel(n_jobs=n_jobs)(delayed(process_region)(*task) for task in tqdm(tasks, desc="Cropping BAM files"))
+
+
 if __name__ == "__main__":
     # Get arguments
     bam_file = args.bam_file
@@ -87,6 +127,7 @@ if __name__ == "__main__":
     region_end = args.region_end
     target_bed = args.target_bed
     out_dir = args.out_dir
+    n_threads = args.n_threads
 
     # Initialize the logger
     logger = setup_logging("1_CROP_BAM", out_dir)
@@ -101,6 +142,7 @@ if __name__ == "__main__":
 
     # Run crop_bam with logging
     if target_bed:
-        crop_multiple_regions(bam_file, chr_num, target_bed, out_dir, logger)
+        crop_multiple_regions(bam_file, chr_num, target_bed, out_dir, logger, n_threads)
+
     else:
         crop_single_region(bam_file, chr_num, region_start, region_end, out_dir, logger)

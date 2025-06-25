@@ -269,10 +269,13 @@ def remove_redundancy(vcf_path,output_dir,dist_thresh  =500,
     prefix = 'dippav_variant'
     global vcf_dc
     del_sig,ins_sig,vcf_dc,header = vcf_to_sig(vcf_path)
+    # print("len(del_sig),len(ins_sig)")
+    # print(len(del_sig),len(ins_sig))
     links_del = match_del(del_sig,dist_thresh_del, size_sim_thresh_del, overlap_thresh)
     links_ins = match_ins(ins_sig,dist_thresh, size_sim_thresh, seq_sim_thresh)
     retain_index_del,remove_index_del = pick_best_sv(vcf_dc,links_del)
     retain_index_ins,remove_index_ins = pick_best_sv(vcf_dc,links_ins)
+    # print(len(del_sig),len(ins_sig))
     write_vcf(output_dir,prefix,header,retain_index_del,remove_index_del,retain_index_ins,remove_index_ins)
     return      
 

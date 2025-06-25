@@ -9,8 +9,17 @@ parser.add_argument('--num_cpus', '-t', type=int, help="Number of CPUs, default 
 parser.add_argument('--num_threads', '-tc', type=int, help="Number of threads, default = 8 (recommended)", default=8)
 parser.add_argument('--data_type', '-d', type=int, help="HIFI = 0, CLR = 1, ONT = 2 data", default=0)
 
+
+
+
 def run_hifiasm(output, threads, input_file, logger):
-    cmd = f"./software/hifiasm-0.14/hifiasm -o {output} -t {threads} {input_file}"
+    code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
+    if 'unphased' in input_file:
+        v = "0.16.1"
+    else:
+        v = "0.14"
+    cmd = f"{code_dir}/../../software/hifiasm-{v}/hifiasm -o {output} -t {threads} {input_file}"
+    print(cmd)
     logger.info(f"Executing: {cmd}")
     try:
         os.system(cmd)

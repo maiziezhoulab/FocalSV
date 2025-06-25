@@ -35,6 +35,11 @@ def assembly(out_dir, cpu, threads, data_type, logger):
     # Combine FASTA files
     run_command(f"python3 {code_path}combine_fas.py -o {out_dir} -d {data_type}", logger)
 
+    # Clean temp files
+    if data_type == 0:
+        cmd = f"rm {out_dir}/regions/Region_chr*/*gfa {out_dir}/regions/Region_chr*/*bed {out_dir}/regions/Region_chr*/*bin {out_dir}/regions/Region_chr*/*p_ctg.gfa.fa"
+        os.system(cmd)
+
 
 if __name__ == "__main__":
     args = parser.parse_args()

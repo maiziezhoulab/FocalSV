@@ -158,15 +158,15 @@ def main():
             logger.info("Starting BAM phasing step...")
             Phase_Bam(ref_file, out_dir, logger, early_threads)
 
-            # Step 3: Assemble
-            logger.info("Starting assembly step...")
-            Assembly(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, out_dir, data_type, logger)
+            ## Step 3: Assemble
+            #logger.info("Starting assembly step...")
+            #Assembly(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, out_dir, data_type, logger)
 
-            # Step 4: SV Calling
-            logger.info("Starting SV calling step...")
-            SVCalling(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, out_dir, data_type, logger)
+            ## Step 4: SV Calling
+            #logger.info("Starting SV calling step...")
+            #SVCalling(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, out_dir, data_type, logger)
 
-            logger.info("All steps completed successfully.")
+            #logger.info("All steps completed successfully.")
         except Exception as e:
             logger.error(f"An error occurred: {e}")
             sys.exit(1)

@@ -6,7 +6,7 @@ from extract_contig_signature_CLR import extract_contig_sig_CLR
 from extract_contig_signature_ONT import extract_contig_sig_ONT
 from extract_contig_signature_CCS import extract_contig_sig_CCS
 from extract_reads_signature import extract_reads_signature
-from FP_filter_v1 import FP_filter
+from FP_filter_v1_temp import FP_filter
 from remove_redundancy import remove_redundancy
 
 
@@ -53,82 +53,71 @@ def dippav_variant_call(data_type,
 	outhp1 = output_dir+'/hp1.fa'
 	outhp2 = output_dir+'/hp2.fa'
 
-	reformat_fasta(hp1_contig_path ,outhp1,'hp1')
-	reformat_fasta(hp2_contig_path ,outhp2,'hp2')
-	contig_path = output_dir+'/assemblies.fa'
-	cmd = "cat %s %s > %s"%(outhp1,outhp2,contig_path)
-	Popen(cmd, shell = True).wait()
+	# reformat_fasta(hp1_contig_path ,outhp1,'hp1')
+	# reformat_fasta(hp2_contig_path ,outhp2,'hp2')
+	# contig_path = output_dir+'/assemblies.fa'
+	# cmd = "cat %s %s > %s"%(outhp1,outhp2,contig_path)
+	# Popen(cmd, shell = True).wait()
 
 
-	logger.info("align contig to reference...")
-	# reference_path = "/data/maiziezhou_lab/CanLuo/long_reads_project/DipPAV2/hg19_ref_by_chr/hg19_chr%d.fa"%(chr_num)
-	prefix = contig_path.split('/')[-1].split('.')[0]
-	bam_path = output_dir+'/'+prefix+'.sorted.bam'
-	cmd = "minimap2 -a -x asm5 --cs -r2k -t %d \
-		%s \
-		%s \
-			| samtools sort -@ %d -m %s > %s"%(n_thread,reference_path,contig_path,n_thread, mem_per_thread,bam_path )
-	logger.info(cmd)
-	Popen(cmd,shell=True).wait()
+	# logger.info("align contig to reference...")
+	# # reference_path = "/data/maiziezhou_lab/CanLuo/long_reads_project/DipPAV2/hg19_ref_by_chr/hg19_chr%d.fa"%(chr_num)
+	# prefix = contig_path.split('/')[-1].split('.')[0]
+	# bam_path = output_dir+'/'+prefix+'.sorted.bam'
+	# cmd = "minimap2 -a -x asm5 --cs -r2k -t %d \
+	# 	%s \
+	# 	%s \
+	# 		| samtools sort -@ %d -m %s > %s"%(n_thread,reference_path,contig_path,n_thread, mem_per_thread,bam_path )
+	# logger.info(cmd)
+	# Popen(cmd,shell=True).wait()
 
-	cmd = "samtools index "+bam_path
-	logger.info(cmd)
-	Popen(cmd,shell=True).wait()
-
-
-
-	logger.info("Raw variant call by chromosome...")
-	if data_type == 'CLR':
-		extract_contig_sig_CLR(chr_number=chr_num,
-					bam_path=bam_path,
-					header_path=header_file,
-					ref_path=reference_path,
-					contig_path=contig_path,
-					output_dir=output_dir)
-	elif data_type == 'ONT':
-		extract_contig_sig_ONT(chr_number=chr_num,
-					bam_path=bam_path,
-					header_path=header_file,
-					ref_path=reference_path,
-					contig_path=contig_path,
-					output_dir=output_dir)
-	else:
-		extract_contig_sig_CCS(chr_number=chr_num,
-					bam_path=bam_path,
-					header_path=header_file,
-					ref_path=reference_path,
-					contig_path=contig_path,
-					output_dir=output_dir)
-
-	# cmd = "python3 "+code_dir+"/extract_contig_signature_%s.py \
-	# -bam %s  -contig %s -header %s -ref %s -o %s -chr %s"%(data_type,bam_path,
-	#  contig_path,
-	#  header_file,
-	#  reference_path,
-	#  output_dir,
-	#  chr_num)
-
+	# cmd = "samtools index "+bam_path
+	# logger.info(cmd)
 	# Popen(cmd,shell=True).wait()
 
 
 
-	logger.info("extract signatures from reads bam file...")
-	extract_reads_signature(chr_number=chr_num,
-				input_path= read_bam_file,
-				output_dir=output_dir)
+	# logger.info("Raw variant call by chromosome...")
+	# if data_type == 'CLR':
+	# 	extract_contig_sig_CLR(chr_number=chr_num,
+	# 				bam_path=bam_path,
+	# 				header_path=header_file,
+	# 				ref_path=reference_path,
+	# 				contig_path=contig_path,
+	# 				output_dir=output_dir)
+	# elif data_type == 'ONT':
+	# 	extract_contig_sig_ONT(chr_number=chr_num,
+	# 				bam_path=bam_path,
+	# 				header_path=header_file,
+	# 				ref_path=reference_path,
+	# 				contig_path=contig_path,
+	# 				output_dir=output_dir)
+	# else:
+	# 	extract_contig_sig_CCS(chr_number=chr_num,
+	# 				bam_path=bam_path,
+	# 				header_path=header_file,
+	# 				ref_path=reference_path,
+	# 				contig_path=contig_path,
+	# 				output_dir=output_dir)
 
-	# cmd = "python3 "+code_dir+"/extract_reads_signature.py \
-	# -i %s -chr %s  -o %s"%(read_bam_file ,chr_num,
-	#  output_dir)
+
+
+
+
+	# logger.info("extract signatures from reads bam file...")
+	# extract_reads_signature(chr_number=chr_num,
+	# 			input_path= read_bam_file,
+	# 			output_dir=output_dir)
+
+
+
+
+	# ### combine all vcf together
+
+	# cmd = "cat %s/dippav_variant_chr*vcf | grep -v \"#\" > %s/body "%(output_dir,output_dir)
 	# Popen(cmd,shell=True).wait()
-
-
-	### combine all vcf together
-
-	cmd = "cat %s/dippav_variant_chr*vcf | grep -v \"#\" > %s/body "%(output_dir,output_dir)
-	Popen(cmd,shell=True).wait()
-	cmd = "cat %s %s/body > %s/dippav_raw_variant.vcf; rm %s/body "%(header_file,output_dir,output_dir,output_dir)
-	Popen(cmd,shell=True).wait()
+	# cmd = "cat %s %s/body > %s/dippav_raw_variant.vcf; rm %s/body "%(header_file,output_dir,output_dir,output_dir)
+	# Popen(cmd,shell=True).wait()
 
 
 

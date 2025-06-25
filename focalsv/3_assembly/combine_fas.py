@@ -10,8 +10,8 @@ parser.add_argument('--data_type', '-d', type=int, help="hifi = 0 or clr = 1 or 
 def combine_fas_hifi(out_dir, logger):
     fds = [os.path.join(out_dir, fd) for fd in os.listdir(out_dir) if fd.startswith("Region")]
     for fd in fds:
-        fas1 = [os.path.join(fd, f) for f in os.listdir(fd) if f.endswith("hp1.asm.p_ctg.gfa.fa")]
-        fas2 = [os.path.join(fd, f) for f in os.listdir(fd) if f.endswith("hp2.asm.p_ctg.gfa.fa")]
+        fas1 = [os.path.join(fd, f) for f in os.listdir(fd) if f.endswith("hp1.asm.p_ctg.gfa.fa") or f.endswith("hap1.p_ctg.gfa.fa")]
+        fas2 = [os.path.join(fd, f) for f in os.listdir(fd) if f.endswith("hp2.asm.p_ctg.gfa.fa") or f.endswith("hap2.p_ctg.gfa.fa")]
 
         new_hp1 = os.path.join(fd, "HP1.fa")
         new_hp2 = os.path.join(fd, "HP2.fa")
@@ -70,8 +70,16 @@ def combine_fas_clr(out_dir, logger):
 def combine_fas_ont(out_dir, logger):
     fds = [os.path.join(out_dir, fd) for fd in os.listdir(out_dir) if fd.startswith("Region")]
     for fd in fds:
-        fas1 = [os.path.join(fd, f, "/*ssembly.fasta") for f in os.listdir(fd) if f.endswith("hp1_flye")]
-        fas2 = [os.path.join(fd, f, "/*ssembly.fasta") for f in os.listdir(fd) if f.endswith("hp2_flye")]
+        
+        # for f in os.listdir(fd): 
+        #     if f.endswith("hp1_flye"):
+        #         print(fd,f,os.path.join(fd, f, "assembly.fasta"))
+        #         exit()
+
+        fas1 = [os.path.join(fd, f, "assembly.fasta") for f in os.listdir(fd) if f.endswith("hp1_flye")] + \
+        [os.path.join(fd, f, "Assembly.fasta") for f in os.listdir(fd) if f.endswith("hp1_shasta")]
+        fas2 = [os.path.join(fd, f, "assembly.fasta") for f in os.listdir(fd) if f.endswith("hp2_flye")] + \
+        [os.path.join(fd, f, "Assembly.fasta") for f in os.listdir(fd) if f.endswith("hp2_shasta")]
 
         new_hp1 = os.path.join(fd, "HP1.fa")
         new_hp2 = os.path.join(fd, "HP2.fa")
