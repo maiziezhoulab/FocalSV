@@ -268,7 +268,7 @@ FocalSV_results/
 
 # TRA INV DUP detection
 
-## FocalSV-target mode
+## FocalSV(target) mode
 
 
 
@@ -298,7 +298,7 @@ python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
 ```
 The output is `HCC1395_FocalSV-target_tra_inv_dup_output/FocalSV_TRA_INV_DUP.vcf`.
 
-## FocalSV-auto mode
+## FocalSV(auto) mode
 
 ### Parameters
 
