@@ -298,6 +298,8 @@ FocalSV_results/
 #### Required Parameters:
 - **--input_dir/-i**: FocalSV-target large indel call output folder
 - **--bam_file/-bam**: The input BAM file.
+- **--excel_file/-excel**: an Excel file that includes the ground truth SV (only for HCC1395)
+- **--bed_file/-bed**: a bed file with interested target region. After each region, there should be SV type. For example, a row in the bed file can be "chr1 1000 5000 TRA", "chr2 1000 5000 INV", or "chr3 1000 5000 DUP"
 - **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
 - **--ref_file/-r**: Reference FASTA file.
 - **--out_dir/-o**: Output directory to store results.
@@ -313,11 +315,23 @@ Here is an example of how to run FocalSV-target to get TRA INV and DUP on HCC139
 python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
 --input_dir HCC1395_FocalSV-target_largeindel_output \
 --bam_file HCC1395_Pacbio_hg38.bam \
+--excel_file focalsv/TRA_INV_DUP_call/Target/High_confidence_callset.xlsx \
 --data_type CLR \
 --ref_file <hg38_reference> \
 --out_dir HCC1395_FocalSV-target_tra_inv_dup_output
 ```
 The output is `HCC1395_FocalSV-target_tra_inv_dup_output/FocalSV_TRA_INV_DUP.vcf`.
+
+If you want to run it on another sample, you should provide a BED file with each region annotated with the SV type. For example, a row in the bed file can be "chr1 1000 5000 TRA", "chr2 1000 5000 INV", or "chr3 1000 5000 DUP"
+```
+python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
+--input_dir <sample>_FocalSV-target_largeindel_output \
+--bam_file <sample>_<datatype>_hg38.bam \
+--bed_file <target_bed> \
+--data_type <datatype> \
+--ref_file <hg38_reference> \
+--out_dir <sample>_FocalSV-target_tra_inv_dup_output
+```
 
 ## FocalSV(auto) mode
 
