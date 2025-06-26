@@ -76,6 +76,7 @@ python3 FocalSV/focalsv/0_define_region.py \
 --out_dir ./FocalSV_results/Define_Region \
 --data_type HIFI \
 --num_threads 8
+--lib <lib_name>
 ```
 The output file is `SV_Regions_<data_type>_<lib>.bed`.
 
@@ -87,7 +88,7 @@ The output file is `SV_Regions_<data_type>_<lib>.bed`.
 
 - **--bam_file/-bam**: The input BAM file.
 - **--ref_file/-r**: Reference FASTA file.
-- **--chr_num/-chr**: Chromosome number for the target region.
+- **--chr_num/-chr**: Chromosome number for the target region. If the target region contains multiple chromosomes, use 0.
 - **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
 
 #### Options for Region Selection:
@@ -143,19 +144,15 @@ python3 FocalSV/focalsv/main.py \
 #### 3. Running FocalSV on a whole-genome scale (except sex chromosomes)
 \*Note that you can provide a custom BED file based on your regions of interest, or directly use the whole-genome BED file generated in Step 0.
 
-```
-for i in {1..22}
-do
-python3 FocalSV/focalsv/main.py \
+```python3 FocalSV/focalsv/main.py \
 --bam_file <wgs_bam> \
 --ref_file <reference> \
---chr_num $i \
---target_bed target_region_chr${i}.bed \
---out_dir ./FocalSV_results/chr${i} \
+--chr_num 0 \
+--target_bed target_region_wgs.bed \
+--out_dir ./FocalSV_results/ \
 --data_type HIFI \
 --num_cpus 10 \
 --num_threads 8
-done
 ```
 ### Output:
 
@@ -170,7 +167,7 @@ FocalSV_results/
   │   │   ├── results/
   │   │   ├── HP1.fa
   │   │   ├── HP2.fa
-  │   │   ├── PSxxx_hp1.fa
+  │   │   ├── PSxxx_hp1.fa  
   │   │   ├── PSxxx_hp2.fa
   │   │   ├── region.bam
   │   │   ├── region_phased.bam
@@ -189,7 +186,7 @@ FocalSV_results/
 
 - **`Region_chr21_S100000_E200000/`**  
   Results for chromosome 21, positions 100000-200000:
-  - **`HP1_xxx.fa`**: Assembled contigs for haplotype 1.
+  - **`HP1.fa`**: Assembled contigs for haplotype 1.
   - **`PSxxx_hp1.fa`**: Contigs for phase block `xxx` and haplotype 1.
   - **`region.bam`**: Cropped BAM file for the region.
   - **`region_phased.bam`**: Phased BAM file for haplotype-specific alignments.
@@ -232,7 +229,7 @@ For optimal computational efficiency, if you perform separate single-region anal
 ```
 python3 ./FocalSV/focalsv/5_post_processing/FocalSV_Filter_GT_Correct.py \
 --bam_file ./test/test_hifi_chr21.bam \
---ref_file ./test/test_chr21.fa \
+--ref_file ${wgs_ref} \
 --vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcf  \
 --chr_num 21 \
 --out_dir ./FocalSV_results/Final_VCF \
@@ -293,10 +290,36 @@ FocalSV_results/
 
 ## FocalSV - target mode
 
+For target mode, you need to first perform FocalSV-target large indel call in the target regions as we have a module of duplication recovery from insertions. You need to follow the step1 FocalSV-target mode to generate the large indel call result.
 
+Here is an example of running the large indel call on HCC1395.
+```
+python3 FocalSV/focalsv/main.py \
+--bam_file HCC1395_Pacbio_hg38.bam \
+--ref_file hg38_ref.fa \
+--chr_num 0 \
+--excel_file focalsv/TRA_INV_DUP_call/Target/High_confidence_callset.xlsx \
+--out_dir ./FocalSV_results_DUP \
+--data_type CLR \
+--num_cpus 10 \
+--num_threads 8
+```
+
+If you want to run it on another sample, you need to provide the interested DUP target region BED file.
+```
+python3 FocalSV/focalsv/main.py \
+--bam_file<sample>_<dtype>_hg38.bam \
+--ref_file hg38_ref.fa \
+--chr_num 0 \
+--bed_file DUP_regions.bed \
+--out_dir ./FocalSV_results_DUP \
+--data_type CLR \
+--num_cpus 10 \
+--num_threads 8
+```
+`FocalSV_results_DUP/` will be the input for the next step.
 
 ### Parameters
-
 #### Required Parameters:
 - **--input_dir/-i**: FocalSV-target large indel call output folder
 - **--bam_file/-bam**: The input BAM file.
@@ -315,7 +338,7 @@ FocalSV_results/
 Here is an example of how to run FocalSV-target to get TRA INV and DUP on HCC1395.
 ```
 python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
---input_dir HCC1395_FocalSV-target_largeindel_output \
+--input_dir FocalSV_results_DUP \
 --bam_file HCC1395_Pacbio_hg38.bam \
 --excel_file focalsv/TRA_INV_DUP_call/Target/High_confidence_callset.xlsx \
 --data_type CLR \
@@ -327,7 +350,7 @@ The output is `HCC1395_FocalSV-target_tra_inv_dup_output/FocalSV_TRA_INV_DUP.vcf
 If you want to run it on another sample, you should provide a BED file with each region annotated with the SV type. For example, a row in the bed file can be "chr1 1000 5000 TRA", "chr2 1000 5000 INV", or "chr3 1000 5000 DUP"
 ```
 python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
---input_dir <sample>_FocalSV-target_largeindel_output \
+--input_dir FocalSV_results_DUP \
 --bam_file <sample>_<datatype>_hg38.bam \
 --bed_file <target_bed> \
 --data_type <datatype> \
