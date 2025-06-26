@@ -94,8 +94,8 @@ The output file is `SV_Regions_<data_type>_<lib>.bed`.
 
 ##### For Single region analysis (Start/End Positions)
 
-- **--region_start/-S**: Start index of the target region (integer) (Required for single region mode).
-- **--region_end/-E**: End index of the target region (integer) (Required for single region mode).
+- **--region_start/-S**: Start coordinate of the target region (integer) (Required for single region mode).
+- **--region_end/-E**: End coordinate of the target region (integer) (Required for single region mode).
 
 ##### For Multi-region analysis (BED file)
 
