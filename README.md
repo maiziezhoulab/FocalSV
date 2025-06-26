@@ -125,8 +125,9 @@ python3 FocalSV/focalsv/main.py \
 ```
 
 #### 2. Running for Multiple Regions with a BED File
+\*Note that you can provide a custom BED file based on your regions of interest, or use the whole-genome BED file generated in Step 0.
 
-Here is an example of running all target region on chromosome 21.
+Here is an example of running multiple target regions on chromosome 21.
 ```
 python3 FocalSV/focalsv/main.py \
 --bam_file ./test/test_hifi_chr21.bam \
@@ -140,6 +141,7 @@ python3 FocalSV/focalsv/main.py \
 ```
 
 If you want to run FocalSV on a whole-genome scale (except sex chromosomes), here is an example
+\*Note that you can provide a custom BED file based on your regions of interest, or use the whole-genome BED file generated in Step 0.
 
 ```
 for i in {1..22}
