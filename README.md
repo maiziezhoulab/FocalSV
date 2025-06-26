@@ -42,7 +42,7 @@ To execute the code, either add `FocalSV/focalsv` to your `.bashrc` file or use 
 ## Step 0: Automatically detect target regions (for auto mode)
 
 If you already have target regions of interest, you can skip this step and proceed directly to Step 1. Otherwise, run this step to automatically detect potential SV regions in the auto mode.
-
+This script by default takes whole genome BAM file and scan potential SV regions on whole genome scale.
 
 ### Parameters
 
@@ -64,8 +64,8 @@ The output file is `SV_Regions_<data_type>_<lib>.bed`.
 
 ```
 python3 FocalSV/focalsv/0_define_region.py \
---bam_file ./test/test_hifi_chr21.bam \
---ref_file ./test/test_chr21.fa \
+--bam_file <wgs_bam> \
+--ref_file <reference> \
 --prior_file <popuplation SV file> \
 --out_dir ./FocalSV_results/Define_Region \
 --data_type HIFI \
