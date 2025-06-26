@@ -122,6 +122,7 @@ python3 FocalSV/focalsv/main.py \
 
 #### 2. Running for Multiple Regions with a BED File
 
+Here is an example of running all target region on chromosome 21.
 ```
 python3 FocalSV/focalsv/main.py \
 --bam_file ./test/test_hifi_chr21.bam \
@@ -134,6 +135,22 @@ python3 FocalSV/focalsv/main.py \
 --num_threads 8
 ```
 
+If you want to run FocalSV on a whole-genome scale (except sex chromosomes), here is an example
+
+```
+for i in {1..22}
+do
+python3 FocalSV/focalsv/main.py \
+--bam_file <wgs_bam> \
+--ref_file <reference> \
+--chr_num $i \
+--target_bed target_region_chr${i}.bed \
+--out_dir ./FocalSV_results/chr${i} \
+--data_type HIFI \
+--num_cpus 10 \
+--num_threads 8
+done
+```
 ### Output:
 
 ```
