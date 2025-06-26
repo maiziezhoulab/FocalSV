@@ -120,7 +120,7 @@ python3 FocalSV/focalsv/main.py \
 --num_threads 8
 ```
 
-#### 2. Running with a BED File (Multiple Regions)
+#### 2. Running for Multiple Regions with a BED File
 
 ```
 python3 FocalSV/focalsv/main.py \
