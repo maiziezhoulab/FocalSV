@@ -87,7 +87,7 @@ The output file is `SV_Regions_<data_type>_<lib>.bed`.
 
 - **--bam_file/-bam**: The input BAM file.
 - **--ref_file/-r**: Reference FASTA file.
-- **--chr_num/-chr**: Chromosome number for the target region or whole chromosome analysis.
+- **--chr_num/-chr**: Chromosome number for the target region.
 - **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
 
 #### Options for Region Selection:
