@@ -173,8 +173,8 @@ FocalSV_results/
 
 **Note**:
 
-- For **one region analysis** (given a start and end region), there will be **one region** under the `regions/` folder. For example, if specified with `--region_start 0 --region_end 200000 --chr_num 21`, the region will be named `Region_chr21_S0_E200000`.
-- For **analysis using a BED file**, the number of regions equals the number of lines in the BED file, with each region named based on the start (S) and end (E) positions specified in each line.
+- For **single region analysis** (specified by a start and end coordinate), a corresponding region folder will be created under the `regions/` directory. For example, if you specify `--region_start 0 --region_end 200000 --chr_num 21`, the region will be named `Region_chr21_S0_E200000`.
+- For **multi-region analysis using a BED file**, the number of regions corresponds to the number of lines in the BED file. Each region is named according to the start (S) and end (E) positions specified in its respective line.
 
 #### `logs/`
 
@@ -204,7 +204,7 @@ FocalSV incorporates a post-processing module to filter false positives and corr
 #### 1. Running for One Chromosome
 
 To achieve maximum computational efficiency, if you have multiple target regions on a single chromosome, you should merge the VCF files in those regions and run the post-processing only once. Below is an example command.
-\*Note that the minimum scale is per chromosome, not per region, because read depth is not so accurate on the edge of each region, and we try to minimize the effect of read depth fluctuation. If you only run one region, make sure to put the chromosome number for this target region for post-processing.
+\*Note that the minimum scale is defined per chromosome, not per region, to reduce the impact of read depth fluctuations, which are less reliable at region boundaries. If you are analyzing a single region, be sure to specify the corresponding chromosome number for post-processing.
 
 ```
 python3 ./FocalSV/focalsv/5_post_processing/FocalSV_Filter_GT_Correct.py \
