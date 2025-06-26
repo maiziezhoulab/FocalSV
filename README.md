@@ -189,7 +189,7 @@ FocalSV incorporates a post-processing module to filter false positives and corr
 
 #### Required Parameters:
 - **--bam_file/-bam**: The input BAM file.
-- **--vcf_file/-vcf**: Path to the input FocalSV Candidate SV VCF file.
+- **--vcf_file/-vcf**: Path to the input FocalSV Candidate SV VCF file generated in Step 1.
 - **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
 - **--ref_file/-r**: Reference FASTA file.
 - **--chr_num/-chr**: Chromosome number for the target region or whole chromosome analysis.
