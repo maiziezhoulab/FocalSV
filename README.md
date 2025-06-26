@@ -93,7 +93,7 @@ python3 FocalSV/focalsv/0_define_region.py \
 - **--region_start/-S**: Start index of the target region (integer) (Required for single region mode).
 - **--region_end/-E**: End index of the target region (integer) (Required for single region mode).
 
-##### Mutli Region (BED file)
+##### Multi Region (BED file)
 
 - **--target_bed/-target_bed**: BED file containing multiple target regions (optional for multi-region analysis in either target or auto mode. For auto mode, the BED file can be generated in Step 0)
 
