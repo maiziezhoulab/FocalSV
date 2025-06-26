@@ -46,7 +46,7 @@ To execute the code, either add `FocalSV/focalsv` to your `.bashrc` file or use 
 ## Step 0: Automatically detect target regions (for auto mode)
 
 If you already have target regions of interest, you can skip this step and proceed directly to Step 1. Otherwise, run this step to automatically detect potential SV regions in the auto mode.
-This script by default takes whole genome BAM file and scan potential SV regions on whole genome scale.
+By default, this script takes a whole-genome BAM file and scans for potential SV regions across the entire genome.
 
 ### Parameters
 
