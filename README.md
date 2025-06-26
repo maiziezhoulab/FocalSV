@@ -1,7 +1,7 @@
 # FocalSV
 
 
-FocalSV is a tool for region-based structural variant (SV) assembly and refinement using long-read sequencing data. It provides a targeted approach to SV detection, focusing on specific genomic regions using a phased diploid assembly method. This software is optimized for multiple data types, including HiFi, CLR, and ONT sequencing.
+FocalSV is a tool for region-based structural variant (SV) assembly and refinement using long-read sequencing data (PacBio HiFi, CLR, and ONT). It offers two modes - auto and target - to address diverse analytical goals. In target mode, users can specify regions of interest for focused SV detection. In auto mode, FocalSV autonomously detects and refines SV-rich regions by integrating population-level SV patterns with read-level signals from individual long-read data. 
 
 ## Table of Content 
 - [Installation](#install-through-github)
@@ -15,7 +15,7 @@ FocalSV is a tool for region-based structural variant (SV) assembly and refineme
 - [Troubleshooting](#Troubleshooting)
 
 
-# Install through Github:
+# Install through GitHub:
 
 ```
 git clone  https://github.com/maiziezhoulab/FocalSV.git
@@ -183,7 +183,7 @@ FocalSV_results/
 ## Step 2: filtering and genotype correction
 
 
-FocalSV incorporates a post-processing module to filter false positives and correct genotypes further. This step involves collecting reads-based signatures from the read-to-reference BAM file. You can either run it by chromosome or on a whole genome scale. 
+FocalSV incorporates a post-processing module to filter false positives and correct genotypes further. This step involves collecting read-based signatures from the read-to-reference BAM file. You can either run it by chromosome or on a whole-genome scale. 
 
 ### Parameters
 
@@ -203,8 +203,8 @@ FocalSV incorporates a post-processing module to filter false positives and corr
 
 #### 1. Running for One Chromosome
 
-To achieve the most computation efficiency, if you have multiple target regions in one chromosome, you should merge the VCF file in those regions and only run the post-processing once. Below is an example command.
-\*Note that the minimum scale is per chromosome, not per region, because read depth is not so accurate on the edge of each region and we try to minimize the effect of read depth fluctuation. If you only run one region, make sure to put the chromosome number for this target region for post-processing.
+To achieve maximum computational efficiency, if you have multiple target regions on a single chromosome, you should merge the VCF files in those regions and run the post-processing only once. Below is an example command.
+\*Note that the minimum scale is per chromosome, not per region, because read depth is not so accurate on the edge of each region, and we try to minimize the effect of read depth fluctuation. If you only run one region, make sure to put the chromosome number for this target region for post-processing.
 
 ```
 python3 ./FocalSV/focalsv/5_post_processing/FocalSV_Filter_GT_Correct.py \
@@ -221,7 +221,7 @@ This command runs for chromosome 21 using 8 threads.
 
 #### 2. Running for Whole Genome
 
-Below is an example command for running post-processing one whole genome scale.
+Below is an example command for running post-processing on a whole-genome scale.
 
 ```
 python3 ./FocalSV/focalsv/post_processing/FocalSV_Filter_GT_Correct.py \
@@ -234,7 +234,7 @@ python3 ./FocalSV/focalsv/post_processing/FocalSV_Filter_GT_Correct.py \
 --num_threads 8
 ```
 
-This command runs for whole genome using 8 threads.
+This command runs for the whole genome using 8 threads.
 
 ### Output:
 
