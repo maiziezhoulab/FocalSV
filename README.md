@@ -180,7 +180,7 @@ FocalSV_results/
 
 - Contains log files for debugging and tracking pipeline steps.
 
-## Step 2: filtering and genotype correction (for auto mode)
+## Step 2: filtering and genotype correction (for both modes)
 
 
 FocalSV incorporates a post-processing module to filter false positives and correct genotypes further. This step involves collecting read-based signatures from the read-to-reference BAM file. You can either run it by chromosome or on a whole-genome scale. 
