@@ -140,7 +140,7 @@ python3 FocalSV/focalsv/main.py \
 --num_threads 8
 ```
 
-If you want to run FocalSV on a whole-genome scale (except sex chromosomes), here is an example
+#### 3. Running FocalSV on a whole-genome scale (except sex chromosomes)
 \*Note that you can provide a custom BED file based on your regions of interest, or directly use the whole-genome BED file generated in Step 0.
 
 ```
