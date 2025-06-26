@@ -55,7 +55,7 @@ This script by default takes whole genome BAM file and scan potential SV regions
 - **--bam_file/-bam**: The input BAM file.
 - **--ref_file/-r**: Reference FASTA file.
 - **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
-- **--prior_file/-p**: population SV VCF file.
+- **--prior_file/-p**: population SV VCF file. either .vcf or .vcf.gz is accepted.
 - **--out_dir/-o**:  Output directory to store results.
 - **--lib/-l**: library name.
 
@@ -75,7 +75,7 @@ python3 FocalSV/focalsv/0_define_region.py \
 --data_type HIFI \
 --num_threads 8
 ```
-
+FocalSV(auto) by default uses a prior VCF constructed using haplotype-resolved assemblies from nine individuals (HG01109, HG01243, HG02055, HG02080, HG02109, HG02145, HG02723, HG03098, and HG03492). SVs were identified from the assemblies and merged using the Pangenie vcf-merging pipeline. This multi-sample VCF serves as the default population reference for FocalSV(auto), though users may substitute any population-scale, pangenome graph-based SV catalog suitable for their specific study population. If you want to use the default prior VCF, you may use `FocalSV/Population_SV/pangenie_hg19_SV_gt50.vcf.gz` or `FocalSV/Population_SV/pangenie_hg38_SV_gt50.vcf.gz`, otherwise you need to provide your own VCF file (either .vcf or .vcf.gz is accepted).
 
 
 
