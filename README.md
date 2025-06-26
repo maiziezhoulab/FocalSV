@@ -1,7 +1,7 @@
 # FocalSV
 
 
-FocalSV is a tool for region-based structural variant (SV) assembly and refinement using long-read sequencing data (PacBio HiFi, CLR, and ONT). It offers two modes - auto and target - to address diverse analytical goals. In target mode, users can specify regions of interest for focused SV detection. In auto mode, FocalSV autonomously detects and refines SV-rich regions by integrating population-level SV patterns with read-level signals from individual long-read data. 
+FocalSV is a tool for region-based structural variant (SV) assembly and refinement using long-read sequencing data (PacBio HiFi, CLR, and ONT). It offers two modes - auto and target - to address diverse analytical goals. In target mode, users can specify regions of interest for SV detection, including deletions (DEL), insertions (INS), translocations (TRA), duplications (DUP), and inversions (INV). In auto mode, FocalSV autonomously detects and refines SV-rich regions by integrating population-level SV patterns with read-level signals from individual long-read data. 
 
 ## Table of Content 
 - [Installation](#install-through-github)
@@ -353,7 +353,7 @@ python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
 
 ### Examples
 
-Here is an example of how to run FocalSV-auto to get TRA INV and DUP on HCC1395.
+Here is an example of how to run FocalSV-auto to get TRA, INV, and DUP, on HCC1395.
 ```
 python3 focalsv/TRA_INV_DUP_call/Auto/FocalSV-auto_TRA_INV_DUP_call.py \
 --bam_file HCC1395_Pacbio_hg38.bam \
