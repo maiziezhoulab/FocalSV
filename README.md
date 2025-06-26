@@ -226,7 +226,7 @@ FocalSV incorporates a post-processing module to filter false positives and corr
 
 #### 1. Running for One Chromosome
 
-For optimal computational efficiency, if you perform single-region analyses across multiple regions on the same chromosome, you should merge the resulting VCF files and run post-processing only once. Below is an example command.
+For optimal computational efficiency, if you perform separate single-region analyses across multiple regions on the same chromosome - instead of using a multi-region BED file - you should merge the resulting VCF files and run post-processing only once. Below is an example command.
 \*Note that the minimum scale is defined per chromosome, not per region, to reduce the impact of read depth fluctuations, which are less reliable at region boundaries. If analyzing a single region,  ensure that you specify the corresponding chromosome number during post-processing.
 
 ```
