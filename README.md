@@ -6,9 +6,9 @@ FocalSV is a tool for region-based structural variant (SV) assembly and refineme
 ## Table of Content 
 - [Installation](#install-through-github)
 - [Large INDEL detection](#Large-INDEL-detection)
-    - [Step 0: Define target regions (for auto mode)](#Step-0-Define-target-regions)
-    - [Step 1: Generating Candidate SVs](#Step-1-Generating-Candidate-SVs)
-    - [Step 2: filtering and genotype correction](#Step-2-filtering-and-genotype-correction)
+    - [Step 0: Automatically detect target regions (for auto mode)](#Step-0-Define-target-regions)
+    - [Step 1: Generating Candidate SVs (for both modes)](#Step-1-Generating-Candidate-SVs)
+    - [Step 2: filtering and genotype correction (for both modes)](#Step-2-filtering-and-genotype-correction)
 - [TRA INV DUP detection](#TRA-INV-DUP-detection)
   -  [FocalSV-target mode](#FocalSV-target-mode)
   -  [FocalSV-auto mode](#FocalSV-auto-mode)
@@ -39,7 +39,7 @@ To execute the code, either add `FocalSV/focalsv` to your `.bashrc` file or use 
 
 
 # Large INDEL detection
-## Step 0: Define target regions
+## Step 0: Automatically detect target regions (for auto mode)
 
 If you already have target regions of interest, you can skip this step and proceed directly to Step 1. Otherwise, run this step to automatically detect potential SV regions in the auto mode.
 
@@ -75,7 +75,7 @@ python3 FocalSV/focalsv/0_define_region.py \
 
 
 
-## Step 1: Generating Candidate SVs
+## Step 1: Generating Candidate SVs (for both modes)
 
 ### Parameters
 
@@ -180,7 +180,7 @@ FocalSV_results/
 
 - Contains log files for debugging and tracking pipeline steps.
 
-## Step 2: filtering and genotype correction
+## Step 2: filtering and genotype correction (for auto mode)
 
 
 FocalSV incorporates a post-processing module to filter false positives and correct genotypes further. This step involves collecting read-based signatures from the read-to-reference BAM file. You can either run it by chromosome or on a whole-genome scale. 
