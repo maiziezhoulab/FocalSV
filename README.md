@@ -35,7 +35,7 @@ conda activate FocalSV
 
 ## Running the Code:
 
-To execute the code, either add `FocalSV/bin` to your `.bashrc` file or use the full path.
+To execute the code, either add `FocalSV/focalsv` to your `.bashrc` file or use the full path.
 
 
 # Large INDEL detection
