@@ -212,7 +212,7 @@ FocalSV incorporates a post-processing module to filter false positives and corr
 - **--vcf_file/-vcf**: Path to the input FocalSV Candidate SV VCF file generated in Step 1.
 - **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
 - **--ref_file/-r**: Reference FASTA file.
-- **--chr_num/-chr**: Chromosome number for the target region or whole chromosome analysis.
+- **--chr_num/-chr**: Chromosome number for the target region or use 0 for whole chromosome analysis.
 
 #### Optional Parameters:
 - **--out_dir/-o**: Output directory to store results (default: `./FocalSV_Final_VCF`).
@@ -248,7 +248,7 @@ python3 ./FocalSV/focalsv/post_processing/FocalSV_Filter_GT_Correct.py \
 --bam_file ${wgs_bam} \
 --ref_file ${wgs_reference} \
 --vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcf  \
---chr_num wgs \
+--chr_num 0 \
 --out_dir ./FocalSV_results/Final_VCF \
 --data_type HIFI \
 --num_threads 8
