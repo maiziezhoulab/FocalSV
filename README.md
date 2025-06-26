@@ -41,7 +41,7 @@ To execute the code, either add `FocalSV/focalsv` to your `.bashrc` file or use 
 # Large INDEL detection
 ## Step 0: Define target regions
 
-If you already have target regions of interest, you can skip this step and proceed directly to Step 1. Otherwise, run this step to automatically detect potential SV regions.
+If you already have target regions of interest, you can skip this step and proceed directly to Step 1. Otherwise, run this step to automatically detect potential SV regions in the auto mode.
 
 
 ### Parameters
@@ -67,7 +67,7 @@ python3 FocalSV/focalsv/0_define_region.py \
 --bam_file ./test/test_hifi_chr21.bam \
 --ref_file ./test/test_chr21.fa \
 --prior_file <popuplation SV file> \
---out_dir ./FocalSV_results/Defind_Region \
+--out_dir ./FocalSV_results/Define_Region \
 --data_type HIFI \
 --num_threads 8
 ```
@@ -95,7 +95,7 @@ python3 FocalSV/focalsv/0_define_region.py \
 
 ##### Mutli Region (BED file)
 
-- **--target_bed/-target_bed**: BED file with multiple target regions (Optional for multiple region mode).
+- **--target_bed/-target_bed**: BED file containing multiple target regions (optional for multi-region analysis in either target or auto mode. For auto mode, the BED file can be generated in Step 0)
 
 #### Optional Parameters:
 
