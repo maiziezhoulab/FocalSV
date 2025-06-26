@@ -41,7 +41,7 @@ To execute the code, either add `FocalSV/focalsv` to your `.bashrc` file or use 
 # Large INDEL detection
 ## Step 0: Define target regions
 
-If you already have interested target regions, you can skip this step and go to step 1, otherwise, you need to run this step to detect potential SV regions.
+If you already have target regions of interest, you can skip this step and proceed directly to Step 1. Otherwise, run this step to automatically detect potential SV regions.
 
 
 ### Parameters
