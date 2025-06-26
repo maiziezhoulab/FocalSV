@@ -6,8 +6,8 @@ FocalSV is a tool for region-based structural variant (SV) assembly and refineme
 ## Table of Content 
 - [Installation](#install-through-github)
 - [Large INDEL detection](#Large-INDEL-detection)
-    - [Step 0: Automatically detect target regions (for auto mode)](#Step-0-Define-target-regions)
-    - [Step 1: Generating Candidate SVs (for both modes)](#Step-1-Generating-Candidate-SVs)
+    - [Step 0: Automatically detect target regions (for auto mode)](#Step-0-Automatically-detect-target-regions-for-auto-mode)
+    - [Step 1: Generating Candidate SVs (for both modes)](#Step-1-Generating-Candidate-SVs-for-both-modes)
     - [Step 2: filtering and genotype correction (for both modes)](#Step-2-filtering-and-genotype-correction-for-both-modes)
 - [TRA INV DUP detection](#TRA-INV-DUP-detection)
   -  [FocalSV-target mode](#FocalSVtarget-mode)
