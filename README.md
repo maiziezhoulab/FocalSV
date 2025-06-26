@@ -181,7 +181,7 @@ FocalSV_results/
 #### `results/`
 
 - **`results/FocalSV_Candidate_SV.vcf`**  
-  Candidate structural variant (SV) results without redundancy (key output).
+  Candidate structural variant (SV) results without redundancy (key output). This VCF will be the input of step2 for filtering and genotype correction.
 
 #### `regions/`
 
