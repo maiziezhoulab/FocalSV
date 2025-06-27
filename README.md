@@ -42,6 +42,8 @@ To execute the code, either add `FocalSV/focalsv` to your `.bashrc` file or use 
 
 - FocalSV is intended for use on autosomal chromosomes only, as phasing on sex chromosomes involves additional complexities.
 - The input for each step can be a whole-genome sequencing (WGS) BAM file. In our test example, we used a chr21 BAM file solely for convenience due to its smaller size. However, manually splitting the WGS BAM file by chromosome is not required.
+- You maybe download our test data from zenodo https://zenodo.org/records/15750913
+- 
 # Large INDEL detection
 ## Step 0: Automatically detect target regions (for auto mode)
 
@@ -67,6 +69,8 @@ By default, this script takes a whole-genome BAM file and scans for potential SV
 ### Examples
 
 By default, FocalSV(auto) uses a prior VCF generated from haplotype-resolved assemblies of nine individuals (HG01109, HG01243, HG02055, HG02080, HG02109, HG02145, HG02723, HG03098, and HG03492). SVs were identified from these assemblies and merged using the Pangenie vcf-merging pipeline. This multi-sample VCF serves as the default population reference for FocalSV(auto), though users may substitute any population-scale, pangenome graph-based SV catalog suitable for their specific studies. To use the default prior VCF, specify either `FocalSV/Population_SV/pangenie_hg19_SV_gt50.vcf.gz` or `FocalSV/Population_SV/pangenie_hg38_SV_gt50.vcf.gz`. Alternatively, you may provide your own VCF file (both .vcf and .vcf.gz formats are supported).
+
+The hg19 and hg38 references can be found on our zenodo link https://zenodo.org/records/15750913. You can also use your own matching BAM file and reference.
 
 ```
 python3 FocalSV/focalsv/0_define_region.py \
@@ -114,8 +118,8 @@ The output file is `SV_Regions_<data_type>_<lib>.bed`.
 
 ```
 python3 FocalSV/focalsv/main.py \
---bam_file ./test/test_hifi_chr21.bam \
---ref_file ./test/test_chr21.fa \
+--bam_file zenodo/HG002_HIFI_L1_chr21_hg19.bam  \
+--ref_file zenodo/hg19_ref.fa \
 --chr_num 21 \
 --region_start 100000 \
 --region_end 200000 \
@@ -131,10 +135,10 @@ python3 FocalSV/focalsv/main.py \
 Here is an example of running multiple target regions on chromosome 21.
 ```
 python3 FocalSV/focalsv/main.py \
---bam_file ./test/test_hifi_chr21.bam \
---ref_file ./test/test_chr21.fa \
+--bam_file zenodo/HG002_HIFI_L1_chr21_hg19.bam  \
+--ref_file zenodo/hg19_ref.fa \
 --chr_num 21 \
---target_bed ./test/test_chr21_multiRegion.bed \
+--target_bed zenodo/HG002_SV_rich_regions_chr21.bed \
 --out_dir ./FocalSV_results \
 --data_type HIFI \
 --num_cpus 10 \
@@ -228,8 +232,8 @@ For optimal computational efficiency, if you perform separate single-region anal
 
 ```
 python3 ./FocalSV/focalsv/5_post_processing/FocalSV_Filter_GT_Correct.py \
---bam_file ./test/test_hifi_chr21.bam \
---ref_file ${wgs_ref} \
+--bam_file zenodo/HG002_HIFI_L1_chr21_hg19.bam  \
+--ref_file zenodo/hg19_ref.fa \
 --vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcf  \
 --chr_num 21 \
 --out_dir ./FocalSV_results/Final_VCF \
@@ -246,7 +250,7 @@ Below is an example command for running post-processing on a whole-genome scale.
 ```
 python3 ./FocalSV/focalsv/post_processing/FocalSV_Filter_GT_Correct.py \
 --bam_file ${wgs_bam} \
---ref_file ${wgs_reference} \
+--ref_file zenodo/hg19_ref.fa \
 --vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcf  \
 --chr_num 0 \
 --out_dir ./FocalSV_results/Final_VCF \
@@ -296,7 +300,7 @@ Here is an example of running the large indel call on HCC1395.
 ```
 python3 FocalSV/focalsv/main.py \
 --bam_file HCC1395_Pacbio_hg38.bam \
---ref_file hg38_ref.fa \
+--ref_file zenodo/hg38_ref.fa \
 --chr_num 0 \
 --excel_file focalsv/TRA_INV_DUP_call/Target/High_confidence_callset.xlsx \
 --out_dir ./FocalSV_results_DUP \
@@ -309,7 +313,7 @@ If you want to run it on another sample, you need to provide the interested DUP 
 ```
 python3 FocalSV/focalsv/main.py \
 --bam_file<sample>_<dtype>_hg38.bam \
---ref_file hg38_ref.fa \
+--ref_file zenodo/hg38_ref.fa \
 --chr_num 0 \
 --bed_file DUP_regions.bed \
 --out_dir ./FocalSV_results_DUP \
@@ -342,7 +346,7 @@ python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
 --bam_file HCC1395_Pacbio_hg38.bam \
 --excel_file focalsv/TRA_INV_DUP_call/Target/High_confidence_callset.xlsx \
 --data_type CLR \
---ref_file <hg38_reference> \
+--ref_file zenodo/hg38_ref.fa \
 --out_dir HCC1395_FocalSV-target_tra_inv_dup_output
 ```
 The output is `HCC1395_FocalSV-target_tra_inv_dup_output/FocalSV_TRA_INV_DUP.vcf`.
@@ -354,7 +358,7 @@ python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
 --bam_file <sample>_<datatype>_hg38.bam \
 --bed_file <target_bed> \
 --data_type <datatype> \
---ref_file <hg38_reference> \
+--ref_file zenodo/hg38_ref.fa \
 --out_dir <sample>_FocalSV-target_tra_inv_dup_output
 ```
 
