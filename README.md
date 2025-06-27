@@ -43,7 +43,7 @@ To execute the code, either add `FocalSV/focalsv` to your `.bashrc` file or use 
 - FocalSV is intended for use on autosomal chromosomes only, as phasing on sex chromosomes involves additional complexities.
 - The input for each step can be a whole-genome sequencing (WGS) BAM file. In our test example, we used a chr21 BAM file solely for convenience due to its smaller size. However, manually splitting the WGS BAM file by chromosome is not required.
 - You maybe download our test data from zenodo https://zenodo.org/records/15750913
-- 
+  
 # Large INDEL detection
 ## Step 0: Automatically detect target regions (for auto mode)
 
