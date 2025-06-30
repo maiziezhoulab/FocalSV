@@ -139,29 +139,12 @@ python3 FocalSV/focalsv/main.py \
 --ref_file zenodo/hg19_ref.fa \
 --chr_num 21 \
 --target_bed zenodo/HG002_SV_rich_regions_chr21.bed \
---out_dir ./FocalSV_results/chr21 \
+--out_dir ./FocalSV_results/ \
 --data_type HIFI \
 --num_cpus 10 \
 --num_threads 8
 ```
 
-#### 3. Running FocalSV on a whole-genome scale (except sex chromosomes)
-\*Note that you can provide a custom BED file based on your regions of interest, or directly use the whole-genome BED file generated in Step 0.
-
-```
-for i in {1..22}
-dp
-python3 FocalSV/focalsv/main.py \
---bam_file <wgs_bam> \
---ref_file <reference> \
---chr_num $i \
---target_bed target_region_wgs.bed \
---out_dir ./FocalSV_results/chr$i \
---data_type HIFI \
---num_cpus 10 \
---num_threads 8
-done
-```
 ### Output:
 
 ```
@@ -185,10 +168,11 @@ FocalSV_results/chr21
   └── logs/
 ```
 
-#### `results/`
+#### Result
 
-- **`results/FocalSV_Candidate_SV.vcf`**  
-  Candidate structural variant (SV) results without redundancy (key output). This VCF will be the input of step2 for filtering and genotype correction.
+- **`FocalSV_results/chr21/Final_SV/FocalSV_Final_SV.vcf`**  
+  Final structural variant (SV) results for chr21.
+  
 
 #### `regions/`
 
@@ -208,91 +192,31 @@ FocalSV_results/chr21
 
 - Contains log files for debugging and tracking pipeline steps.
 
-## Step 2: filtering and genotype correction (for both modes)
 
 
-FocalSV incorporates a post-processing module to filter false positives and correct genotypes further. This step involves collecting read-based signatures from the read-to-reference BAM file. You can either run it by chromosome or on a whole-genome scale. 
-
-### Parameters
-
-#### Required Parameters:
-- **--bam_file/-bam**: The input BAM file.
-- **--vcf_file/-vcf**: Path to the input FocalSV Candidate SV VCF file generated in Step 1.
-- **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
-- **--ref_file/-r**: Reference FASTA file.
-- **--chr_num/-chr**: Chromosome number for the target region or use 0 for whole chromosome analysis.
-
-#### Optional Parameters:
-- **--out_dir/-o**: Output directory to store results (default: `./FocalSV_Final_VCF`).
-- **--num_threads/-thread**: Number of threads (default: 8).
-
-
-### Examples
-
-#### 1. Running for One Chromosome
-
-For optimal computational efficiency, if you perform separate single-region analyses across multiple regions on the same chromosome - instead of using a multi-region BED file - you should merge the resulting VCF files and run post-processing only once. Below is an example command.
-\*Note that the minimum scale is defined per chromosome, not per region, to reduce the impact of read depth fluctuations, which are less reliable at region boundaries. If analyzing a single region,  ensure that you specify the corresponding chromosome number during post-processing.
+#### 3. Running FocalSV on a whole-genome scale (except sex chromosomes)
+\*Note that you can provide a custom BED file based on your regions of interest, or directly use the whole-genome BED file generated in Step 0.
 
 ```
-python3 ./FocalSV/focalsv/5_post_processing/FocalSV_Filter_GT_Correct.py \
---bam_file zenodo/HG002_HIFI_L1_chr21_hg19.bam  \
---ref_file zenodo/hg19_ref.fa \
---vcf_file FocalSV_results/chr21/results/FocalSV_Candidate_SV.vcf  \
---chr_num 21 \
---out_dir ./FocalSV_results/Final_VCF \
+for i in {1..22}
+dp
+python3 FocalSV/focalsv/main.py \
+--bam_file <wgs_bam> \
+--ref_file <reference> \
+--chr_num $i \
+--target_bed target_region_wgs.bed \
+--out_dir ./FocalSV_results/ \
 --data_type HIFI \
+--num_cpus 10 \
 --num_threads 8
+done
+grep '#' FocalSV_results/chr21/Final_SV/FocalSV_Final_SV.vcf > FocalSV_results/Final_SV/FocalSV_Final_SV.vcf
+grep -v '#' FocalSV_results/chr*/Final_SV/FocalSV_Final_SV.vcf|vcf-sort >> FocalSV_results/Final_SV/FocalSV_Final_SV.vcf
 ```
-
-This command runs for chromosome 21 using 8 threads.
-
-#### 2. Running for Whole Genome
-
-Below is an example command for running post-processing on a whole-genome scale.
-
-```
-python3 ./FocalSV/focalsv/post_processing/FocalSV_Filter_GT_Correct.py \
---bam_file ${wgs_bam} \
---ref_file zenodo/hg19_ref.fa \
---vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcf  \
---chr_num 0 \
---out_dir ./FocalSV_results/Final_VCF \
---data_type HIFI \
---num_threads 8
-```
-
-This command runs for the whole genome using 8 threads.
-
-### Output:
-
-```
-FocalSV_results/
-  |—— Final_SV/FocalSV_Final_SV.vcf
-  ├── results/
-  │   ├── FocalSV_Candidate_SV.vcf
-  │   ├── FocalSV_Candidate_SV_redundancy.vcf
-  │   └── variants.vcf
-  ├── regions/
-  │   ├── Region_chr21_S100000_E200000/
-  │   │   ├── results/
-  │   │   ├── HP1.fa
-  │   │   ├── HP2.fa
-  │   │   ├── PSxxx_hp1.fa
-  │   │   ├── PSxxx_hp2.fa
-  │   │   ├── region.bam
-  │   │   ├── region_phased.bam
-  │   │   └── ...
-  │   ├── Region_chr21_Sxxx_Exxx/
-  │   └── ...
-  └── logs/
-```
-
 #### Result
 
 - **`FocalSV_results/Final_SV/FocalSV_Final_SV.vcf`**  
-  Final structural variant (SV) results.
-  
+  Final structural variant (SV) results for the whole chromosome.
 
 # TRA INV DUP detection
 
