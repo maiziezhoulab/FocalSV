@@ -268,7 +268,7 @@ python3 FocalSV/focalsv/main.py \
 --bam_file HCC1395_Pacbio_hg38.bam \
 --ref_file zenodo/hg38_ref.fa \
 --chr_num 0 \
---bed_file zenodo/HCC1395_DUP_regions.bed \
+--bed_file zenodo/HCC1395_SV_rich_regions_DUP.bed \
 --out_dir ./FocalSV_results_DUP \
 --data_type CLR \
 --num_cpus 10 \
