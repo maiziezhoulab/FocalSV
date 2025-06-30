@@ -92,7 +92,7 @@ The output file is `SV_Regions_<data_type>_<lib>.bed`.
 
 - **--bam_file/-bam**: The input BAM file.
 - **--ref_file/-r**: Reference FASTA file.
-- **--chr_num/-chr**: Chromosome number for the target region. If the target region contains multiple chromosomes, use 0.
+- **--chr_num/-chr**: Chromosome number for the target region.
 - **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
 
 #### Options for Region Selection:
@@ -123,7 +123,7 @@ python3 FocalSV/focalsv/main.py \
 --chr_num 21 \
 --region_start 100000 \
 --region_end 200000 \
---out_dir ./FocalSV_results \
+--out_dir ./FocalSV_results/chr21_100000_200000 \
 --data_type HIFI \
 --num_cpus 10 \
 --num_threads 8
@@ -139,7 +139,7 @@ python3 FocalSV/focalsv/main.py \
 --ref_file zenodo/hg19_ref.fa \
 --chr_num 21 \
 --target_bed zenodo/HG002_SV_rich_regions_chr21.bed \
---out_dir ./FocalSV_results \
+--out_dir ./FocalSV_results/chr21 \
 --data_type HIFI \
 --num_cpus 10 \
 --num_threads 8
@@ -148,20 +148,24 @@ python3 FocalSV/focalsv/main.py \
 #### 3. Running FocalSV on a whole-genome scale (except sex chromosomes)
 \*Note that you can provide a custom BED file based on your regions of interest, or directly use the whole-genome BED file generated in Step 0.
 
-```python3 FocalSV/focalsv/main.py \
+```
+for i in {1..22}
+dp
+python3 FocalSV/focalsv/main.py \
 --bam_file <wgs_bam> \
 --ref_file <reference> \
---chr_num 0 \
+--chr_num $i \
 --target_bed target_region_wgs.bed \
---out_dir ./FocalSV_results/ \
+--out_dir ./FocalSV_results/chr$i \
 --data_type HIFI \
 --num_cpus 10 \
 --num_threads 8
+done
 ```
 ### Output:
 
 ```
-FocalSV_results/
+FocalSV_results/chr21
   ├── results/
   │   ├── FocalSV_Candidate_SV.vcf
   │   ├── FocalSV_Candidate_SV_redundancy.vcf
@@ -234,7 +238,7 @@ For optimal computational efficiency, if you perform separate single-region anal
 python3 ./FocalSV/focalsv/5_post_processing/FocalSV_Filter_GT_Correct.py \
 --bam_file zenodo/HG002_HIFI_L1_chr21_hg19.bam  \
 --ref_file zenodo/hg19_ref.fa \
---vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcf  \
+--vcf_file FocalSV_results/chr21/results/FocalSV_Candidate_SV.vcf  \
 --chr_num 21 \
 --out_dir ./FocalSV_results/Final_VCF \
 --data_type HIFI \
