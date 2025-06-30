@@ -22,7 +22,7 @@ git clone  https://github.com/maiziezhoulab/FocalSV.git
 ```
 
 ## Dependencies for Github installation:
-FocalSV utilizes **Python3.8.3**. To set up the environment, you need to have conda installed. Then, simply run
+FocalSV integrated multiple state-of-the-art tools into the pipeline, including [longshot](https://github.com/pjedge/longshot), [hifiasm](https://github.com/chhylp123/hifiasm),[Flye](https://github.com/fenderglass/Flye),[Shasta](https://github.com/paoloshasta/shasta). To set up the environment, you need to have conda installed. Then, simply run
 ```
 conda env create -f FocalSV/requirement.yaml
 ```
