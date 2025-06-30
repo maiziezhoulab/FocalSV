@@ -6,6 +6,7 @@ parser = ArgumentParser(description="",
 # parser.add_argument('--bam_BL','-bl')
 parser.add_argument('--bamfile','-bam')
 parser.add_argument('--output_dir','-o')
+parser.add_argument('--bed_file','-bed')
 parser.add_argument('--n_thread','-t', type = int, default = 10 )
 # parser.add_argument('--prefix','-p', default="sample")
 args = parser.parse_args()
@@ -13,6 +14,7 @@ args = parser.parse_args()
 bam_TM = args.bamfile
 output_dir = args.output_dir
 n_thread = args.n_thread
+bed_file = args.bed_file
 # prefix = args.prefix
 
 import pysam
@@ -32,10 +34,10 @@ def reverse_tuple(forward_list):
     return reverse_list
     
 
-def collect_bnd(bam_file, chrom, pos, resolution):
+def collect_bnd(bam_file, chrom, start,end, resolution):
     breakpoints = []
     # Define regions for searching, considering resolution
-    search_region = (max(0, pos - resolution), pos + resolution)
+    search_region = (max(0, start - resolution), end + resolution)
     # Open the BAM file
     samfile = pysam.AlignmentFile(bam_file, "rb")
     # Search for split reads in the first region
@@ -157,8 +159,8 @@ def cluster_bnd(bnd_list, cluster_dist):
     
 def get_bnd(bam_file, n_thread):
     sequences = Parallel(n_jobs=n_thread)(delayed(infer_breakpoints)\
-                                        (bam_file, chrom1_list[i], pos1_list[i],
-                                            chrom2_list[i], pos2_list[i], resolution,
+                                        (bam_file, chrom1_list[i], start1_list[i], end1_list[i],
+                                            chrom2_list[i], start2_list[i], end2_list[i], resolution,
                                                 thresh, cluster_dist)
                                                 for i in tqdm(range(len(chrom1_list))))
     bnd_list = []
@@ -175,10 +177,10 @@ def get_bnd(bam_file, n_thread):
 
 
 
-def infer_breakpoints(bam_file, chrom1, start1, chrom2, start2, resolution, thresh, cluster_dist):
+def infer_breakpoints(bam_file, chrom1, start1, end1,chrom2, start2,end2, resolution, thresh, cluster_dist):
 
-    breakpoints1 = collect_bnd(bam_file, chrom1, start1, resolution)
-    breakpoints2 = collect_bnd(bam_file, chrom2, start2, resolution)
+    breakpoints1 = collect_bnd(bam_file, chrom1, start1,end1, resolution)
+    breakpoints2 = collect_bnd(bam_file, chrom2, start2,end2, resolution)
     
     name1 = [x[1] for x in breakpoints1]
     name2 = [x[1] for x in breakpoints2]
@@ -355,16 +357,23 @@ import os
 code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 
 # ------------- Load Data
-df = pd.read_excel(f"{code_dir}/High_confidence_callset.xlsx")
-df_tra = df[df['SV_type'] == 'TRA'].reset_index(drop = True)
+
+
+# df = pd.read_excel(f"{code_dir}/High_confidence_callset.xlsx")
+df_tra = pd.rad_csv(bed_file,sep='\t', header = None)
+df_tra.columns = ['Chrom1','Start1','End1','Chrom2','Start2','End2','svtype']
+# df_tra = df[df['SV_type'] == 'TRA'].reset_index(drop = True)
 chrom1_list = df_tra['Chrom1'].tolist()
+start1_list = df_tra['Start1'].tolist()
+end1_list = df_tra['End1'].tolist()
 chrom2_list = df_tra['Chrom2'].tolist()
-pos1_list = df_tra['Pos1'].tolist()
-pos2_list = df_tra['Pos2'].tolist()
+start2_list = df_tra['Start2'].tolist()
+end2_list = df_tra['End2'].tolist()
 
 # --------------- Call TRA
 # n_thread = 40
-resolution = 50000  # 10kb
+# resolution = 50000  # 10kb
+resolution = 0  # 10kb
 thresh = 1000
 cluster_dist = 100
 

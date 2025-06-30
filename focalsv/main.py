@@ -81,7 +81,7 @@ def Assembly(bam_file, chr_num, out_dir, reference, threads, cpus, log_dir, data
     
     run_command(use_cmd, logger, "Assembly")
 
-def SVCalling(bam_file, chr_num, out_dir, reference, threads, cpus, log_dir, datatype, logger):
+def SVCalling_old(bam_file, chr_num, out_dir, reference, threads, cpus, log_dir, datatype, logger):
     use_cmd = (f"python3 {code_path}4_sv_calling.py "
                f"--bam_file {bam_file} "
                f"--chr_num {chr_num} "
@@ -91,6 +91,28 @@ def SVCalling(bam_file, chr_num, out_dir, reference, threads, cpus, log_dir, dat
                f"--num_cpus {cpus} "
                f"--log_dir {log_dir} "
                f"--data_type {datatype}")
+    
+    run_command(use_cmd, logger, "SV Calling")
+
+def SVCalling(in_dir, out_dir,bam_file,ref_file,datatype,code_path, chr_num,  cpus, logger ):
+    if datatype == 0:
+        datatype ='Hifi'
+    elif datatype == 1:
+        datatype = 'CLR'
+    elif datatype == 2:
+        datatype = 'ONT'
+    else:
+        print("only support datatype 0,1,2")
+        exit()
+    use_cmd = (f"bash {code_path}4_sv_calling.sh "
+              f" {in_dir} "
+              f" {out_dir} "
+              f" {bam_file} "
+              f" {ref_file} "
+              f" {datatype} "
+              f" {code_path} "
+              f" {chr_num} "
+              f" {cpus} ")
     
     run_command(use_cmd, logger, "SV Calling")
 
@@ -117,7 +139,7 @@ def main():
         chr_num = args.chr_num
         region_start = args.region_start
         region_end = args.region_end
-        out_dir = args.out_dir
+        out_dir = args.out_dir+"/chr%d"%(chr_num)
         data_type = args.data_type
         num_threads = args.num_threads
         early_threads = args.early_threads
@@ -164,7 +186,8 @@ def main():
 
             # Step 4: SV Calling
             logger.info("Starting SV calling step...")
-            SVCalling(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, out_dir, data_type, logger)
+            # SVCalling(bam_file, chr_num, out_dir, ref_file, num_threads, num_cpus, out_dir, data_type, logger)
+            SVCalling(out_dir, out_dir+"/results/",bam_file,ref_file,data_type,code_path, chr_num,  num_cpus, logger )
 
             logger.info("All steps completed successfully.")
         except Exception as e:

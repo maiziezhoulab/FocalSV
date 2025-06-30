@@ -5,12 +5,14 @@ parser = ArgumentParser(description="",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 # parser.add_argument('--bam_BL','-bl')
 parser.add_argument('--bamfile','-bam')
+parser.add_argument('--bed_file','-bed')
 parser.add_argument('--output_dir','-o')
 parser.add_argument('--n_thread','-t', type = int, default = 10 )
 # parser.add_argument('--prefix','-p', default="sample")
 args = parser.parse_args()
 # bam_BL = args.bam_BL
 bam_TM = args.bamfile
+bed_file = args.bed_file
 output_dir = args.output_dir
 n_thread = args.n_thread
 # prefix = args.prefix
@@ -384,12 +386,19 @@ if __name__  == '__main__':
     code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 
     # ------------- Load Data
-    df = pd.read_excel(f"{code_dir}/High_confidence_callset.xlsx")
-    df_inv = df[(df['SV_type'] == 'INV')].reset_index(drop = True)
-    chrom1_list = df_inv['Chrom1'].tolist()
-    chrom2_list = df_inv['Chrom2'].tolist()
-    pos1_list_raw = df_inv['Pos1'].tolist()
-    pos2_list_raw = df_inv['Pos2'].tolist()
+    # df = pd.read_excel(f"{code_dir}/High_confidence_callset.xlsx")
+    # df_inv = df[(df['SV_type'] == 'INV')].reset_index(drop = True)
+    df_inv = pd.read_csv(bed_file, sep = '\t', header = None)
+    # chrom1_list = df_inv['Chrom1'].tolist()
+    # chrom2_list = df_inv['Chrom2'].tolist()
+    # pos1_list_raw = df_inv['Pos1'].tolist()
+    # pos2_list_raw = df_inv['Pos2'].tolist()
+
+    chrom1_list = df_inv.iloc[:,0]
+    chrom2_list = df_inv.iloc[:,0]
+    pos1_list_raw = df_inv.iloc[:,1]
+    pos2_list_raw = df_inv.iloc[:,2]
+
     pos1_list = []
     pos2_list = []
     for i in range(len(pos1_list_raw)):
@@ -406,7 +415,8 @@ if __name__  == '__main__':
     # bam_file_BL="/lio/lfs/maiziezhou_lab/h_constantinidis_lab/ukbb/MaizieZhouLab_backup/Datasets/Cancer_Data/HCC1395/HCC1395BL_ONT/minimap2/HCC1395BL_ONT.bam"
     cluster_dist1=100
     cluster_dist2=500
-    resolution = 50000  # 50kb
+    # resolution = 50000  # 50kb
+    resolution = 0 # target regions already have flanking
     max_merge_dist = 100 # higher value for better recall
     min_svlen = 30
 

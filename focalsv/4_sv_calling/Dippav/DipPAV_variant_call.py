@@ -24,6 +24,7 @@ def reformat_fasta(contig_file,outfile,hp):
     
 def dippav_variant_call(data_type,
 		read_bam_file,
+		reference_path,
 	hp1_contig_path,
 	hp2_contig_path,
 	output_dir,
@@ -184,7 +185,7 @@ if __name__ == "__main__":
 	parser.add_argument('--reference_path','-ref', help = "single chrom ref")
 	# parser.add_argument('--signature_dir','-sigd')
 	parser.add_argument('--output_dir','-o')
-	parser.add_argument('--data_type','-dtype',choices= ['CCS','CLR','ONT'], help="CCS;CLR;ONT")
+	parser.add_argument('--data_type','-dtype',choices= ['Hifi','CLR','ONT'], help="CCS;CLR;ONT")
 	parser.add_argument('--chr_num','-chr',type = int)
 	###optional
 	parser.add_argument('--header_file','-header',help='optional;if not set, will use the default header')
@@ -208,10 +209,14 @@ if __name__ == "__main__":
 	n_thread = args.n_thread
 	mem_per_thread = args.mem_per_thread
 
+	if data_type == 'Hifi':
+		data_type = 'CCS'
+
 	# print(chr_num)
 	dippav_variant_call(
 		data_type,
 		read_bam_file,
+		reference_path,
 	hp1_contig_path,
 	hp2_contig_path,
 	output_dir,

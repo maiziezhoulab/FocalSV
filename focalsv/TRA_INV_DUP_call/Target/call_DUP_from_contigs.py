@@ -39,20 +39,22 @@ logger = logging.getLogger(" ")
 import os
 import glob
 from subprocess import Popen
+from tqdm import tqdm
 code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 
 
 def collect_vcf(input_dir, out_vcf):
    
-   one_vcf = glob.glob(f"{input_dir}/chr*/regions/Out*/results/final_vcf/dippav_variant_no_redundancy.vcf")[0]
+   # one_vcf = glob.glob(f"{input_dir}/chr*/regions/Out*/results/final_vcf/dippav_variant_no_redundancy.vcf")[0]
+   one_vcf = glob.glob(f"{input_dir}/chr*/results/FocalSV_Final_SV.vcf")[0]
    cmd = f'''cat {one_vcf}|grep '#'> {out_vcf};
-   cat {input_dir}/chr*/regions/Out*/results/final_vcf/dippav_variant_no_redundancy.vcf | grep -v '#'| vcf-sort >> {out_vcf} '''
+   cat {input_dir}/chr*/results/FocalSV_Final_SV.vcf | grep -v '#'| vcf-sort >> {out_vcf} '''
    Popen(cmd, shell = True).wait()
    return 
 
 
 def concat(input_dir, output_dir, hp):
-    fa_list = glob.glob(input_dir + f"/chr*/regions/Out*_*/results/{hp}.fa")
+    fa_list = glob.glob(input_dir + f"/chr*/results/chr*_{hp}_new.fa")
     print(len(fa_list))
     outfile = output_dir+f"/{hp}.fa"
     if os.path.exists(outfile):
@@ -89,8 +91,8 @@ def merge_fasta(input_dir,outdir):
    fhp2.close()
    return 
 
-hp1fa = out_dir+"/hp1.fa"
-hp2fa = out_dir+"/hp2.fa"
+hp1fa = out_dir+"/HP1.fa"
+hp2fa = out_dir+"/HP2.fa"
 raw_dir = out_dir+"/Raw_Detection/"
 indel_vcf = out_dir+"/raw.vcf"
 
@@ -99,8 +101,8 @@ logger.info("-------------------------------Merge VCFs")
 collect_vcf(input_dir, indel_vcf )
 
 logger.info("-------------------------------Merge contigs")
-concat(input_dir, out_dir, 'hp1')
-concat(input_dir, out_dir, 'hp2')
+concat(input_dir, out_dir, 'HP1')
+concat(input_dir, out_dir, 'HP2')
 
 logger.info("-------------------------------Extract raw complex SV")
 
@@ -127,7 +129,7 @@ Popen(cmd, shell = True).wait()
 
 
 logger.info("-------------------------------DUP detection")
-cmd = f"python3 {code_dir}/align_ins2ref.py -i {indelvcf} -o {out_dir}/DUP -d {datatype} \
+cmd = f"python3 {code_dir}/align_ins2ref.py -i {indel_vcf} -o {out_dir}/DUP -d {datatype} \
    -ref {reference}"
 Popen(cmd, shell = True).wait()
 cmd = f"cat {raw_dir}/variants.vcf |grep SVTYPE=DUP > {raw_dir}/variants_dup.vcf"

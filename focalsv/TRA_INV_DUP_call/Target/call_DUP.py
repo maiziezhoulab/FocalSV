@@ -10,7 +10,10 @@ parser = ArgumentParser(description="",
 
 parser.add_argument('--input_dir','-i')
 parser.add_argument('--bam_file','-bam')
+parser.add_argument('--bed_file','-bed')
 parser.add_argument('--reference','-ref')
+parser.add_argument('--excel_file','-excel')
+parser.add_argument('--bed_file','-bed')
 # parser.add_argument('--vcffile','-vcf')
 parser.add_argument('--outdir','-o')
 parser.add_argument('--datatype','-d', choices=['HIFI','CLR','ONT'])
@@ -18,10 +21,12 @@ parser.add_argument('--n_thread','-t', type = int, default = 80 )
 parser.add_argument('--max_d_cluster','-dc', type = int, default = 100 )
 parser.add_argument('--max_d_eval','-de', type = int, default = 100 )
 
+# need heavy editing this file
 args = parser.parse_args()
 input_dir = args.input_dir
 bam_file = args.bam_file 
 outdir = args.outdir 
+bed_file = args.bed_file
 vcffile = args.vcffile 
 n_thread = args.n_thread
 max_d_cluster = args.max_d_cluster
@@ -163,12 +168,12 @@ def extract_reads(bam_file, chrom,start, end, min_clip):
         qn_pos[(read.qname, ort)].append(read.pos)
     return qnames_raw, qn_pos
 
-def call_dup(df_dup,bam_file,i, min_clip):
-    chrom = df_dup['Chrom1'][i]
-    start = df_dup['Pos1'][i]
-    end = df_dup['Pos2'][i]
+def call_dup(df_dup, bam_file,i,flank, min_clip):
+    chrom = df_dup['chrom'][i]
+    start = df_dup['start'][i]
+    end = df_dup['end'][i]
 
-    flank = 50000
+    # flank = 50000
     max_seg_dist = 500
     max_cluster_dist = 1000
 
@@ -281,41 +286,59 @@ def write_vcf(vcffile, outdir, dc_final):
     cmd = f'''vcf-sort {asm_vcf} > {out_vcf};rm {asm_vcf}'''
     Popen(cmd, shell = True).wait()
 
+def get_target_region_excel(excel_file):
 
+    # excel_file = code_dir + "High_confidence_callset.xlsx"
+    df = pd.read_excel(excel_file)
+
+    # For faster demonstration, only used < 5M DUP
+    # It is less reliable to when a read has split-alignment further than 5MB, so we only focus on DUPs <5M
+    df_dup_target = df[(df['SV_type']=='DUP') & (df['SV_Size or breakpoints distance']<5000000)].reset_index(drop = True)
+    df_dup = df[(df['SV_type']=='DUP') ].reset_index(drop = True)
+    dc_gt = load_gt(df_dup)
+
+    return df_dup_target, df_dup, dc_gt
+    
+def load_vcf(vcffile):
+    # load FocalSV  DUP vcf
+    dc_asm = defaultdict(list)
+    with open(vcffile,'r') as f:
+        for line in f:
+            if line[0]!='#':
+                data = line.split()
+                chrom,pos = data[0], data[1]
+                pos = int(pos)
+                size = int(data[7].split("SVLEN=")[1].split(';')[0])
+                end = pos + size
+                dc_asm[chrom].append((pos, end))
+    return dc_asm
+
+def load_bed(bed_file):
+    df = pd.read_csv(bed_file, sep = '\t', header = None)
+    df.columns = ['chrom','start','end','svtype']
+    return df 
 
 contig_call_dir = outdir + "/dup_call_from_contig/"
 vcffile = contig_call_dir+"/DUP/DUP_final.vcf"
+
+## load bed 
+
+df_dup_target = load_bed(bed_file)
+
 print("-------------------call_dup_from_contig")
-call_dup_from_contig(input_dir, bam_file, reference, datatype, contig_call_dir, t)
+call_dup_from_contig(input_dir, bam_file, reference, datatype, contig_call_dir, n_thread)
+dc_asm = load_vcf(vcffile)
 
-df = pd.read_excel(code_dir + "High_confidence_callset.xlsx")
-
-# For faster demonstration, only used < 5M DUP
-# It is less reliable to when a read has split-alignment further than 5MB, so we only focus on DUPs <5M
-df_dup_target = df[(df['SV_type']=='DUP') & (df['SV_Size or breakpoints distance']<5000000)].reset_index(drop = True)
-df_dup = df[(df['SV_type']=='DUP') ].reset_index(drop = True)
-dc_gt = load_gt(df_dup)
-# load FocalSV  DUP vcf
-dc_asm = defaultdict(list)
-with open(vcffile,'r') as f:
-    for line in f:
-        if line[0]!='#':
-            data = line.split()
-            chrom,pos = data[0], data[1]
-            pos = int(pos)
-            size = int(data[7].split("SVLEN=")[1].split(';')[0])
-            end = pos + size
-            dc_asm[chrom].append((pos, end))
 # %%
 # evaluate somatic DUP from asm result
-print("\n*****Only asm result:")
-benchmark_all(dc_gt, dc_asm, max_d_eval)
+# print("\n*****Only asm result:")
+# benchmark_all(dc_gt, dc_asm, max_d_eval)
 
 
 print("Now start adding DUPs from alignment file...")
 
-print("Number of bench DUPs: ",df_dup.shape[0])
-print("Number of target DUPs(<5M): ",df_dup_target.shape[0])
+# print("Number of bench DUPs: ",df_dup.shape[0])
+# print("Number of target DUPs(<5M): ",df_dup_target.shape[0])
 
 
 
@@ -323,7 +346,7 @@ print("Number of target DUPs(<5M): ",df_dup_target.shape[0])
 
 
 # call dup from bam file
-sequences = Parallel(n_jobs=n_thread)(delayed(call_dup)(df_dup_target,bam_file, i, min_clip = 0) for i in tqdm(range(df_dup_target.shape[0])))
+sequences = Parallel(n_jobs=n_thread)(delayed(call_dup)(df_dup_target,bam_file, i,flank=0, min_clip = 0) for i in tqdm(range(df_dup_target.shape[0])))
 
 # collect dup into dict
 dc_call = defaultdict(list)
@@ -333,10 +356,10 @@ for seq in sequences:
         
 # reduce dup call        
 dc_call_new = reduce_call(dc_call, max_d_cluster)
-print("\n*****pure aln result(before reduce)")
-benchmark_all(dc_gt, dc_call, max_d_eval)
-print("\n*****pure aln result(after reduce)")
-benchmark_all(dc_gt, dc_call_new, max_d_eval)
+# print("\n*****pure aln result(before reduce)")
+# benchmark_all(dc_gt, dc_call, max_d_eval)
+# print("\n*****pure aln result(after reduce)")
+# benchmark_all(dc_gt, dc_call_new, max_d_eval)
 
 
 # merge DUPs from alignment and asm
@@ -352,14 +375,14 @@ for chrom in dc_asm:
 dc_new1 = reduce_call(dc_new, max_d_cluster)
 
 
-# evaluate merged result
-print("\n*****merged result:")
-benchmark_all(dc_gt, dc_new, max_d_eval)
+# # evaluate merged result
+# print("\n*****merged result:")
+# benchmark_all(dc_gt, dc_new, max_d_eval)
 
 
-print("\n*****merged no redun result:")
-# evaluate merged call without redundancy
-benchmark_all(dc_gt, dc_new1, max_d_eval)
+# print("\n*****merged no redun result:")
+# # evaluate merged call without redundancy
+# benchmark_all(dc_gt, dc_new1, max_d_eval)
 
 
 print("We use raw merged result as final output")

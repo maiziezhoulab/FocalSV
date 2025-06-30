@@ -3,10 +3,25 @@ from tqdm import tqdm
 import numpy as np
 from collections import defaultdict
 import json
+import sys
+import os
+code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
+sys.path.append(f'{code_dir}/TRA_INV_DUP_call/Auto')
+from estimate_coverage import estimate_bam_cov
+from subprocess import Popen
+
+import gzip
+
+def smart_open(filename):
+    if filename.endswith('.gz'):
+        return gzip.open(filename, 'rt')
+    else:
+        return open(filename, 'r')
+
 
 def load_vcf_pg(vcffile):
 	dc = defaultdict(list)
-	with open(vcffile,'r') as f:
+	with smart_open(vcffile) as f:
 		for line in f:
 			if line[0]!='#':
 				sv = line.split()
@@ -17,32 +32,46 @@ def load_vcf_pg(vcffile):
 
 def call_sig(dtype,bamfile, sigdir, reference, chromosome,t):
 
-    os.system("mkdir -p " + sigdir)
+	os.system("mkdir -p " + sigdir)
 
-    if  dtype == "Hifi":
-        para ='''--max_cluster_bias_INS      1000 \
-        --diff_ratio_merging_INS    0.9 \
-        --max_cluster_bias_DEL  1000 \
-        --diff_ratio_merging_DEL    0.5 '''
-    elif dtype == 'CLR':
-        para = '''--max_cluster_bias_INS      100 \
-        --diff_ratio_merging_INS    0.3 \
-        --max_cluster_bias_DEL  200 \
-        --diff_ratio_merging_DEL    0.5 '''
-    else:
-        para = '''--max_cluster_bias_INS      100 \
-        --diff_ratio_merging_INS    0.3 \
-        --max_cluster_bias_DEL  100 \
-        --diff_ratio_merging_DEL    0.3 '''
-    cmd = f'''python3 {code_dir}/5_post_processing/Reads_Based_Scan/Reads_Based_Scan.py \
-    {bamfile} \
-    {reference} \
-    {sigdir}/reads_draft_variants.vcf \
-    {sigdir} \
-    {para} \
-    -chr {chromosome} -t {t} --genotype --retain_work_dir '''
-    print(cmd)
-    Popen(cmd, shell = True).wait()
+	real_sig = f"{sig_dir}/signatures"
+	if os.path.exists(real_sig):
+		os.system("rm -r "+ real_sig)
+
+	if  dtype == "Hifi":
+		para ='''--max_cluster_bias_INS      1000 \
+		--diff_ratio_merging_INS    0.9 \
+		--max_cluster_bias_DEL  1000 \
+		--diff_ratio_merging_DEL    0.5 '''
+	elif dtype == 'CLR':
+		para = '''--max_cluster_bias_INS      100 \
+		--diff_ratio_merging_INS    0.3 \
+		--max_cluster_bias_DEL  200 \
+		--diff_ratio_merging_DEL    0.5 '''
+	else:
+		para = '''--max_cluster_bias_INS      100 \
+		--diff_ratio_merging_INS    0.3 \
+		--max_cluster_bias_DEL  100 \
+		--diff_ratio_merging_DEL    0.3 '''
+	cmd = f'''python3 {code_dir}/5_post_processing/Reads_Based_Scan/Reads_Based_Scan.py \
+	{bamfile} \
+	{reference} \
+	{sigdir}/reads_draft_variants.vcf \
+	{sigdir} \
+	{para} \
+	-chr {chromosome} -t {t} --genotype --retain_work_dir '''
+	print(cmd)
+	Popen(cmd, shell = True).wait()
+
+
+
+
+def extract_gt30(sig_dir):
+	cmd = '''awk -F'\t' '$4 > 30 {print $2 "\t" $3 "\t" $4}' %s/DEL.sigs > %s/DEL_gt30.sigs'''%(sig_dir,sig_dir)
+	Popen(cmd, shell = True).wait()
+
+	cmd = '''awk -F'\t' '$4 > 30 {print $2 "\t" $3 "\t" $4}' %s/INS.sigs > %s/INS_gt30.sigs'''%(sig_dir,sig_dir)
+	Popen(cmd, shell = True).wait()
 
 
 def load_signature_file(file_path):
@@ -58,7 +87,7 @@ def load_signature_file(file_path):
     signature_list = []
     with open(file_path, 'r') as f:
         for line in f:
-            chrom, pos, svlen = line.strip().split()[1:4]
+            chrom, pos, svlen = line.strip().split()
             signature_list.append((chrom, int(pos), int(svlen)))
     return signature_list
 
@@ -445,9 +474,14 @@ elif dtype == 'CLR':
 
 	# lib = 3
 	# suffix = f"{dtype}_L{lib}"
-	cov_list = [65,89,29]
+	# cov_list = [65,89,29]
+
 	r = 0.17
-	# min_sig = int(r * cov_list[lib-1])
+	estimate_bam_cov(bamfile, out_dir, t)
+	cov_file = out_dir+"/mean_cov"
+	with open(cov_file,'r') as f:
+		mean_cov = eval(f.read())
+	min_sig = int(r * mean_cov)
 	# print(f"CLR L{lib} cov {cov_list[lib-1]}, min sig {min_sig}")
 	# sig_dir = f"/lio/lfs/maiziezhou_lab/maiziezhou_lab/CanLuo/long_reads_project/Variant_Caller_Result/cuteSV/CLR/CLR_L{lib}/cuteSV-1.0.11"
 elif dtype == 'ONT':
@@ -459,9 +493,13 @@ elif dtype == 'ONT':
 	dt_edge = 5e3 
 	# lib = 3
 	# suffix = f"{dtype}_L{lib}"
-	cov_list = [57,47,51]
+	# cov_list = [57,47,51]
 	r = 0.17
-	# min_sig = int(r * cov_list[lib-1])
+	estimate_bam_cov(bamfile, out_dir, t)
+	cov_file = out_dir+"/mean_cov"
+	with open(cov_file,'r') as f:
+		mean_cov = eval(f.read())
+	min_sig = int(r * mean_cov)
 	# print(f"ONT L{lib} cov {cov_list[lib-1]}, min sig {min_sig}")
 	# if lib==1:
 	# 	use_lib = 2
@@ -482,6 +520,7 @@ else:
 ######### call individual signature
 sig_dir = out_dir + "/read_signature"
 call_sig(dtype, bamfile, sig_dir, reference, 'wgs',t)
+extract_gt30(sig_dir)
 
 outfile = f"{out_dir}/summary_{dtype}_{suffix}.json"
 print(outfile)

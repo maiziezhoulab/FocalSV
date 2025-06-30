@@ -17,6 +17,7 @@ parser.add_argument('--n_thread','-t',type = int,default = 22, help = "number of
 parser.add_argument('--flanking','-f',type = int, default = 1000, help = 'flanking region around breakpoint')
 parser.add_argument('--min_size','-s', type = int, default = 30, help = "min signature size")
 parser.add_argument('--work_dir','-w')
+# parser.add_argument('--chr_num','-chr', type = int, choices= list(range(0,23)), help = '0 for wgs')
 args = parser.parse_args()
 vcffile = args.vcffile
 cutesv_dir = args.cutesv_dir
@@ -24,6 +25,7 @@ n_thread = args.n_thread
 flanking = args.flanking
 min_size = args.min_size
 wdir = args.work_dir
+# chr_num = args.chr_num
 
 def load_vcf(vcffile,svtype):
 	info_list = []
@@ -287,36 +289,40 @@ dc_call_del = load_vcf(vcffile,'DEL')
 
 
 
-ins_results = Parallel(n_jobs=n_thread)(delayed(calc_ins_call_cov)(dc_call_ins['chr'+str(i)],dc_sig_ins['chr'+str(i)]) for i in tqdm(range(1,23)))
-del_results = Parallel(n_jobs=n_thread)(delayed(calc_del_call_cov)(dc_call_del['chr'+str(i)],dc_sig_del['chr'+str(i)]) for i in tqdm(range(1,23)))
+ins_results = Parallel(n_jobs=n_thread)(delayed(calc_ins_call_cov)\
+										(dc_call_ins[chrom],dc_sig_ins[chrom]) 
+										for chrom in dc_call_ins )
+
+del_results = Parallel(n_jobs=n_thread)(delayed(calc_del_call_cov)\
+										(dc_call_del[chrom],dc_sig_del[chrom]) 
+										for chrom in dc_call_del )
 
 ##### add cov back
 final_info = []
-for i in range(22):
-	chrom = 'chr'+str(i+1)
-	if chrom in dc_call_ins:
-		call_list = dc_call_ins[chrom]
-		dc_ins_cov = ins_results[i]
-		for call in call_list:
-			start,end,svlen,svid,gt,svtype = call
-			if start in dc_ins_cov:
-				cov = dc_ins_cov[start]
-			else:
-				cov = 0
-			final_info.append([start,end,svlen,svid,gt,svtype,cov])
-
-for i in range(22):
-	chrom = 'chr'+str(i+1)
-	if chrom in dc_call_del:
-		call_list = dc_call_del[chrom]
-		dc_del_cov = del_results[i]
-		for call in call_list:
-			start,end,svlen,svid,gt,svtype = call
-			if (start,end) in dc_del_cov:
-				cov = dc_del_cov[(start,end)]
-			else:
-				cov = 0
-			final_info.append([start,end,svlen,svid,gt,svtype,cov])
+i=0
+for chrom in dc_call_ins:
+	call_list = dc_call_ins[chrom]
+	dc_ins_cov = ins_results[i]
+	i+=1
+	for call in call_list:
+		start,end,svlen,svid,gt,svtype = call
+		if start in dc_ins_cov:
+			cov = dc_ins_cov[start]
+		else:
+			cov = 0
+		final_info.append([start,end,svlen,svid,gt,svtype,cov])
+i=0
+for chrom in dc_call_del:
+	call_list = dc_call_del[chrom]
+	dc_del_cov = del_results[i]
+	i+=1
+	for call in call_list:
+		start,end,svlen,svid,gt,svtype = call
+		if (start,end) in dc_del_cov:
+			cov = dc_del_cov[(start,end)]
+		else:
+			cov = 0
+		final_info.append([start,end,svlen,svid,gt,svtype,cov])
 
 
 

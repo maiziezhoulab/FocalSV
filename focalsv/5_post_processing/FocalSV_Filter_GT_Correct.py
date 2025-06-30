@@ -15,7 +15,7 @@ formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 # Adding arguments
 #-------required
 parser.add_argument("--bam_file", '-bam', type=str, help="Path to the input whole genome reads BAM file.")
-parser.add_argument("--vcf_file", '-vcf',type=str, help="Path to the input FocalSV Candidate SV VCF file.")
+# parser.add_argument("--vcf_file", '-vcf',type=str, help="Path to the input FocalSV Candidate SV VCF file.")
 parser.add_argument("--data_type", '-d',type=str, choices=["ONT", "Hifi", "CLR"], help="Data type (e.g., ONT, Hifi, CLR).")
 parser.add_argument("--ref_file", '-r',type=str, help="Path to the reference genome file in FASTA format.")
 parser.add_argument(
@@ -25,7 +25,7 @@ parser.add_argument(
     help="Chromosome number for targeted processing (use 'wgs' to enable whole genome scale post-processing).",
 )
 #------optional
-parser.add_argument("--out_dir",'-o', type=str, help="Working directory for signature and corrected VCF outputs.", default= "./FocalSV_Final_VCF")
+parser.add_argument("--out_dir",'-o', type=str, help="FocalSV working directory", default= "./FocalSV_Result")
 parser.add_argument("--num_threads",'-thread', type=int, help="Number of threads to use.", default = 10)
 # parser.add_argument(
 #     "--sigdir",'-sig',
@@ -42,32 +42,39 @@ parser.add_argument(
 # Parse arguments
 args = parser.parse_args()
 
-# Validate inputs
-if not os.path.isfile(args.bam_file):
-    print(f"Error: BAM file '{args.bam_file}' does not exist.")
-    sys.exit(1)
-if not os.path.isfile(args.vcf_file):
-    print(f"Error: VCF file '{args.vcf_file}' does not exist.")
-    sys.exit(1)
-if not os.path.isfile(args.ref_file):
-    print(f"Error: Reference genome file '{args.ref_file}' does not exist.")
-    sys.exit(1)
+
 
 # Process arguments
 bamfile = os.path.realpath(args.bam_file)
-vcffile = os.path.realpath(args.vcf_file)
+# vcffile = os.path.realpath(args.vcf_file)
 dtype = args.data_type
 if dtype == 'HIFI':
     dtype = "Hifi"
-wdir = os.path.realpath(args.out_dir)
+
 t = args.num_threads
 reference = os.path.realpath(args.ref_file)
 chr_num = args.chr_num
+# wdir = os.path.realpath(args.out_dir)+f"/chr{chr_num}/results/post_processing/"
+wdir = os.path.realpath(args.out_dir)+f"/post_processing/"
 sigdir = args.sigdir
+
+vcffile = os.path.realpath(args.out_dir+f"/SV/chr{chr_num}/final_vcf/dippav_variant_no_redundancy.vcf")
+# vcffile = os.path.realpath(args.out_dir+"/chr%d"%(chr_num)+"/results/FocalSV_Candidate_SV.vcf")
 # sigdir = None # aoto-extract enabled
 #---------------test only-----------
 # sigdir = "/data/maiziezhou_lab/CanLuo/FocalSV/LargeINDEL/HiFi_l2exp_test/out/reads_sig/"
 # Print argument values for debugging or verification
+
+# Validate inputs
+if not os.path.isfile(args.bam_file):
+    print(f"Error: BAM file '{args.bam_file}' does not exist.")
+    sys.exit(1)
+if not os.path.isfile(vcffile):
+    print(f"Error: VCF file '{vcffile}' does not exist.")
+    sys.exit(1)
+if not os.path.isfile(args.ref_file):
+    print(f"Error: Reference genome file '{args.ref_file}' does not exist.")
+    sys.exit(1)
 print(f"BAM file: {bamfile}")
 print(f"VCF file: {vcffile}")
 print(f"Data type: {dtype}")
@@ -94,7 +101,8 @@ candidate_vcf_del = f"{wdir}/FocalSV_Candidate_SV_DEL.vcf"
 cand_vcf_ont = filtered_vcf.replace(".vcf","_updated_GT.vcf")
 
 
-final_vcf = f"{wdir}/FocalSV_Final_SV.vcf"
+# final_vcf = f"{wdir}/FocalSV_Final_SV.vcf"
+final_vcf = os.path.realpath(args.out_dir+"/FocalSV_Final_SV.vcf")
 workdir = wdir
 # Ensure necessary directories exist
 os.makedirs(wdir, exist_ok=True)
