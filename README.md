@@ -296,6 +296,36 @@ FocalSV_results/
 
 # TRA INV DUP detection
 
+## FocalSV - auto mode
+
+### Parameters
+
+#### Required Parameters:
+
+- **--bam_file/-bam**: The input BAM file.
+- **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
+- **--out_dir/-o**: Output directory to store results.
+- **--patient/-p**: patient name.
+- **--state/-s**: Tumor / Normal
+
+#### Optional Parameters:
+- **--num_threads/-thread**: Number of threads (default: 8).
+
+
+### Examples
+
+Here is an example of how to run FocalSV-auto to get TRA, INV, and DUP, on HCC1395.
+```
+python3 focalsv/TRA_INV_DUP_call/Auto/FocalSV-auto_TRA_INV_DUP_call.py \
+--bam_file HCC1395_Pacbio_hg38.bam \
+--data_type CLR \
+--out_dir HCC1395_FocalSV-auto_tra_inv_dup_output 
+--patient HCC1395 \
+--state Tumor 
+```
+The output is `HCC1395_FocalSV-auto_tra_inv_dup_output/FocalSV_TRA_INV_DUP.vcf`.
+
+
 ## FocalSV - target mode
 
 For target mode, you need to first perform FocalSV-target large indel call in the target regions as we have a module of duplication recovery from insertions. You need to follow the step1 FocalSV-target mode to generate the large indel call result.
@@ -366,34 +396,6 @@ python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
 --out_dir <sample>_FocalSV-target_tra_inv_dup_output
 ```
 
-## FocalSV - auto mode
-
-### Parameters
-
-#### Required Parameters:
-
-- **--bam_file/-bam**: The input BAM file.
-- **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
-- **--out_dir/-o**: Output directory to store results.
-- **--patient/-p**: patient name.
-- **--state/-s**: Tumor / Normal
-
-#### Optional Parameters:
-- **--num_threads/-thread**: Number of threads (default: 8).
-
-
-### Examples
-
-Here is an example of how to run FocalSV-auto to get TRA, INV, and DUP, on HCC1395.
-```
-python3 focalsv/TRA_INV_DUP_call/Auto/FocalSV-auto_TRA_INV_DUP_call.py \
---bam_file HCC1395_Pacbio_hg38.bam \
---data_type CLR \
---out_dir HCC1395_FocalSV-auto_tra_inv_dup_output 
---patient HCC1395 \
---state Tumor 
-```
-The output is `HCC1395_FocalSV-auto_tra_inv_dup_output/FocalSV_TRA_INV_DUP.vcf`.
 
 
 ## Troubleshooting:
