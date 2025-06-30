@@ -247,12 +247,20 @@ python3 focalsv/TRA_INV_DUP_call/Auto/FocalSV-auto_TRA_INV_DUP_call.py \
 --patient HCC1395 \
 --state Tumor 
 ```
-The output is `HCC1395_FocalSV-auto_tra_inv_dup_output/FocalSV_TRA_INV_DUP.vcf`.
+The output is `HCC1395_Tumor_CLR_final_TRA.tsv`, `HCC1395_Tumor_CLR_final_INV.tsv` and `HCC1395_Tumor_CLR_final_DUP.tsv`.
 
 
 ## FocalSV - target mode
 
-For target mode, you need to first perform FocalSV-target large indel call in the target regions as we have a module of duplication recovery from insertions. You need to follow the step1 FocalSV-target mode to generate the large indel call result.
+For target mode,  you need to provide a BED file with special format. 
+For DUP, each row is `chrom    start    end    DUP`.
+For DUP, each row is `chrom    start    end    INV`.
+For TRA, each row is `chrom1    start1    end1    chrom2    start2    end2    TRA`, where chrom1, start1, and end1 define the rough location for one breakend, chrom2, start2, and end2 define the rough location for the other breakend.
+
+The target BED file for HCC1395 is provided in the zenode repo.
+
+
+For target mode, you need to first perform FocalSV-target large indel call in the target regions of duplications, as we have a module of duplication recovery from insertions. You need to follow the step1 FocalSV-target mode to generate the large indel call result.
 
 Here is an example of running the large indel call on HCC1395.
 ```
@@ -260,7 +268,7 @@ python3 FocalSV/focalsv/main.py \
 --bam_file HCC1395_Pacbio_hg38.bam \
 --ref_file zenodo/hg38_ref.fa \
 --chr_num 0 \
---excel_file focalsv/TRA_INV_DUP_call/Target/High_confidence_callset.xlsx \
+--bed_file zenodo/HCC1395_DUP_regions.bed \
 --out_dir ./FocalSV_results_DUP \
 --data_type CLR \
 --num_cpus 10 \
@@ -281,6 +289,7 @@ python3 FocalSV/focalsv/main.py \
 ```
 `FocalSV_results_DUP/` will be the input for the next step.
 
+Next, you can run the SV calling.
 ### Parameters
 #### Required Parameters:
 - **--input_dir/-i**: FocalSV-target large indel call output folder
@@ -302,14 +311,14 @@ Here is an example of how to run FocalSV-target to get TRA INV and DUP on HCC139
 python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
 --input_dir FocalSV_results_DUP \
 --bam_file HCC1395_Pacbio_hg38.bam \
---excel_file focalsv/TRA_INV_DUP_call/Target/High_confidence_callset.xlsx \
+--bed_file zenodo/HCC1395_SV_rich_regions.bed \
 --data_type CLR \
 --ref_file zenodo/hg38_ref.fa \
 --out_dir HCC1395_FocalSV-target_tra_inv_dup_output
 ```
 The output is `HCC1395_FocalSV-target_tra_inv_dup_output/FocalSV_TRA_INV_DUP.vcf`.
 
-If you want to run it on another sample, you should provide a BED file with each region annotated with the SV type. For example, a row in the bed file can be "chr1 1000 5000 TRA", "chr2 1000 5000 INV", or "chr3 1000 5000 DUP"
+If you want to run it on another sample,
 ```
 python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
 --input_dir FocalSV_results_DUP \
