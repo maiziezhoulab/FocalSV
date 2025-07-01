@@ -42,7 +42,7 @@ To execute the code, either add `FocalSV/focalsv` to your `.bashrc` file or use 
 # Read ME before you start
 
 - FocalSV is intended for use on autosomal chromosomes only, as phasing on sex chromosomes involves additional complexities.
-- The input for each step can be a whole-genome sequencing (WGS) BAM file. In our test example, we used a chr21 BAM file solely for convenience due to its smaller size. However, manually splitting the WGS BAM file by chromosome is not required.
+- The input for each step should be a whole-genome sequencing (WGS) BAM file. In our test example, we used a chr21 BAM file solely for convenience due to its smaller size, and it only works for step 1 in large indel calling. In general, manually splitting the WGS BAM file by chromosome is not recommended in most steps of FocalSV.
 - You may download our test data from [Zenodo](https://zenodo.org/records/15750913)
 - We recommend using HG002 Hifi_L1 for large indel call test and any library from HCC1395 (we provided 4 libraries, you only need to use one for testing purposes) for TRA INV DUP call test. Their download link and preparation can be found [here](./data_preparation.md).
 
