@@ -7,11 +7,10 @@ FocalSV is a tool for region-based structural variant (SV) assembly and refineme
 - [Installation](#install-through-github)
 - [Large INDEL detection](#Large-INDEL-detection)
     - [Step 0: Automatically detect target regions (for auto mode)](#Step-0-Automatically-detect-target-regions-for-auto-mode)
-    - [Step 1: Generating Candidate SVs (for both modes)](#Step-1-Generating-Candidate-SVs-for-both-modes)
-    - [Step 2: filtering and genotype correction (for both modes)](#Step-2-filtering-and-genotype-correction-for-both-modes)
+    - [Step 1: Detect large INDEL SVs (for both modes)](#Step-1-Detect-large-INDEL-SVs-for-both-modes)
 - [TRA INV DUP detection](#TRA-INV-DUP-detection)
-  -  [FocalSV-target mode](#FocalSVtarget-mode)
-  -  [FocalSV-auto mode](#FocalSVauto-mode)
+  -  [FocalSV-auto mode](#FocalSV---auto-mode)
+  -  [FocalSV-target mode](#FocalSV---target-mode)
 - [Troubleshooting](#Troubleshooting)
 
 
@@ -42,7 +41,7 @@ To execute the code, either add `FocalSV/focalsv` to your `.bashrc` file or use 
 
 - FocalSV is intended for use on autosomal chromosomes only, as phasing on sex chromosomes involves additional complexities.
 - The input for each step can be a whole-genome sequencing (WGS) BAM file. In our test example, we used a chr21 BAM file solely for convenience due to its smaller size. However, manually splitting the WGS BAM file by chromosome is not required.
-- You maybe download our test data from zenodo https://zenodo.org/records/15750913
+- You may download our test data from [Zenodo](https://zenodo.org/records/15750913)
   
 # Large INDEL detection
 ## Step 0: Automatically detect target regions (for auto mode)
@@ -84,7 +83,7 @@ python3 FocalSV/focalsv/0_define_region.py \
 ```
 The output file is `SV_Regions_<data_type>_<lib>.bed`.
 
-## Step 1: Generating Candidate SVs (for both modes)
+## Step 1: Detect large INDEL SVs (for both modes)
 
 ### Parameters
 
@@ -92,7 +91,7 @@ The output file is `SV_Regions_<data_type>_<lib>.bed`.
 
 - **--bam_file/-bam**: The input BAM file.
 - **--ref_file/-r**: Reference FASTA file.
-- **--chr_num/-chr**: Chromosome number for the target region.
+- **--chr_num/-chr**: Chromosome number for the target region. Use 0 to select any chromosomes in the bed file.
 - **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
 
 #### Options for Region Selection:
@@ -117,7 +116,7 @@ The output file is `SV_Regions_<data_type>_<lib>.bed`.
 #### 1. Running for One Region (Start-End)
 
 ```
-python3 FocalSV/focalsv/main.py \
+python3 FocalSV/focalsv/focalsv.py \
 --bam_file zenodo/HG002_HIFI_L1_chr21_hg19.bam  \
 --ref_file zenodo/hg19_ref.fa \
 --chr_num 21 \
@@ -134,42 +133,23 @@ python3 FocalSV/focalsv/main.py \
 
 Here is an example of running multiple target regions on chromosome 21.
 ```
-python3 FocalSV/focalsv/main.py \
+python3 FocalSV/focalsv/focalsv.py \
 --bam_file zenodo/HG002_HIFI_L1_chr21_hg19.bam  \
 --ref_file zenodo/hg19_ref.fa \
 --chr_num 21 \
 --target_bed zenodo/HG002_SV_rich_regions_chr21.bed \
---out_dir ./FocalSV_results/chr21 \
+--out_dir ./FocalSV_results/ \
 --data_type HIFI \
 --num_cpus 10 \
 --num_threads 8
 ```
 
-#### 3. Running FocalSV on a whole-genome scale (except sex chromosomes)
-\*Note that you can provide a custom BED file based on your regions of interest, or directly use the whole-genome BED file generated in Step 0.
-
-```
-for i in {1..22}
-dp
-python3 FocalSV/focalsv/main.py \
---bam_file <wgs_bam> \
---ref_file <reference> \
---chr_num $i \
---target_bed target_region_wgs.bed \
---out_dir ./FocalSV_results/chr$i \
---data_type HIFI \
---num_cpus 10 \
---num_threads 8
-done
-```
 ### Output:
 
 ```
 FocalSV_results/chr21
   ├── results/
-  │   ├── FocalSV_Candidate_SV.vcf
-  │   ├── FocalSV_Candidate_SV_redundancy.vcf
-  │   └── variants.vcf
+  │   └── FocalSV_Final_SV.vcf
   ├── regions/
   │   ├── Region_chr21_S100000_E200000/
   │   │   ├── results/
@@ -187,8 +167,9 @@ FocalSV_results/chr21
 
 #### `results/`
 
-- **`results/FocalSV_Candidate_SV.vcf`**  
-  Candidate structural variant (SV) results without redundancy (key output). This VCF will be the input of step2 for filtering and genotype correction.
+- **`FocalSV_results/chr21/results/FocalSV_Final_SV.vcf`**  
+  Final structural variant (SV) results for chr21.
+  
 
 #### `regions/`
 
@@ -208,91 +189,36 @@ FocalSV_results/chr21
 
 - Contains log files for debugging and tracking pipeline steps.
 
-## Step 2: filtering and genotype correction (for both modes)
 
 
-FocalSV incorporates a post-processing module to filter false positives and correct genotypes further. This step involves collecting read-based signatures from the read-to-reference BAM file. You can either run it by chromosome or on a whole-genome scale. 
+#### 3. Running FocalSV on a whole-genome scale (except sex chromosomes)
+\*Note that you can provide a custom BED file based on your regions of interest, or directly use the whole-genome BED file generated in Step 0.
 
-### Parameters
-
-#### Required Parameters:
-- **--bam_file/-bam**: The input BAM file.
-- **--vcf_file/-vcf**: Path to the input FocalSV Candidate SV VCF file generated in Step 1.
-- **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
-- **--ref_file/-r**: Reference FASTA file.
-- **--chr_num/-chr**: Chromosome number for the target region or use 0 for whole chromosome analysis.
-
-#### Optional Parameters:
-- **--out_dir/-o**: Output directory to store results (default: `./FocalSV_Final_VCF`).
-- **--num_threads/-thread**: Number of threads (default: 8).
-
-
-### Examples
-
-#### 1. Running for One Chromosome
-
-For optimal computational efficiency, if you perform separate single-region analyses across multiple regions on the same chromosome - instead of using a multi-region BED file - you should merge the resulting VCF files and run post-processing only once. Below is an example command.
-\*Note that the minimum scale is defined per chromosome, not per region, to reduce the impact of read depth fluctuations, which are less reliable at region boundaries. If analyzing a single region,  ensure that you specify the corresponding chromosome number during post-processing.
+When you have a distributed computing system available, we highly recommend submitting different jobs by chromosome so that you can run them in parallel. You just need to specify the same output folder (for example, `FocalSV_results`) for each job, then the output of each chromosome will all be under this folder. At last, you may merge the VCF files using this command:
 
 ```
-python3 ./FocalSV/focalsv/5_post_processing/FocalSV_Filter_GT_Correct.py \
---bam_file zenodo/HG002_HIFI_L1_chr21_hg19.bam  \
---ref_file zenodo/hg19_ref.fa \
---vcf_file FocalSV_results/chr21/results/FocalSV_Candidate_SV.vcf  \
---chr_num 21 \
---out_dir ./FocalSV_results/Final_VCF \
---data_type HIFI \
---num_threads 8
+grep '#' FocalSV_results/chr1/FocalSV_Final_SV.vcf > FocalSV_results/FocalSV_Final_SV.vcf
+cat FocalSV_results/chr*/FocalSV_Final_SV.vcf |grep -v '#' |vcf-sort >> FocalSV_results/FocalSV_Final_SV.vcf
 ```
+The final merged VCF is `FocalSV_results/FocalSV_Final_SV.vcf`.
 
-This command runs for chromosome 21 using 8 threads.
-
-#### 2. Running for Whole Genome
-
-Below is an example command for running post-processing on a whole-genome scale.
-
+If you don't want to submit many jobs, you want to run each chromosome sequentially. You may use `--chr_num 0` to enable the whole genome mode. This way, FocalSV will read the BED file you provide and run all chromosomes in it sequentially. This mode is only suitable when you know the regions in your WGS bed file take up a small portion of the complete human genome. Otherwise, if the regions are large, this mode will run for a long time.
 ```
-python3 ./FocalSV/focalsv/post_processing/FocalSV_Filter_GT_Correct.py \
---bam_file ${wgs_bam} \
---ref_file zenodo/hg19_ref.fa \
---vcf_file FocalSV_results/results/FocalSV_Candidate_SV.vcf  \
+python3 FocalSV/focalsv/focalsv.py \
+--bam_file <wgs_bam> \
+--ref_file <reference> \
 --chr_num 0 \
---out_dir ./FocalSV_results/Final_VCF \
+--target_bed target_region_wgs.bed \
+--out_dir ./FocalSV_results/ \
 --data_type HIFI \
+--num_cpus 10 \
 --num_threads 8
-```
-
-This command runs for the whole genome using 8 threads.
-
-### Output:
-
-```
-FocalSV_results/
-  |—— Final_SV/FocalSV_Final_SV.vcf
-  ├── results/
-  │   ├── FocalSV_Candidate_SV.vcf
-  │   ├── FocalSV_Candidate_SV_redundancy.vcf
-  │   └── variants.vcf
-  ├── regions/
-  │   ├── Region_chr21_S100000_E200000/
-  │   │   ├── results/
-  │   │   ├── HP1.fa
-  │   │   ├── HP2.fa
-  │   │   ├── PSxxx_hp1.fa
-  │   │   ├── PSxxx_hp2.fa
-  │   │   ├── region.bam
-  │   │   ├── region_phased.bam
-  │   │   └── ...
-  │   ├── Region_chr21_Sxxx_Exxx/
-  │   └── ...
-  └── logs/
 ```
 
 #### Result
 
-- **`FocalSV_results/Final_SV/FocalSV_Final_SV.vcf`**  
-  Final structural variant (SV) results.
-  
+- **`FocalSV_results/FocalSV_Final_SV.vcf`**  
+  Final structural variant (SV) results for the whole chromosome.
 
 # TRA INV DUP detection
 
@@ -323,29 +249,39 @@ python3 focalsv/TRA_INV_DUP_call/Auto/FocalSV-auto_TRA_INV_DUP_call.py \
 --patient HCC1395 \
 --state Tumor 
 ```
-The output is `HCC1395_FocalSV-auto_tra_inv_dup_output/FocalSV_TRA_INV_DUP.vcf`.
+The output is `HCC1395_Tumor_CLR_final_TRA.tsv`, `HCC1395_Tumor_CLR_final_INV.tsv` and `HCC1395_Tumor_CLR_final_DUP.tsv`.
 
 
 ## FocalSV - target mode
 
-For target mode, you need to first perform FocalSV-target large indel call in the target regions as we have a module of duplication recovery from insertions. You need to follow the step1 FocalSV-target mode to generate the large indel call result.
+For target mode,  you need to provide a BED file with special format (the separator is tab in a BED file). 
+For DUP, each row is `chrom    start    end    DUP`.
+For INV, each row is `chrom    start    end    INV`.
+For TRA, each row is `chrom1    start1    end1    chrom2    start2    end2    TRA`, where chrom1, start1, and end1 define the rough location for one breakend, chrom2, start2, and end2 define the rough location for the other breakend.
 
-Here is an example of running the large indel call on HCC1395.
+The target BED file for HCC1395 is provided in the zenode repo.
+
+
+For target mode, you need to first perform FocalSV-target large indel call in the target regions of duplications, as we have a module of duplication recovery from insertions. You need to follow the step1 FocalSV-target mode to generate the large indel call result.
+
+Here is an example of running the large indel call on HCC1395 chr21.
 ```
-python3 FocalSV/focalsv/main.py \
+python3 FocalSV/focalsv/focalsv.py \
 --bam_file HCC1395_Pacbio_hg38.bam \
 --ref_file zenodo/hg38_ref.fa \
---chr_num 0 \
---excel_file focalsv/TRA_INV_DUP_call/Target/High_confidence_callset.xlsx \
+--chr_num 21 \
+--bed_file zenodo/HCC1395_SV_rich_regions_DUP.bed \
 --out_dir ./FocalSV_results_DUP \
 --data_type CLR \
 --num_cpus 10 \
 --num_threads 8
 ```
 
+As we mentioned before, we recommend submitting jobs by chromosome and then merging the VCF. If you don't mind a longer running time, you can also use "--chr_num 0" to enable sequential running in one job.
+
 If you want to run it on another sample, you need to provide the interested DUP target region BED file.
 ```
-python3 FocalSV/focalsv/main.py \
+python3 FocalSV/focalsv/focalsv.py \
 --bam_file<sample>_<dtype>_hg38.bam \
 --ref_file zenodo/hg38_ref.fa \
 --chr_num 0 \
@@ -357,12 +293,12 @@ python3 FocalSV/focalsv/main.py \
 ```
 `FocalSV_results_DUP/` will be the input for the next step.
 
+Next, you can run the SV calling.
 ### Parameters
 #### Required Parameters:
 - **--input_dir/-i**: FocalSV-target large indel call output folder
 - **--bam_file/-bam**: The input BAM file.
-- **--excel_file/-excel**: an Excel file that includes the ground truth SV (only for HCC1395)
-- **--bed_file/-bed**: a bed file with interested target region. After each region, there should be SV type. For example, a row in the bed file can be "chr1 1000 5000 TRA", "chr2 1000 5000 INV", or "chr3 1000 5000 DUP"
+- **--bed_file/-bed**: a bed file with interested target region. For DUP, each row is `chrom    start    end    DUP`. For INV, each row is `chrom    start    end    INV`. For TRA, each row is `chrom1    start1    end1    chrom2    start2    end2    TRA`, where chrom1, start1, and end1 define the rough location for one breakend, chrom2, start2, and end2 define the rough location for the other breakend.
 - **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
 - **--ref_file/-r**: Reference FASTA file.
 - **--out_dir/-o**: Output directory to store results.
@@ -373,19 +309,19 @@ python3 FocalSV/focalsv/main.py \
 
 ### Examples
 
-Here is an example of how to run FocalSV-target to get TRA INV and DUP on HCC1395.
+Here is an example of how to run FocalSV-target to get TRA INV and DUP on HCC1395. \* Note: when you run TRA INV DUP call, you should always provide a whole genome BAM file. We by default detect translocation cross chromosomes. If you provide a single chromosome BAM file, this script would not work for TRA detection. *\
 ```
 python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
 --input_dir FocalSV_results_DUP \
 --bam_file HCC1395_Pacbio_hg38.bam \
---excel_file focalsv/TRA_INV_DUP_call/Target/High_confidence_callset.xlsx \
+--bed_file zenodo/HCC1395_SV_rich_regions.bed \
 --data_type CLR \
 --ref_file zenodo/hg38_ref.fa \
 --out_dir HCC1395_FocalSV-target_tra_inv_dup_output
 ```
 The output is `HCC1395_FocalSV-target_tra_inv_dup_output/FocalSV_TRA_INV_DUP.vcf`.
 
-If you want to run it on another sample, you should provide a BED file with each region annotated with the SV type. For example, a row in the bed file can be "chr1 1000 5000 TRA", "chr2 1000 5000 INV", or "chr3 1000 5000 DUP"
+If you want to run it on another sample,
 ```
 python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
 --input_dir FocalSV_results_DUP \
