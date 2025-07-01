@@ -90,6 +90,8 @@ python3 FocalSV/focalsv/0_define_region.py \
 ```
 The output file is `SV_Regions_<data_type>_<lib>.bed`.
 
+We included the output of HG002 Hifi_L1 at `test/SV_Regions_HG002_HIFI_L1_FocalSV-auto.bed` for you.
+
 ## Step 1: Detect large INDEL SVs (for both modes)
 
 ### Parameters
