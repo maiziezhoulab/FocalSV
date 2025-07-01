@@ -10,8 +10,8 @@ FocalSV is a tool for region-based structural variant (SV) assembly and refineme
     - [Step 1: Generating Candidate SVs (for both modes)](#Step-1-Generating-Candidate-SVs-for-both-modes)
     - [Step 2: filtering and genotype correction (for both modes)](#Step-2-filtering-and-genotype-correction-for-both-modes)
 - [TRA INV DUP detection](#TRA-INV-DUP-detection)
-  -  [FocalSV-auto mode](#FocalSV-auto-mode)
-  -  [FocalSV-target mode](#FocalSV-target-mode)
+  -  [FocalSV-auto mode](#FocalSV---auto-mode)
+  -  [FocalSV-target mode](#FocalSV---target-mode)
 - [Troubleshooting](#Troubleshooting)
 
 
