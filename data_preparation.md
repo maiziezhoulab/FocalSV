@@ -1,5 +1,5 @@
 # Data preparation
-We provide the hg19 and hg38 reference on out [Zenodo repo](https://zenodo.org/records/15750913)
+We provide the hg19 and hg38 reference on our [Zenodo repo](https://zenodo.org/records/15750913)
 
 ## HG002 Hifi_L1
 ```
