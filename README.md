@@ -222,6 +222,7 @@ python3 FocalSV/focalsv/focalsv.py \
 
 # TRA INV DUP detection
 
+\* Note: when you run TRA INV DUP call, you should always provide a whole genome BAM file. We by default detect translocation cross chromosomes. If you provide a single chromosome BAM file, this script would not work for TRA detection. 
 ## FocalSV - auto mode
 
 ### Parameters
@@ -309,7 +310,7 @@ Next, you can run the SV calling.
 
 ### Examples
 
-Here is an example of how to run FocalSV-target to get TRA INV and DUP on HCC1395. \* Note: when you run TRA INV DUP call, you should always provide a whole genome BAM file. We by default detect translocation cross chromosomes. If you provide a single chromosome BAM file, this script would not work for TRA detection. *\
+Here is an example of how to run FocalSV-target to get TRA INV and DUP on HCC1395. 
 ```
 python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
 --input_dir FocalSV_results_DUP \
