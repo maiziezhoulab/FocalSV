@@ -256,7 +256,7 @@ The output is `HCC1395_Tumor_CLR_final_TRA.tsv`, `HCC1395_Tumor_CLR_final_INV.ts
 
 For target mode,  you need to provide a BED file with special format (the separator is tab in a BED file). 
 For DUP, each row is `chrom    start    end    DUP`.
-For INV, each row is `chrom    start    end    INV`.
+For INV, each row is `chrom    start1    end1    start2    end2    INV`, where chrom1, start1, and end1 define the rough location for one breakend of the inversion, start2, and end2 define the rough location for the other breakend.
 For TRA, each row is `chrom1    start1    end1    chrom2    start2    end2    TRA`, where chrom1, start1, and end1 define the rough location for one breakend, chrom2, start2, and end2 define the rough location for the other breakend.
 
 The target BED file for HCC1395 is provided in the zenode repo.
@@ -298,7 +298,7 @@ Next, you can run the SV calling.
 #### Required Parameters:
 - **--input_dir/-i**: FocalSV-target large indel call output folder
 - **--bam_file/-bam**: The input BAM file.
-- **--bed_file/-bed**: a bed file with interested target region. For DUP, each row is `chrom    start    end    DUP`. For INV, each row is `chrom    start    end    INV`. For TRA, each row is `chrom1    start1    end1    chrom2    start2    end2    TRA`, where chrom1, start1, and end1 define the rough location for one breakend, chrom2, start2, and end2 define the rough location for the other breakend.
+- **--bed_file/-bed**: a bed file with interested target region. For DUP, each row is `chrom    start    end    DUP`. For INV, each row is `chrom    start1    end1    start2    end2    INV`, where chrom1, start1, and end1 define the rough location for one breakend of the inversion, start2, and end2 define the rough location for the other breakend. For TRA, each row is `chrom1    start1    end1    chrom2    start2    end2    TRA`, where chrom1, start1, and end1 define the rough location for one breakend, chrom2, start2, and end2 define the rough location for the other breakend.
 - **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
 - **--ref_file/-r**: Reference FASTA file.
 - **--out_dir/-o**: Output directory to store results.
