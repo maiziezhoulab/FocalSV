@@ -676,7 +676,7 @@ parser = ArgumentParser(description="",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('--input_path','-i')
 parser.add_argument('--output_dir','-o')
-parser.add_argument('--dtype','-d', choices = ['Hifi','CLR','ONT'])
+parser.add_argument('--dtype','-d', choices = ['HIFI','CLR','ONT'])
 parser.add_argument('--n_thread','-t', type = int, default = 22 )
 
 args = parser.parse_args()
@@ -689,7 +689,7 @@ n_thread = args.n_thread
 # bamfile = "/lio/lfs/maiziezhou_lab/h_constantinidis_lab/ukbb/MaizieZhouLab_backup/Datasets/Cancer_Data/HCC1395/HCC1395_Pacbio/minimap2/HCC1395_Pacbio.bam"
 # outfile = 'clr_tm_inv.bed'
 dist_thresh_read = 1000 
-if dtype == 'Hifi':
+if dtype == 'HIFI':
     
     dist_thresh_clustering = 100
     min_read_cov_inv = 0.2

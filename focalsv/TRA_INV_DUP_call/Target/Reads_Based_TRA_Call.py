@@ -360,7 +360,7 @@ code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 
 
 # df = pd.read_excel(f"{code_dir}/High_confidence_callset.xlsx")
-df_tra = pd.rad_csv(bed_file,sep='\t', header = None)
+df_tra = pd.read_csv(bed_file,sep='\t', header = None)
 df_tra.columns = ['Chrom1','Start1','End1','Chrom2','Start2','End2','svtype']
 # df_tra = df[df['SV_type'] == 'TRA'].reset_index(drop = True)
 chrom1_list = df_tra['Chrom1'].tolist()

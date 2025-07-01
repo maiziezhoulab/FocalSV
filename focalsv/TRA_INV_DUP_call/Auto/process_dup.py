@@ -16,7 +16,7 @@ parser.add_argument('--bed_file','-bed')
 parser.add_argument('--bam_file','-bam')
 parser.add_argument('--patient', '-p',required=True, choices=['HCC1395', 'COLO829'])
 parser.add_argument('--out_dir','-o')
-parser.add_argument('--dtype', '-d',required=True, choices=['hifi', 'ont', 'clr'])
+parser.add_argument('--dtype', '-d',required=True, choices=['HIFI', 'ONT','CLR'])
 parser.add_argument('--state','-s', required=True, choices=['Tumor', 'Normal'])
 parser.add_argument('--n_thread','-t', type = int, default = 22 )
 args = parser.parse_args()
@@ -51,11 +51,11 @@ def first_round_filter(bedfile,out_dir,out_bed, patient, dtype, state):
     with open(out_dir+"/estimate_bam_cov/mean_cov",'r') as f:
         cov = eval(f.read())
 
-    if dtype == 'hifi':
+    if dtype == 'HIFI':
         min_sup, min_mapq, min_size = cov * 0.1, 50, 200
-    elif dtype == 'clr':
+    elif dtype == 'CLR':
         min_sup, min_mapq, min_size = cov * 0.14, 50, 500
-    elif dtype == 'ont':
+    elif dtype == 'ONT':
         min_sup, min_mapq, min_size = cov * 0.1, 40, 500
 
     df = pd.read_csv(bedfile, sep='\t', header=None)
@@ -102,30 +102,30 @@ def second_round_filter(df_path, out_dir, out_file,patient, state, dtype):
     df['rel_std'] = df[['std_left','std_right']].min(axis=1) / df['n_sup']
     
     # --- Apply tuned filters
-    if (dtype == 'hifi') and (state == 'Tumor'):
+    if (dtype == 'HIFI') and (state == 'Tumor'):
         f = (df['rel_cov_diff'].between(1.1, 3)) & (df['rel_n_sup'].between(0.25, 1.5)) & \
             (df['mapq'] > 59.8) & (df['rel_cov_sv'].between(0.6, 5)) & \
             ((df['std_left'] < 1.4) | (df['std_right'] < 1.4))
-    elif (dtype == 'hifi') and (state == 'Normal'):
+    elif (dtype == 'HIFI') and (state == 'Normal'):
         f = (df['rel_cov_diff'].between(1.3, 4)) & (df['rel_n_sup'].between(0.25, 1.2)) & \
             (df['mapq'] > 59.5) & (df['rel_cov_sv'].between(1, 4)) & \
             ((df['std_left'] < 1.4) | (df['std_right'] < 1.4))
-    elif (dtype == 'clr') and (state == 'Tumor'):
+    elif (dtype == 'CLR') and (state == 'Tumor'):
         f = (df['rel_cov_diff'].between(1.15, 8)) & (df['rel_n_sup'].between(0.22, 4.6)) & \
             (df['mapq'] > 50) & (df['rel_std'] < 2) & \
             (df['size'].between(3000, 35e6)) & (df['rel_cov_sv'].between(0.7, 9)) & \
             ((df['std_left'] < 25) | (df['std_right'] < 25))
-    elif (dtype == 'clr') and (state == 'Normal'):
+    elif (dtype == 'CLR') and (state == 'Normal'):
         f = (df['rel_cov_diff'].between(1.15, 8)) & (df['rel_n_sup'].between(0.22, 4.6)) & \
             (df['mapq'] > 50) & (df['rel_std'] < 0.5) & \
             (df['size'].between(3000, 35e6)) & (df['rel_cov_sv'].between(0.8, 4)) & \
             ((df['std_left'] < 15) | (df['std_right'] < 15))
-    elif (dtype == 'ont') and (state == 'Tumor'):
+    elif (dtype == 'ONT') and (state == 'Tumor'):
         f = (df['rel_cov_diff'].between(1.15, 8)) & (df['rel_n_sup'].between(0.22, 4.6)) & \
             (df['mapq'] > 50) & (df['rel_std'] < 2) & \
             (df['size'].between(3000, 35e6)) & (df['rel_cov_sv'].between(0.7, 9)) & \
             ((df['std_left'] < 25) | (df['std_right'] < 25))
-    elif (dtype == 'ont') and (state == 'Normal'):
+    elif (dtype == 'ONT') and (state == 'Normal'):
         f = (df['rel_cov_diff'].between(1.15, 8)) & (df['rel_n_sup'].between(0.22, 4.6)) & \
             (df['mapq'] > 50) & (df['rel_std'] < 0.5) & \
             (df['size'].between(3000, 35e6)) & (df['rel_cov_sv'].between(0.8, 4)) & \

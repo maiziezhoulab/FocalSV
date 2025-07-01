@@ -21,10 +21,13 @@ with open("HCC1395_SV_rich_regions.bed",'w') as f:
     for svtype, svs in dc.items():
         print(svtype, len(svs))
         sv_cnt+= len(svs)
-        if svtype in ['DUP','INV']:
+        if svtype == 'DUP':
             
             for sv in svs:
                 f.write(f"{sv[0]}\t{int(max(0,sv[1]-flank))}\t{int(sv[2]+flank)}\t{svtype}\n")
+        elif svtype == 'INV':
+            for sv in svs:
+                f.write(f"{sv[0]}\t{int(max(0,sv[1]-flank))}\t{int(sv[1]+flank)}\t{int(max(0,sv[2]-flank))}\t{int(sv[2]+flank)}\t{svtype}\n")
         else:
             for sv in svs:
                 cnt+=1

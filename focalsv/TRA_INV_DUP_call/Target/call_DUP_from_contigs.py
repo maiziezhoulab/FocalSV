@@ -49,6 +49,7 @@ def collect_vcf(input_dir, out_vcf):
    one_vcf = glob.glob(f"{input_dir}/chr*/results/FocalSV_Final_SV.vcf")[0]
    cmd = f'''cat {one_vcf}|grep '#'> {out_vcf};
    cat {input_dir}/chr*/results/FocalSV_Final_SV.vcf | grep -v '#'| vcf-sort >> {out_vcf} '''
+   # print(cmd)
    Popen(cmd, shell = True).wait()
    return 
 
@@ -60,7 +61,7 @@ def concat(input_dir, output_dir, hp):
     if os.path.exists(outfile):
         os.system("rm " + outfile)
     for infile in tqdm(fa_list, desc = hp):
-        prefix = infile.split('/')[-5]+'_'+infile.split('/')[-3]
+        prefix = infile.split('/')[-3]
         cmd = f'''cat {infile}|sed "s/contig/{prefix}/g" >> {outfile}'''
         Popen(cmd, shell = True).wait()
 
@@ -96,6 +97,9 @@ hp2fa = out_dir+"/HP2.fa"
 raw_dir = out_dir+"/Raw_Detection/"
 indel_vcf = out_dir+"/raw.vcf"
 
+
+if not os.path.exists(out_dir):
+    os.system("mkdir -p " + out_dir)
 
 logger.info("-------------------------------Merge VCFs")
 collect_vcf(input_dir, indel_vcf )

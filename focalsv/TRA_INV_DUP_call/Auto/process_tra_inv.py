@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser(description="",
 parser.add_argument('--out_dir','-o')
 parser.add_argument('--patient','-p', default='sample')
 parser.add_argument('--state','-s', choices = ['Normal','Tumor'])
-parser.add_argument('--dtype','-d', choices= ['hifi', 'ont','clr'])
+parser.add_argument('--dtype','-d', choices= ['HIFI', 'ONT','CLR'])
 
 args = parser.parse_args()
 dtype = args.dtype
@@ -115,19 +115,19 @@ def load_tsv(infile, outfile, min_sup, min_mapq, ):
 
 
 #-- hifi
-if dtype == 'hifi':
+if dtype == 'HIFI':
 
     r_inv, min_mapq_inv, min_size_inv = 0.25, 60, 200
     r_bnd, min_mapq_bnd,  = 0.1, 55, 
 
 #-- clr
-elif dtype == 'clr':
+elif dtype == 'CLR':
 
     r_inv, min_mapq_inv, min_size_inv = 0.3, 58, 1000
     r_bnd, min_mapq_bnd,  = 0.15, 57, 
 
 #-- ont
-elif dtype == 'ont':
+elif dtype == 'ONT':
 
     r_inv, min_mapq_inv, min_size_inv = 0.35, 58, 1000
     r_bnd, min_mapq_bnd, = 0.2, 55, 
@@ -138,7 +138,7 @@ with open(out_dir+"/estimate_bam_cov/mean_cov",'r') as f:
 
 
 
-for vtype in ['BND','INV']:
+for vtype in ['TRA','INV']:
         
     print(f"\n-------------Processing {patient} {state} {vtype}")
 

@@ -235,11 +235,11 @@ def find_inv(bam_file,chromosome, rough_breakpoint_1, rough_breakpoint_2,
              max_merge_dist, min_svlen ):
     assert rough_breakpoint_1 < rough_breakpoint_2
     search_region1 = (chromosome, 
-                    max(0, rough_breakpoint_1 - resolution), 
-                    rough_breakpoint_1 + resolution)
+                    max(0, rough_breakpoint_1[0] - resolution), 
+                    rough_breakpoint_1[1] + resolution)
     search_region2 = (chromosome, 
-                    max(0, rough_breakpoint_2 - resolution), 
-                    rough_breakpoint_2 + resolution)
+                    max(0, rough_breakpoint_2[0] - resolution), 
+                    rough_breakpoint_2[1] + resolution)
     inv_qnames = collect_inv_qname(bam_file, search_region1, search_region2 )
     bnds1 = collect_bnd(bam_file,search_region1,inv_qnames)
     bnds2 = collect_bnd(bam_file,search_region2,inv_qnames)
@@ -259,8 +259,8 @@ def find_inv(bam_file,chromosome, rough_breakpoint_1, rough_breakpoint_2,
     final_bnd = []
     ## filter that is in the range
     for bnd in cluster_centers:
-        if  ((rough_breakpoint_1 - resolution) < bnd[0] < (rough_breakpoint_1 + resolution)) \
-        & ((rough_breakpoint_2 - resolution) < bnd[1] < (rough_breakpoint_2 + resolution)) \
+        if  ((rough_breakpoint_1[0] - resolution) < bnd[0] < (rough_breakpoint_1[1] + resolution)) \
+        & ((rough_breakpoint_2[0] - resolution) < bnd[1] < (rough_breakpoint_2[1] + resolution)) \
             & ((bnd[1]-bnd[0])>= min_svlen):
             final_bnd.append(bnd)
     # print("cluster centers:")
@@ -396,17 +396,19 @@ if __name__  == '__main__':
 
     chrom1_list = df_inv.iloc[:,0]
     chrom2_list = df_inv.iloc[:,0]
-    pos1_list_raw = df_inv.iloc[:,1]
-    pos2_list_raw = df_inv.iloc[:,2]
+    pos1_list = list(zip(df_inv.iloc[:,1],df_inv.iloc[:,2]))
+    pos2_list = list(zip(df_inv.iloc[:,3],df_inv.iloc[:,4]))
+    # end1_list = df_inv.iloc[:,2]
+    # pos2_list_raw = df_inv.iloc[:,2]
 
-    pos1_list = []
-    pos2_list = []
-    for i in range(len(pos1_list_raw)):
-        pos1 = min(pos1_list_raw[i], pos2_list_raw[i] )
-        pos2 = max(pos1_list_raw[i], pos2_list_raw[i] )
-        pos1_list.append(pos1)
-        pos2_list.append(pos2)
-    print("Num of INVs:",len(pos1_list))
+    # pos1_list = []
+    # pos2_list = []
+    # for i in range(len(pos1_list_raw)):
+    #     pos1 = min(pos1_list_raw[i], pos2_list_raw[i] )
+    #     pos2 = max(pos1_list_raw[i], pos2_list_raw[i] )
+    #     pos1_list.append(pos1)
+    #     pos2_list.append(pos2)
+    print("Num of INVs:",df_inv.shape[0])
     # print("All chromosomes:", set(chrom1_list))
 
     # ------------Parameters

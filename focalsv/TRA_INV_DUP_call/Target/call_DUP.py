@@ -12,8 +12,8 @@ parser.add_argument('--input_dir','-i')
 parser.add_argument('--bam_file','-bam')
 parser.add_argument('--bed_file','-bed')
 parser.add_argument('--reference','-ref')
-parser.add_argument('--excel_file','-excel')
-parser.add_argument('--bed_file','-bed')
+# parser.add_argument('--excel_file','-excel')
+# parser.add_argument('--bed_file','-bed')
 # parser.add_argument('--vcffile','-vcf')
 parser.add_argument('--outdir','-o')
 parser.add_argument('--datatype','-d', choices=['HIFI','CLR','ONT'])
@@ -27,7 +27,7 @@ input_dir = args.input_dir
 bam_file = args.bam_file 
 outdir = args.outdir 
 bed_file = args.bed_file
-vcffile = args.vcffile 
+# vcffile = args.vcffile 
 n_thread = args.n_thread
 max_d_cluster = args.max_d_cluster
 max_d_eval = args.max_d_eval
@@ -57,7 +57,7 @@ from subprocess import Popen
 
 def call_dup_from_contig(in_dir, bamfile, reference, datatype, out_dir, t):
 
-    cmd = f'''python3 call_DUP_from_contigs.py \
+    cmd = f'''python3 {code_dir}/call_DUP_from_contigs.py \
     --input_dir {in_dir} \
     --bamfile {bamfile} \
     --reference {reference} \
@@ -323,10 +323,13 @@ vcffile = contig_call_dir+"/DUP/DUP_final.vcf"
 
 ## load bed 
 
+if not os.path.exists(outdir):
+    os.system("mkdir -p " + outdir)
 df_dup_target = load_bed(bed_file)
 
 print("-------------------call_dup_from_contig")
 call_dup_from_contig(input_dir, bam_file, reference, datatype, contig_call_dir, n_thread)
+# exit()
 dc_asm = load_vcf(vcffile)
 
 # %%

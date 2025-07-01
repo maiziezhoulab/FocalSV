@@ -9,7 +9,7 @@ from collections import Counter
 import logging
 import os
 from argparse import ArgumentParser
-
+from utils import load_contigs
 
 
 
@@ -580,30 +580,30 @@ def pair_sig(sig_hp1,sig_hp2,max_compare_dist,max_shift, min_overlap_ratio,min_s
     print("total variant %d"%len(paired_sig_sorted))
     return paired_sig_sorted  
 
-def load_contigs(fasta_path):
-    logger.info("loading "+fasta_path)
-    with open(fasta_path,'r') as f:
-        s = f.readlines()
-    # dc = {}
-    # for i in tqdm(range(0,len(s),2),desc='load contig'):
-    #     name = s[i][1:-1]
-    #     seq = s[i+1][:-1]
-    #     dc[name]=seq
-    dc = {}
+# def load_contigs(fasta_path):
+#     logger.info("loading "+fasta_path)
+#     with open(fasta_path,'r') as f:
+#         s = f.readlines()
+#     # dc = {}
+#     # for i in tqdm(range(0,len(s),2),desc='load contig'):
+#     #     name = s[i][1:-1]
+#     #     seq = s[i+1][:-1]
+#     #     dc[name]=seq
+#     dc = {}
 
-    for line in tqdm(s,desc='load contig'):
-        if '>' in line:
-            cur_name = line[1:-1]
-        else:
-            if cur_name in dc:
-                dc[cur_name].append(line[:-1])
-            else:
-                dc[cur_name] = [line[:-1]]
+#     for line in tqdm(s,desc='load contig'):
+#         if '>' in line:
+#             cur_name = line[1:-1]
+#         else:
+#             if cur_name in dc:
+#                 dc[cur_name].append(line[:-1])
+#             else:
+#                 dc[cur_name] = [line[:-1]]
 
-    for name in tqdm(dc):
-        dc[name] = ''.join(dc[name])
+#     for name in tqdm(dc):
+#         dc[name] = ''.join(dc[name])
 
-    logger.info("finish loading")
+#     logger.info("finish loading")
 
 
 
@@ -729,7 +729,7 @@ def extract_contig_sig_ONT(chr_number,bam_path,header_path,
         end_i = 23
 
     global dc_contig
-    dc_contig = load_contigs(contig_path)
+    dc_contig = load_contigs(contig_path, logger)
 
     for i in range(start_i, end_i) :
         chr_name = 'chr'+str(i)

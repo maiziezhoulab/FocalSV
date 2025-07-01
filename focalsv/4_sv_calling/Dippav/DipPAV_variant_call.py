@@ -22,6 +22,33 @@ def reformat_fasta(contig_file,outfile,hp):
 				fw.write(line)
 	return 
     
+import subprocess
+
+def extract_chrom_fasta(fasta_path, chrom, out_path):
+    """
+    Extract a chromosome FASTA from a genome FASTA using samtools faidx.
+
+    Parameters:
+        fasta_path (str): Path to the reference genome FASTA file.
+        chrom (str): Chromosome name to extract (e.g., 'chr21').
+        out_path (str): Path to write the extracted chromosome FASTA.
+    """
+    try:
+        # Make sure the index exists
+        fai_path = fasta_path + ".fai"
+        subprocess.run(["samtools", "faidx", fasta_path], check=True)
+
+        # Extract the chromosome
+        with open(out_path, "w") as out_f:
+            subprocess.run(["samtools", "faidx", fasta_path, chrom], check=True, stdout=out_f)
+
+        print(f"Chromosome {chrom} written to {out_path}")
+    except subprocess.CalledProcessError as e:
+        print(f"Error running samtools: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+
+
 def dippav_variant_call(data_type,
 		read_bam_file,
 		reference_path,
@@ -53,22 +80,30 @@ def dippav_variant_call(data_type,
 
 	outhp1 = output_dir+'/hp1.fa'
 	outhp2 = output_dir+'/hp2.fa'
+	contig_path = output_dir+'/assemblies.fa'
+	prefix = contig_path.split('/')[-1].split('.')[0]
+	bam_path = output_dir+'/'+prefix+'.sorted.bam'
+	reference_path_chr = output_dir+"/ref_chr%d.fa"%chr_num
+
+
+	#extract one chrom ref
+	extract_chrom_fasta(reference_path, 'chr%d'%chr_num, output_dir+"/ref_chr%d.fa"%chr_num)
+	
+	
 
 	reformat_fasta(hp1_contig_path ,outhp1,'hp1')
 	reformat_fasta(hp2_contig_path ,outhp2,'hp2')
-	contig_path = output_dir+'/assemblies.fa'
+	
 	cmd = "cat %s %s > %s"%(outhp1,outhp2,contig_path)
 	Popen(cmd, shell = True).wait()
 
 
 	logger.info("align contig to reference...")
-	# reference_path = "/data/maiziezhou_lab/CanLuo/long_reads_project/DipPAV2/hg19_ref_by_chr/hg19_chr%d.fa"%(chr_num)
-	prefix = contig_path.split('/')[-1].split('.')[0]
-	bam_path = output_dir+'/'+prefix+'.sorted.bam'
+	
 	cmd = "minimap2 -a -x asm5 --cs -r2k -t %d \
 		%s \
 		%s \
-			| samtools sort -@ %d -m %s > %s"%(n_thread,reference_path,contig_path,n_thread, mem_per_thread,bam_path )
+			| samtools sort -@ %d -m %s > %s"%(n_thread,reference_path_chr,contig_path,n_thread, mem_per_thread,bam_path )
 	logger.info(cmd)
 	Popen(cmd,shell=True).wait()
 
@@ -83,45 +118,29 @@ def dippav_variant_call(data_type,
 		extract_contig_sig_CLR(chr_number=chr_num,
 					bam_path=bam_path,
 					header_path=header_file,
-					ref_path=reference_path,
+					ref_path=reference_path_chr,
 					contig_path=contig_path,
 					output_dir=output_dir)
 	elif data_type == 'ONT':
 		extract_contig_sig_ONT(chr_number=chr_num,
 					bam_path=bam_path,
 					header_path=header_file,
-					ref_path=reference_path,
+					ref_path=reference_path_chr,
 					contig_path=contig_path,
 					output_dir=output_dir)
 	else:
 		extract_contig_sig_CCS(chr_number=chr_num,
 					bam_path=bam_path,
 					header_path=header_file,
-					ref_path=reference_path,
+					ref_path=reference_path_chr,
 					contig_path=contig_path,
 					output_dir=output_dir)
-
-	# cmd = "python3 "+code_dir+"/extract_contig_signature_%s.py \
-	# -bam %s  -contig %s -header %s -ref %s -o %s -chr %s"%(data_type,bam_path,
-	#  contig_path,
-	#  header_file,
-	#  reference_path,
-	#  output_dir,
-	#  chr_num)
-
-	# Popen(cmd,shell=True).wait()
-
 
 
 	logger.info("extract signatures from reads bam file...")
 	extract_reads_signature(chr_number=chr_num,
 				input_path= read_bam_file,
 				output_dir=output_dir)
-
-	# cmd = "python3 "+code_dir+"/extract_reads_signature.py \
-	# -i %s -chr %s  -o %s"%(read_bam_file ,chr_num,
-	#  output_dir)
-	# Popen(cmd,shell=True).wait()
 
 
 	### combine all vcf together
@@ -143,11 +162,6 @@ def dippav_variant_call(data_type,
 		output_path=vcf_path_filtered
 		)
 
-	# cmd = "python3 "+code_dir+"/FP_filter_v1.py \
-	# -i %s -sigd %s -o %s"%(vcf_path,signature_dir, vcf_path_filtered)
-	# Popen(cmd,shell=True).wait()
-
-
 
 	logger.info("Remove redundancy...")
 	# vcf_path_noredun = output_dir+"/dippav_variant_chr%d_no_redundancy.vcf"%chr_num
@@ -156,16 +170,7 @@ def dippav_variant_call(data_type,
 	remove_redundancy(vcf_path=vcf_path_filtered,
 			output_dir=final_vcf_dir)
 
-	# cmd = "python3 "+code_dir+"/remove_redundancy.py -i %s -o %s "%(
-	# 	vcf_path_filtered, final_vcf_dir)
-	# Popen(cmd,shell=True).wait()
 
-
-	# logger.info("truvari evaluation...")
-	# eval_dir = final_vcf_dir+'eval/'
-	# cmd = "/data/maiziezhou_lab/CanLuo/long_reads_project/bin/truvari_eval.sh %d %s %s dippav_variant_no_redundancy 500 0.5 0.5 30 0.01"%(
-	# 	chr_num, final_vcf_dir, eval_dir)
-	# Popen(cmd,shell=True).wait()
 
 
 

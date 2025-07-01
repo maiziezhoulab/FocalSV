@@ -7,7 +7,7 @@ parser = ArgumentParser(description="",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('--bam_file','-bam')
 parser.add_argument('--out_dir','-o')
-parser.add_argument('--data_type','-d', choices = ['Hifi','CLR','ONT'])
+parser.add_argument('--data_type','-d', choices = ['HIFI','CLR','ONT'])
 parser.add_argument('--patient', '-p',required=True, )
 parser.add_argument('--state','-s', required=True, choices=['Tumor', 'Normal'])
 parser.add_argument('--num_threads','-thread', type = int, default = 22 )
@@ -36,7 +36,7 @@ code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 
 
 
-cmd =f'''{code_dir}/define_region.py  \
+cmd =f'''python3 {code_dir}/define_region.py  \
     --input_path {input_path} \
     -o {output_dir} \
     -d {dtype} \
@@ -45,7 +45,7 @@ cmd =f'''{code_dir}/define_region.py  \
 Popen(cmd, shell = True).wait()
 
 
-cmd =f'''{code_dir}/process_dup.py  \
+cmd =f'''python3 {code_dir}/process_dup.py  \
     -bed {output_dir}/DUPs.bed \
     -bam {input_path} \
     -p {patient} \
@@ -57,7 +57,7 @@ cmd =f'''{code_dir}/process_dup.py  \
 Popen(cmd, shell = True).wait()
 
 
-cmd =f'''{code_dir}/process_tra_inv.py  \
+cmd =f'''python3 {code_dir}/process_tra_inv.py  \
     -p {patient} \
     -o {output_dir} \
     -d {dtype} \

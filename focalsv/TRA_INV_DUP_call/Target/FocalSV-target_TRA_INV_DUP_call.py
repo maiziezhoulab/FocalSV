@@ -34,7 +34,7 @@ code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 
 def split_bed(bed_file, out_dir):
     if not os.path.exists(out_dir):
-        os.system("mkidr -p " + out_dir)
+        os.system("mkdir -p " + out_dir)
 
     for svtype in ['DUP','INV','TRA']:
         cmd = f"grep {svtype} {bed_file} > {out_dir}/{svtype}_regions.bed"
@@ -45,7 +45,7 @@ bed_file_inv = f"{out_dir}/INV_regions.bed"
 bed_file_dup = f"{out_dir}/DUP_regions.bed"
 
 split_bed(bed_file, out_dir)
-cmd = f'''{code_dir}/call_DUP.py \
+cmd = f'''python3 {code_dir}/call_DUP.py \
     -i {input_dir} \
     -bam {bamfile} \
     -bed {bed_file_dup} \
@@ -55,14 +55,15 @@ cmd = f'''{code_dir}/call_DUP.py \
     -t {n_thread}'''
 Popen(cmd, shell = True).wait()
 
-cmd = f'''{code_dir}/Reads_Based_INV_Call.py \
+cmd = f'''python3 {code_dir}/Reads_Based_INV_Call.py \
     -bam {bamfile} \
     -bed {bed_file_inv} \
     -o {out_dir}/INV \
     -t {n_thread}'''
+print(cmd)
 Popen(cmd, shell = True).wait()
 
-cmd = f'''{code_dir}/Reads_Based_TRA_Call.py \
+cmd = f'''python3 {code_dir}/Reads_Based_TRA_Call.py \
     -bam {bamfile} \
     -bed {bed_file_tra} \
     -o {out_dir}/TRA \
@@ -71,6 +72,6 @@ Popen(cmd, shell = True).wait()
 
 out_vcf = out_dir+"/FocalSV_TRA_INV_DUP.vcf"
 cmd = f'''cat {out_dir}/DUP/DUP.vcf |grep '#' > {out_vcf};
-cat {out_dir}/DUP/DUP.vcf {out_dir}/INV/INV.vcf {out_dir}/TRA/TRA.vcf|grep -v '#'|vcf-sort >> {out_vcf}
+cat {out_dir}/DUP/DUP.vcf {out_dir}/INV/INV.vcf {out_dir}/TRA/TRA.vcf|grep -v '#'|vcf-sort >> {out_vcf}; sed -i 's/svim_asm/focalsv/g' {out_vcf}
 '''
 Popen(cmd, shell = True).wait()
