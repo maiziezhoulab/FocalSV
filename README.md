@@ -5,6 +5,8 @@ FocalSV is a tool for region-based structural variant (SV) assembly and refineme
 
 ## Table of Content 
 - [Installation](#install-through-github)
+- [Read ME before you start](#Read-ME-before-you-start)
+- [Data preparation](#Data-preparation)
 - [Large INDEL detection](#Large-INDEL-detection)
     - [Step 0: Automatically detect target regions (for auto mode)](#Step-0-Automatically-detect-target-regions-for-auto-mode)
     - [Step 1: Detect large INDEL SVs (for both modes)](#Step-1-Detect-large-INDEL-SVs-for-both-modes)
@@ -37,17 +39,16 @@ conda activate FocalSV
 To execute the code, either add `FocalSV/focalsv` to your `.bashrc` file or use the full path.
 
 
-## Before you start
+# Read ME before you start
 
 - FocalSV is intended for use on autosomal chromosomes only, as phasing on sex chromosomes involves additional complexities.
 - The input for each step can be a whole-genome sequencing (WGS) BAM file. In our test example, we used a chr21 BAM file solely for convenience due to its smaller size. However, manually splitting the WGS BAM file by chromosome is not required.
 - You may download our test data from [Zenodo](https://zenodo.org/records/15750913)
+- We recommend using HG002 Hifi_L1 for large indel call test and any library from HCC1395 (we provided 4 libraries, you only need to use one for testing purposes) for TRA INV DUP call test. Their download link and preparation can be found [here](./data_preparation.md).
 
 # Data preparation
 We go through how we prepare the BAM file in this step. We recommend using the same command to generate your BAM file.
 In our paper, we benchmarked the large INDEL call on HG002, TRA INV DUP on HCC1395. We provide the fastq download link and minimap2 alignment commands for HG002 Hifi_L1 and HCC1395 data [here](./data_preparation.md).
-
-
 
 # Large INDEL detection
 ## Step 0: Automatically detect target regions (for auto mode)
