@@ -70,20 +70,26 @@ def merge_vcf(in_dir, chr_num_list):
     os.system(cmd)
 
 
-if chr_num == 0:
-    split_bed(target_bed, out_dir)
-    chr_num_list = [int(os.path.basename(bed).split('.')[0][3:]) for bed in glob.glob(f"{out_dir}/chr*.bed")]
+if target_bed is None:
+    wrapper(bam_file,ref_file,chr_num,out_dir,
+                data_type,target_bed,
+                region_start,region_end,num_threads,early_threads,num_cpus )
+
 else:
-    extract_bed(target_bed, out_dir, f"chr{chr_num}")
-    chr_num_list = [chr_num]
+    if chr_num == 0:
+        split_bed(target_bed, out_dir)
+        chr_num_list = [int(os.path.basename(bed).split('.')[0][3:]) for bed in glob.glob(f"{out_dir}/chr*.bed")]
+    else:
+        extract_bed(target_bed, out_dir, f"chr{chr_num}")
+        chr_num_list = [chr_num]
 
-for use_chr_num in chr_num_list:
-    wrapper(bam_file,ref_file,use_chr_num,out_dir,
-            data_type,f"{out_dir}/chr{use_chr_num}.bed",
-            region_start,region_end,num_threads,early_threads,num_cpus )
+    for use_chr_num in chr_num_list:
+        wrapper(bam_file,ref_file,use_chr_num,out_dir,
+                data_type,f"{out_dir}/chr{use_chr_num}.bed",
+                region_start,region_end,num_threads,early_threads,num_cpus )
 
-if chr_num == 0:
-    merge_vcf(out_dir, chr_num_list)
+    if chr_num == 0:
+        merge_vcf(out_dir, chr_num_list)
 
     
 
