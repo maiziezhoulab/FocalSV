@@ -11,7 +11,7 @@ parser.add_argument('--input_dir','-i')
 # parser.add_argument('--indelvcf','-vcf')
 parser.add_argument('--bam_file','-bam')
 parser.add_argument('--bed_file','-bed')
-# parser.add_argument('--bed_file','-bed')
+# parser.add_argument('--target_bed','-bed')
 parser.add_argument('--ref_file','-ref')
 parser.add_argument('--data_type','-d', choices=['HIFI','CLR','ONT'])
 parser.add_argument('--out_dir','-o')
@@ -24,7 +24,7 @@ input_dir = args.input_dir
 # indelvcf = args.indelvcf
 bamfile = args.bam_file
 out_dir = args.out_dir
-bed_file = args.bed_file
+bed_file = args.target_bed
 reference = args.ref_file
 n_thread = args.num_threads
 datatype = args.data_type
