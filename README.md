@@ -272,7 +272,7 @@ For TRA, each row is `chrom1    start1    end1    chrom2    start2    end2    TR
 The target BED file for HCC1395 is provided in the zenode repo.
 
 
-For target mode, you need to first perform FocalSV-target large indel call in the target regions of duplications, as we have a module of duplication recovery from insertions. You need to follow the step1 FocalSV-target mode to generate the large indel call result.
+**For target mode, you need to first perform FocalSV-target large indel call in the target regions of duplications, as we have a module of duplication recovery from insertions**. You need to follow the step1 FocalSV-target mode to generate the large indel call result.
 
 Here is an example of running the large indel call on HCC1395 chr21.
 ```
@@ -336,7 +336,7 @@ If you want to run it on another sample,
 python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
 --input_dir FocalSV_results_DUP \
 --bam_file <sample>_<datatype>_hg38.bam \
---bed_file <target_bed> \
+--target_bed <target_bed> \
 --data_type <datatype> \
 --ref_file zenodo/hg38_ref.fa \
 --out_dir <sample>_FocalSV-target_tra_inv_dup_output
