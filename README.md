@@ -280,7 +280,7 @@ python3 FocalSV/focalsv/focalsv.py \
 --bam_file HCC1395_Pacbio_hg38.bam \
 --ref_file zenodo/hg38_ref.fa \
 --chr_num 21 \
---bed_file zenodo/HCC1395_SV_rich_regions_DUP.bed \
+--target_bed zenodo/HCC1395_SV_rich_regions_DUP.bed \
 --out_dir ./FocalSV_results_DUP \
 --data_type CLR \
 --num_cpus 10 \
@@ -295,7 +295,7 @@ python3 FocalSV/focalsv/focalsv.py \
 --bam_file<sample>_<dtype>_hg38.bam \
 --ref_file zenodo/hg38_ref.fa \
 --chr_num 0 \
---bed_file DUP_regions.bed \
+--target_bed DUP_regions.bed \
 --out_dir ./FocalSV_results_DUP \
 --data_type CLR \
 --num_cpus 10 \
@@ -308,7 +308,7 @@ Next, you can run the SV calling.
 #### Required Parameters:
 - **--input_dir/-i**: FocalSV-target large indel call output folder
 - **--bam_file/-bam**: The input BAM file.
-- **--bed_file/-bed**: a bed file with interested target region. For DUP, each row is `chrom    start    end    DUP`. For INV, each row is `chrom    start1    end1    start2    end2    INV`, where chrom1, start1, and end1 define the rough location for one breakend of the inversion, start2, and end2 define the rough location for the other breakend. For TRA, each row is `chrom1    start1    end1    chrom2    start2    end2    TRA`, where chrom1, start1, and end1 define the rough location for one breakend, chrom2, start2, and end2 define the rough location for the other breakend.
+- **--target_bed/-bed**: a bed file with interested target region. For DUP, each row is `chrom    start    end    DUP`. For INV, each row is `chrom    start1    end1    start2    end2    INV`, where chrom1, start1, and end1 define the rough location for one breakend of the inversion, start2, and end2 define the rough location for the other breakend. For TRA, each row is `chrom1    start1    end1    chrom2    start2    end2    TRA`, where chrom1, start1, and end1 define the rough location for one breakend, chrom2, start2, and end2 define the rough location for the other breakend.
 - **--data_type/-d**: Type of sequencing data (HIFI, CLR, ONT).
 - **--ref_file/-r**: Reference FASTA file.
 - **--out_dir/-o**: Output directory to store results.
@@ -324,7 +324,7 @@ Here is an example of how to run FocalSV-target to get TRA INV and DUP on HCC139
 python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
 --input_dir FocalSV_results_DUP \
 --bam_file HCC1395_Pacbio_hg38.bam \
---bed_file zenodo/HCC1395_SV_rich_regions.bed \
+--target_bed zenodo/HCC1395_SV_rich_regions.bed \
 --data_type CLR \
 --ref_file zenodo/hg38_ref.fa \
 --out_dir HCC1395_FocalSV-target_tra_inv_dup_output
