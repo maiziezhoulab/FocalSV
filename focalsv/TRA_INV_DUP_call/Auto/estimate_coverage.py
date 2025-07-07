@@ -118,7 +118,7 @@ def estimate_bam_cov(bamfile, out_dir,t, ):
                 covs.append(cov)
             f.write(f"{chrom}\t{start}\t{end}\t{cov}\n")
 
-    mean_cov = np.mean(covs)
+    mean_cov = np.nanmean(covs)
     with open(out_dir+"/mean_cov",'w') as f:
         f.write(str(mean_cov))
     print(f"mean cov: {mean_cov} ({bamfile})")
