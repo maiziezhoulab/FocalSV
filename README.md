@@ -129,9 +129,9 @@ python3 FocalSV/focalsv/focalsv.py \
 --bam_file zenodo/HG002_HIFI_L1_chr21_hg19.bam  \
 --ref_file zenodo/hg19_ref.fa \
 --chr_num 21 \
---region_start 100000 \
---region_end 200000 \
---out_dir ./FocalSV_results/chr21_100000_200000 \
+--region_start 15761801  \
+--region_end 15861801 \
+--out_dir ./FocalSV_results/chr21_15761801_15861801 \
 --data_type HIFI \
 --num_cpus 10 \
 --num_threads 8
