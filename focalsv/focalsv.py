@@ -65,8 +65,8 @@ def extract_bed(bed_file, out_dir, chrom):
 
 def merge_vcf(in_dir, chr_num_list):
 
-    cmd = f'''grep '#' {in_dir}/chr{chr_num_list[0]}/Final_SV/FocalSV_Final_SV.vcf > {in_dir}/FocalSV_Final_SV.vcf
-    grep -v '#' {in_dir}/chr*/Final_SV/FocalSV_Final_SV.vcf|vcf-sort >> {in_dir}/FocalSV_Final_SV.vcf'''
+    cmd = f'''grep '#' {in_dir}/chr{chr_num_list[0]}/results/FocalSV_Final_SV.vcf > {in_dir}/FocalSV_Final_SV.vcf
+    grep -v '#' {in_dir}/chr*/results/FocalSV_Final_SV.vcf|vcf-sort >> {in_dir}/FocalSV_Final_SV.vcf'''
     os.system(cmd)
 
 
