@@ -342,7 +342,7 @@ python3 focalsv/TRA_INV_DUP_call/Target/FocalSV-target_TRA_INV_DUP_call.py \
 --out_dir <sample>_FocalSV-target_tra_inv_dup_output
 ```
 
-## Cite VolcanoSV
+## Cite FocalSV
 C. Luo, Z. J. Zhou, Y. H. Liu, X. M. Zhou. FocalSV enables target region-based structural variant assessment and refinement using single-molecule long-read sequencing. Genome Research (2025) gr.280282.124
 
 
