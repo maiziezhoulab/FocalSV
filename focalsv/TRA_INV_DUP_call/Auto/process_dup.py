@@ -14,7 +14,7 @@ code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 parser = argparse.ArgumentParser()
 parser.add_argument('--bed_file','-bed')
 parser.add_argument('--bam_file','-bam')
-parser.add_argument('--patient', '-p',required=True, choices=['HCC1395', 'COLO829'])
+parser.add_argument('--patient', '-p',required=True,)
 parser.add_argument('--out_dir','-o')
 parser.add_argument('--dtype', '-d',required=True, choices=['HIFI', 'ONT','CLR'])
 parser.add_argument('--state','-s', required=True, choices=['Tumor', 'Normal'])
